@@ -10,16 +10,4 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-    //test git push
-
-
-
-
-
-
-
-
-
-
 }
