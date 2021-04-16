@@ -5,10 +5,15 @@ import java.sql.Time
 /*
 Classe Ricette
  */
-data class Recipe(val Name : String, val List_Ingredients: ArrayList<Ingredienti>, val Prepare_Time : Time , val Cooking_Time : Time, val Level : Difficolta, val doses : Int ){
+data class Recipe(val nome : String, val difficoltà : Difficolta, val tempo : Time, val portata : Portata, val persone : Int,
+                  val listaIngredienti: ArrayList<Ingredienti>, val note : ArrayList<String>){
 
     enum class Difficolta {
-        BASSA , MEDIA , ALTA
+        BASSA, MEDIA, ALTA
+    }
+
+    enum class Portata {
+        Antipasto, Primo, Secondo, Contorno, Dolce
     }
 }
 

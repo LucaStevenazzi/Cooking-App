@@ -14,6 +14,3 @@ data class Ingredienti (val Name : String ,  val quantità : Int , val tipo_quan
 
     }
 }
-
-
-
