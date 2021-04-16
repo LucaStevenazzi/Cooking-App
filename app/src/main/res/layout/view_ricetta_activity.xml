@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/activity_main_scene"
+    tools:context=".View_Ricetta_Activity">
+
+
+    <ImageView
+        android:id="@+id/img_ricetta"
+        android:layout_width="0dp"
+        android:layout_height="350dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/name_ricetta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/name_ricetta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_ricetta" />
+
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name_ricetta">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/desc_Ricetta"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/descrizione" />
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
