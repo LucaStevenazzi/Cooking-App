@@ -7,6 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.R
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 
+/*
+Main Activity con lista di ricette
+ */
+
 class List_Ricette_Activity : AppCompatActivity() , onClickListener{
 
     private  val img = arrayOf(
@@ -19,7 +23,6 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener{
 
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = CustomAdapter(img,this)
-
     }
 
     override fun onClickListenerItem(position: Int) {
@@ -27,5 +30,4 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener{
         intent.putExtra("immagine" , img[position])
         startActivity(intent)
     }
-
 }

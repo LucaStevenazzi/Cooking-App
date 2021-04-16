@@ -7,6 +7,9 @@ import android.widget.ImageView
 import com.example.cooking_app.R
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
+/*
+Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
+ */
 class View_Ricetta_Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +19,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
         Log.v("View_Ricetta_Activity", "Start onCreate")
 
         val img = intent.getIntExtra("immagine" , 0)
-        img_ricetta.scaleType = ImageView.ScaleType.CENTER_CROP
         img_ricetta.setImageResource(img)
 
     }

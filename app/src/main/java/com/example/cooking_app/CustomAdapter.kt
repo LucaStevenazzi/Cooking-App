@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.R
 import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
 
+/*
+classe adattatatrice che permette di gestire la Lista (RecyclerView)
+ */
 class CustomAdapter(val img: Array<Int> , private val onClickListener: onClickListener): RecyclerView.Adapter<CustomAdapter.CustomViewHolder>() {
 
 
