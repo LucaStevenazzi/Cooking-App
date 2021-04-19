@@ -26,14 +26,14 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/Nome"
+                    android:id="@+id/TVnome"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/nome" />
+                    android:text="@string/STRnome" />
 
                 <EditText
-                    android:id="@+id/n"
+                    android:id="@+id/ETnome"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -50,14 +50,37 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/Difficoltà"
+                    android:id="@+id/TVdifficoltà"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/STRdiff"/>
+
+                <Spinner
+                    android:id="@+id/spinner_diff"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2" />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/TVtempo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/diff" />
+                    android:text="@string/STRtempo" />
 
                 <EditText
-                    android:id="@+id/d"
+                    android:id="@+id/ETtempo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -74,14 +97,14 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/Tempo"
+                    android:id="@+id/TVtipologia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/tempo" />
+                    android:text="@string/STRtipologia" />
 
                 <EditText
-                    android:id="@+id/t"
+                    android:id="@+id/ETtipologia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -98,14 +121,60 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/Tipologia"
+                    android:id="@+id/TVportata"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/STRportata" />
+
+                <Spinner
+                    android:id="@+id/spinner_portata"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/TVpersone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/tip" />
+                    android:text="@string/STRpersone" />
 
                 <EditText
-                    android:id="@+id/ti"
+                    android:id="@+id/ETpersone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:hint="@string/HINT"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/TVingredienti"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/STRingredienti" />
+
+                <EditText
+                    android:id="@+id/ETingredienti"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -122,20 +191,20 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/Portata"
+                    android:id="@+id/TVlistaIng"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/port" />
+                    android:text="@string/STRlistaIng" />
 
                 <EditText
-                    android:id="@+id/p"
+                    android:id="@+id/ETlistaIng"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:autofillHints=""
                     android:hint="@string/HINT"
-                    android:inputType="text" />
+                    android:inputType="text|textMultiLine" />
 
             </LinearLayout>
 
@@ -146,14 +215,14 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/Persone"
+                    android:id="@+id/TVnote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/pers" />
+                    android:text="@string/STRnote" />
 
                 <EditText
-                    android:id="@+id/pe"
+                    android:id="@+id/ETnote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -163,77 +232,14 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <Button
+                android:id="@+id/ButtonOK"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="24dp">
+                android:layout_height="0dp"
+                android:layout_weight="2"
 
-                <TextView
-                    android:id="@+id/Ingredienti"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="@string/ing" />
-
-                <EditText
-                    android:id="@+id/i"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:autofillHints=""
-                    android:hint="@string/HINT"
-                    android:inputType="text" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="24dp">
-
-                <TextView
-                    android:id="@+id/lista"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="@string/lIng" />
-
-                <EditText
-                    android:id="@+id/li"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:autofillHints=""
-                    android:hint="@string/HINT"
-                    android:inputType="text" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="24dp">
-
-                <TextView
-                    android:id="@+id/note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="@string/note" />
-
-                <EditText
-                    android:id="@+id/no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:autofillHints=""
-                    android:hint="@string/HINT"
-                    android:inputType="text" />
-
-            </LinearLayout>
+                android:onClick="saveRecipe"
+                android:text="@string/STRbuttonOK" />
 
         </LinearLayout>
 

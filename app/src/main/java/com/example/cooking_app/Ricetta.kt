@@ -5,7 +5,7 @@ import java.sql.Time
 /*
 Classe Ricette
  */
-data class Recipe(val nome : String, val difficoltà : Difficolta, val tempo : Time, val portata : Portata, val persone : Int,
+data class Recipe(val nome : String, val diff : Difficolta, val tempo : Time, val portata : Portata, val persone : Int,
                   val listaIngredienti: ArrayList<Ingredienti>, val note : ArrayList<String>){
 
     enum class Difficolta {

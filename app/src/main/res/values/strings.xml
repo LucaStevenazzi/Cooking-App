@@ -6,16 +6,17 @@
     <string name="descrizione_ricetta">Descrizione Ricetta</string>
     <string name="ADD">add</string>
     <string name="BI">Background Image</string>
-    <string name="nome">Nome</string>
-    <string name="diff">Difficoltà</string>
-    <string name="tempo">Tempo</string>
-    <string name="tip">Tipologia</string>
-    <string name="port">Portata</string>
-    <string name="pers">Persone</string>
-    <string name="ing">Ingredienti</string>
+    <string name="STRnome">Nome</string>
+    <string name="STRdiff">Difficoltà</string>
+    <string name="STRtempo">Tempo</string>
+    <string name="STRtipologia">Tipologia</string>
+    <string name="STRportata">Portata</string>
+    <string name="STRpersone">Persone</string>
+    <string name="STRingredienti">Ingredienti</string>
     <string name="HINT">Riempi il campo</string>
-    <string name="lIng">Lista</string>
-    <string name="note">Note</string>
+    <string name="STRlistaIng">Lista</string>
+    <string name="STRnote">Note</string>
+    <string name="STRbuttonOK">Inserisci</string>
     <string-array name="array_diff">
         <item>BASSA</item>
         <item>MEDIA</item>
