@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/miItem1"
+        android:title="Account" />
+    <item
+        android:id="@+id/miItem2"
+        android:title="Impostazioni" />
+    <item
+        android:id="@+id/miItem3"
+        android:title="Help" />
+</menu>
