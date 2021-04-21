@@ -1,13 +1,9 @@
 package com.example.cooking_app
 
-import android.app.SearchManager
-import android.content.Context
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import androidx.appcompat.widget.SearchView
+import com.example.cooking_app.R
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
 

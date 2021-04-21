@@ -1,4 +1,4 @@
-package com.example.cooking_app
+package com.example.cooking_app.Classi
 
 /*
 classe degli ingredienti
