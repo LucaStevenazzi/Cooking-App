@@ -4,7 +4,7 @@ package com.example.cooking_app
 classe degli ingredienti
  */
 
-data class Ingredienti (val Name : String ,  val quantità : Int , val tipo_quantità : misura?){
+data class Ingredienti (val Name : String ,  val quantit : Int , val tipo_quantit : misura?){
 
 
 
@@ -14,6 +14,3 @@ data class Ingredienti (val Name : String ,  val quantità : Int , val tipo_quan
 
     }
 }
-
-
-

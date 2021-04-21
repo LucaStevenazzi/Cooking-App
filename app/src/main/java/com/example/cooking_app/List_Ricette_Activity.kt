@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.R
 import kotlinx.android.synthetic.main.list_ricette_activity.*
@@ -34,6 +35,11 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener{
         val intent = Intent(this, View_Ricetta_Activity::class.java)
         intent.putExtra("immagine" , img[position])
         startActivity(intent)
+    }
+
+    fun newRecipe(v : View) {
+        val it = Intent(this, AddNewRecipeActivity::class.java)
+        startActivity(it)
     }
 
     //Codice per il tasto della ricerca
