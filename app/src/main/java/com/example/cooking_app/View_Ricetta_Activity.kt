@@ -3,13 +3,9 @@ package com.example.cooking_app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-<<<<<<< .merge_file_F24Mso
-import com.example.cooking_app.R
-=======
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.widget.SearchView
->>>>>>> .merge_file_OX20sv
+import android.widget.Toast
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
 

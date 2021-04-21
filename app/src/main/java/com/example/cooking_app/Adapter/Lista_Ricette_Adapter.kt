@@ -37,7 +37,6 @@ class Lista_Ricette_Adapter(val img: ArrayList<Int>, private val onClickListener
 
         }
 
-
     }
 
     //metoco che restituisce il numero di Item nella lista delle ricette

@@ -5,19 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-<<<<<<< .merge_file_XKjUsh
 import android.view.View
-=======
 import android.view.MenuItem
->>>>>>> .merge_file_QYmoFZ
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-<<<<<<< .merge_file_XKjUsh
-=======
-import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
->>>>>>> .merge_file_QYmoFZ
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Listener.onClickListener
@@ -30,18 +23,12 @@ Main Activity con lista di ricette
 
 class List_Ricette_Activity : AppCompatActivity() , onClickListener {
 
-<<<<<<< .merge_file_XKjUsh
     //array di ricette
     private  val img = arrayListOf(
             R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
             R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)
-=======
-    lateinit var toggle: ActionBarDrawerToggle
 
-    private  val img = arrayOf(
-            R.drawable.img_1,R.drawable.img_2,R.drawable.img_3,
-            R.drawable.img_4,R.drawable.img_5,R.drawable.img_6)
->>>>>>> .merge_file_QYmoFZ
+    lateinit var toggle: ActionBarDrawerToggle
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +43,7 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
     private fun initRecyclerView() {
 
         lista_ricette.layoutManager = LinearLayoutManager(this)
-<<<<<<< .merge_file_XKjUsh
         lista_ricette.adapter = Lista_Ricette_Adapter(img, this)
-
-=======
-        lista_ricette.adapter = CustomAdapter(img,this)
 
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -75,7 +58,6 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
             }
             true
         }
->>>>>>> .merge_file_QYmoFZ
     }
 
 
