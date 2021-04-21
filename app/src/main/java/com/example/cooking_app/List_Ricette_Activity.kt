@@ -6,9 +6,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.R
 import kotlinx.android.synthetic.main.list_ricette_activity.*
@@ -18,6 +20,8 @@ Main Activity con lista di ricette
  */
 
 class List_Ricette_Activity : AppCompatActivity() , onClickListener{
+
+    lateinit var toggle: ActionBarDrawerToggle
 
     private  val img = arrayOf(
             R.drawable.img_1,R.drawable.img_2,R.drawable.img_3,
@@ -29,6 +33,20 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener{
 
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = CustomAdapter(img,this)
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        navView.setNavigationItemSelectedListener{
+            when(it.itemId){
+                R.id.miItem1 -> Toast.makeText(applicationContext, "Clicked Item 1", Toast.LENGTH_SHORT).show()
+                R.id.miItem2 -> Toast.makeText(applicationContext, "Clicked Item 2", Toast.LENGTH_SHORT).show()
+                R.id.miItem3 -> Toast.makeText(applicationContext, "Clicked Item 3", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
     }
 
     //funzione che apre l'activity di visualizzazione di una ricetta
@@ -66,5 +84,12 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener{
             }
         })
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(toggle.onOptionsItemSelected(item)){
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
