@@ -1,8 +1,13 @@
 package com.example.cooking_app
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.R
@@ -35,5 +40,30 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener{
     fun newRecipe(v : View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
         startActivity(it)
+    }
+
+    //Codice per il tasto della ricerca
+    override fun onCreateOptionsMenu(menu: Menu?):Boolean{
+        val inflater = menuInflater
+        inflater.inflate(R.menu.search, menu)
+
+        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchItem = menu?.findItem(R.id.search)
+        val searchView = searchItem?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean{
+                searchView.clearFocus()
+                searchView.setQuery("",false)
+                searchItem.collapseActionView()
+                Toast.makeText(this@List_Ricette_Activity, "Looking for $query", Toast.LENGTH_LONG).show()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean{
+                return false
+            }
+        })
+        return true
     }
 }
