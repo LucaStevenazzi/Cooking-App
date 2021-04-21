@@ -14,13 +14,13 @@ import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
     private var arraylist_ing : ArrayList<Ingredienti> = arrayListOf()
     private var arraylist_note : ArrayList<String> = arrayListOf()
-    //private var adapterLV : ArrayAdapter<Ingredienti> = ArrayAdapter(this, android.R.layout.simple_list_item_1, arraylist_ing)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_recipe)
 
-        ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
+        //contenitore dei valori della DropDown List per la difficoltà
+        ArrayAdapter.createFromResource(
                 this,
                 R.array.array_diff,
                 android.R.layout.simple_spinner_item
@@ -31,7 +31,8 @@ class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
             spinner_diff.adapter = adapter
         }
 
-        ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la portata
+        //contenitore dei valori della DropDown List per la portata
+        ArrayAdapter.createFromResource(
                 this,
                 R.array.array_portata,
                 android.R.layout.simple_spinner_item
@@ -43,14 +44,10 @@ class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
         }
 
         ETingredienti.setOnKeyListener(this)
-
-        /*val ingr = Ingredienti("sale", null , null)
-        arraylist_ing.add(ingr)
-        LVlistaIng.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, arraylist_ing)*/
-
     }
 
-    fun saveRecipe(v : View) {      //funzione che salva i dati della ricetta
+    //funzione che salva i dati della ricetta
+    fun saveRecipe(v : View) {
 
         val nome = ETnome.text.toString()
         val diff = spinner_diff.selectedItem.toString()
@@ -61,11 +58,13 @@ class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
         arraylist_note.add(ETnote.text.toString())
 
         val ricetta = Recipe(nome, diff, tempo, tipologia, portata, numPersone, arraylist_ing, arraylist_note)
-        Log.v("oggetto", ricetta.toString())
+        //Log.v("oggetto", ricetta.toString())
         Toast.makeText(this,"Aggiunta la ricetta: $nome",Toast.LENGTH_LONG).show();
+        //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
     }
 
+    //funzione che premendo invio ("ENTER") aggiunge l'ingrediente ad un arraylist e poi lo cancella dell'edittext
     override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
 
         if (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {

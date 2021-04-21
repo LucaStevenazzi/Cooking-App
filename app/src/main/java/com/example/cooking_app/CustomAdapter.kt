@@ -1,18 +1,16 @@
 package com.example.cooking_app
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cooking_app.R
-import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
 
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView)
  */
-class CustomAdapter(val img: Array<Int> , private val onClickListener: onClickListener): RecyclerView.Adapter<CustomAdapter.CustomViewHolder>() {
+class CustomAdapter(val img: Array<Int> , private val onClickListener: onClickListener): RecyclerView.Adapter<CustomAdapter.CustomViewHolder>(){
 
 
     class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -35,8 +33,6 @@ class CustomAdapter(val img: Array<Int> , private val onClickListener: onClickLi
             onClickListener.onClickListenerItem(position)
 
         }
-
-
     }
     override fun getItemCount(): Int {
         return img.size

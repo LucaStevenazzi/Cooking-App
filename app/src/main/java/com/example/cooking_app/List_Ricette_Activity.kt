@@ -31,12 +31,13 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener{
         lista_ricette.adapter = CustomAdapter(img,this)
     }
 
+    //funzione che apre l'activity di visualizzazione di una ricetta
     override fun onClickListenerItem(position: Int) {
         val intent = Intent(this, View_Ricetta_Activity::class.java)
         intent.putExtra("immagine" , img[position])
         startActivity(intent)
     }
-
+    //funzione che apre l'activity di aggiunta di una ricetta
     fun newRecipe(v : View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
         startActivity(it)
