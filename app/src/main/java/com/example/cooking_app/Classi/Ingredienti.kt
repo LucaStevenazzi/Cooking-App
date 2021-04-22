@@ -4,13 +4,6 @@ package com.example.cooking_app.Classi
 classe degli ingredienti
  */
 
-data class Ingredienti (val Name : String ,  val quantit : Int , val tipo_quantit : misura?){
+data class Ingredienti(val Name: String, val quantità: String, val tipo_quantità: String){
 
-
-
-
-    enum class misura {
-        ml, g , cucchiani
-
-    }
 }

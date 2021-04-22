@@ -34,7 +34,6 @@ class Lista_Ricette_Adapter(val img: ArrayList<Int>, private val onClickListener
 
         holder.itemView.setOnClickListener{
             onClickListener.onClickListenerItem(position)
-
         }
 
     }

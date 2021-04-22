@@ -12,9 +12,9 @@
     <string name="STRtipologia">Tipologia</string>
     <string name="STRportata">Portata</string>
     <string name="STRpersone">Persone</string>
-    <string name="STRingredienti">Ingredienti</string>
+    <string name="STRingredienti">Aggiunta Ingredienti</string>
     <string name="HINT">Riempi il campo</string>
-    <string name="STRlistaIng">Lista</string>
+    <string name="STRlistaIng">Lista Ingredienti</string>
     <string name="STRnote">Note</string>
     <string name="STRbuttonOK">Inserisci</string>
     <string-array name="array_diff">
@@ -29,6 +29,16 @@
         <item>Contorno</item>
         <item>Dolce</item>
     </string-array>
+    <string-array name="array_misure">
+        <item></item>
+        <item>g</item>
+        <item>kg</item>
+        <item>ml</item>
+        <item>l</item>
+        <item>bicchieri</item>
+        <item>cucchiaini</item>
+    </string-array>
     <string name="open">Open</string>
     <string name="close">Close</string>
+
 </resources>
