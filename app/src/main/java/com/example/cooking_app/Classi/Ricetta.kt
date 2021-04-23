@@ -1,5 +1,6 @@
 package com.example.cooking_app
 
+import com.example.cooking_app.Classi.Ingredienti
 import java.sql.Time
 
 /*

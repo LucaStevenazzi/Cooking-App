@@ -2,19 +2,37 @@ package com.example.cooking_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.text.isDigitsOnly
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.cooking_app.Adapter.Ingredienti_Adapter
+import com.example.cooking_app.Classi.Ingredienti
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
+import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
 
 // Activity per l'aggiunta delle ricette
 
-class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
+class AddNewRecipeActivity : AppCompatActivity() {
+
+    //dati
+    var lista = arrayListOf<Ingredienti>()
+
+    //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_recipe)
+
+        setSpinner() //settaggio degli spinner per la visualizzazione delle PORTATE / DIFFICOLTà / MISURE
+
+
+        //Codice per la lista degli ingredianti
+        setRecyclerView()
+        add_Ingrediente_to_List()
+
+    }
+
+    private fun setSpinner() {
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
                 this,
@@ -27,6 +45,17 @@ class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
             spinner_diff.adapter = adapter
         }
 
+        ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
+                this,
+                R.array.array_misure,
+                android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specifica il layout da usare quando la lista appare
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Applicazione dell'adapter allo spinner
+            ing_misura.adapter = adapter
+        }
+
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la portata
                 this,
                 R.array.array_portata,
@@ -37,7 +66,30 @@ class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
             // Applicazione dell'adapter allo spinner
             spinner_portata.adapter = adapter
         }
-        ETingredienti.setOnKeyListener(this)
+    }
+
+    private fun add_Ingrediente_to_List(): Boolean {
+        add_ing.setOnClickListener(View.OnClickListener{ v ->
+            var ingnome = ing_nome.text.toString()
+            var ingquanti = ing_quantità.text.toString()
+            var ingmisura = ing_misura.selectedItem.toString()
+            if(ingnome.isEmpty()||ingquanti.isEmpty()||!ingquanti.isDigitsOnly()||ingnome.isDigitsOnly()){
+                return@OnClickListener
+            }
+            var ing : Ingredienti = Ingredienti(ingnome, ingquanti,ingmisura)
+            lista.add(0,ing)
+            ing_nome.text.clear()
+            ing_quantità.text.clear()
+            recyclerview.adapter?.notifyItemInserted(0)
+            return@OnClickListener
+            }
+        )
+        return false
+    }
+    private fun setRecyclerView() {
+        recyclerview.layoutManager = LinearLayoutManager(this)
+        recyclerview.adapter = Ingredienti_Adapter(lista)
+
     }
 
     fun saveRecipe(v : View) {      //funzione che salva i dati della ricetta
@@ -50,28 +102,4 @@ class AddNewRecipeActivity : AppCompatActivity(), View.OnKeyListener {
         val portata = spinner_portata.selectedItem.toString()
 
     }
-
-    override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-            val ing = ETingredienti.text.toString()
-            val string : String
-
-            if(ing == ""){
-                val b = ETlistaIng.text.toString()      //rimane uno spazio vuoto quando inserisco il primo ingrediente, si può sistemare anche dopo
-                string = b
-            }else{
-                val b = ETlistaIng.text.toString()
-                string = ing + "\n" + b
-            }
-
-            ETlistaIng.setText(string)
-            ETingredienti.setText("")
-
-            //crea arraylist per salvare la lista
-            //chiedi al prof del .clear
-            return true
-        }
-        return false
-    }
-
 }
