@@ -4,9 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cooking_app.Adapter.Ingredienti_Adapter
+import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
@@ -16,7 +17,8 @@ import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
 class AddNewRecipeActivity : AppCompatActivity() {
 
     //dati
-    var lista = arrayListOf<Ingredienti>()
+    var lista_ingredienti = arrayListOf<Ingredienti>()
+    var arraylist_note : ArrayList<String> = arrayListOf()
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +47,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
             spinner_diff.adapter = adapter
         }
 
-        ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
+        ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la misura
                 this,
                 R.array.array_misure,
                 android.R.layout.simple_spinner_item
@@ -68,7 +70,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
     }
 
-    private fun add_Ingrediente_to_List(): Boolean {
+    private fun add_Ingrediente_to_List(): Boolean {        //funzione che aggiunge gli ingredienti alla lista sottostante
         add_ing.setOnClickListener(View.OnClickListener{ v ->
             var ingnome = ing_nome.text.toString()
             var ingquanti = ing_quantità.text.toString()
@@ -77,29 +79,45 @@ class AddNewRecipeActivity : AppCompatActivity() {
                 return@OnClickListener
             }
             var ing : Ingredienti = Ingredienti(ingnome, ingquanti,ingmisura)
-            lista.add(0,ing)
+            lista_ingredienti.add(0,ing)
             ing_nome.text.clear()
             ing_quantità.text.clear()
+            ing_misura.setSelection(0)
             recyclerview.adapter?.notifyItemInserted(0)
             return@OnClickListener
             }
         )
         return false
     }
-    private fun setRecyclerView() {
+    private fun setRecyclerView() {     //settiamo la RecyclerView per la lista degli ingredienti
         recyclerview.layoutManager = LinearLayoutManager(this)
-        recyclerview.adapter = Ingredienti_Adapter(lista)
+        recyclerview.adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
 
     }
 
     fun saveRecipe(v : View) {      //funzione che salva i dati della ricetta
 
         val nome = ETnome.text.toString()
+        val diff = spinner_diff.selectedItem.toString()
         val tempo = ETtempo.text.toString()
         val tipologia = ETtipologia.text.toString()
-        val numPersone = ETpersone.text.toString()
-        val diff = spinner_diff.selectedItem.toString()
         val portata = spinner_portata.selectedItem.toString()
+        val numPersone = ETpersone.text.toString().toInt()
+        arraylist_note.add(ETnote.text.toString())
 
+        /*fare i check prima di salvare la ricetta
+            1- nessun campo vuoto
+            2- nome diverso dalle altre ricette nel DB
+            3- ...
+         */
+
+        val ricetta = Recipe(nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
+        //Log.v("oggetto", ricetta.toString())
+        Toast.makeText(this,"Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show();
+
+        //aggiunta ricetta al DB
+
+        //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
+        finish()
     }
 }

@@ -22,6 +22,7 @@ Main Activity con lista di ricette
  */
 
 class List_Ricette_Activity : AppCompatActivity() , onClickListener {
+
     //array di ricette
     private  val img = arrayListOf(
             R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
@@ -37,42 +38,31 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
 
 
         initRecyclerView() //inizializzazione Lista delle ricette
+        initBarMenuLateral() //inizializzazione Barra laterale del menu
+    }
+
+    private fun initBarMenuLateral() {
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        navView.setNavigationItemSelectedListener{
+            when(it.itemId){
+                R.id.miItem1 -> Toast.makeText(applicationContext, "Clicked Item 1", Toast.LENGTH_SHORT).show()
+                R.id.miItem2 -> Toast.makeText(applicationContext, "Clicked Item 2", Toast.LENGTH_SHORT).show()
+                R.id.miItem3 -> Toast.makeText(applicationContext, "Clicked Item 3", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
     }
 
     private fun initRecyclerView() {
 
         lista_ricette.layoutManager = LinearLayoutManager(this)
-        lista_ricette.adapter = CustomAdapter(img,this)
-
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        navView.setNavigationItemSelectedListener{
-            when(it.itemId){
-                R.id.miItem1 -> Toast.makeText(applicationContext, "Clicked Item 1", Toast.LENGTH_SHORT).show()
-                R.id.miItem2 -> Toast.makeText(applicationContext, "Clicked Item 2", Toast.LENGTH_SHORT).show()
-                R.id.miItem3 -> Toast.makeText(applicationContext, "Clicked Item 3", Toast.LENGTH_SHORT).show()
-            }
-            true
-        }
         lista_ricette.adapter = Lista_Ricette_Adapter(img, this)
 
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        navView.setNavigationItemSelectedListener{
-            when(it.itemId){
-                R.id.miItem1 -> Toast.makeText(applicationContext, "Clicked Item 1", Toast.LENGTH_SHORT).show()
-                R.id.miItem2 -> Toast.makeText(applicationContext, "Clicked Item 2", Toast.LENGTH_SHORT).show()
-                R.id.miItem3 -> Toast.makeText(applicationContext, "Clicked Item 3", Toast.LENGTH_SHORT).show()
-            }
-            true
-        }
     }
+
 
 
     //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata
@@ -95,7 +85,7 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
         inflater.inflate(R.menu.search, menu)
 
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchItem = menu?.findItem(R.id.search)
+        val searchItem = menu?.findItem(R.id.search_icon)
         val searchView = searchItem?.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -114,6 +104,7 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
         return true
     }
 
+    //selezione del funzione della MenuBar laterale
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(toggle.onOptionsItemSelected(item)){
             return true
