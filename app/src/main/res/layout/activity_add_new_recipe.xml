@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,14 +54,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/STRdiff"/>
+                    android:text="@string/STRdiff" />
 
                 <Spinner
                     android:id="@+id/spinner_diff"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2" />
-
 
 
             </LinearLayout>
@@ -162,27 +161,83 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="24dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/TVingredienti"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="@string/STRingredienti" />
-
-                <EditText
-                    android:id="@+id/ETingredienti"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:autofillHints=""
-                    android:hint="@string/HINT"
-                    android:inputType="text" />
+                    android:gravity="center"
+                    android:text="@string/STRingredienti"
+                    android:textIsSelectable="false" />
 
             </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <EditText
+                    android:id="@+id/ing_nome"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:hint="Farina"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                    app:layout_constraintStart_toStartOf="@+id/guideline4"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/ing_quantità"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:hint="100"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ing_misura"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/ing_nome"
+                    app:layout_constraintTop_toBottomOf="@+id/ing_nome" />
+
+                <Spinner
+                    android:id="@+id/ing_misura"
+                    android:layout_width="149dp"
+                    android:layout_height="43dp"
+                    android:autofillHints=""
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/add_ing"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/ing_quantità"
+                    app:layout_constraintTop_toBottomOf="@+id/ing_nome" />
+
+                <Button
+                    android:id="@+id/add_ing"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="+"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline2"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="320dp" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="50dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -192,33 +247,35 @@
 
                 <TextView
                     android:id="@+id/TVlistaIng"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_width="298dp"
+                    android:layout_height="147dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
                     android:text="@string/STRlistaIng" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/ETlistaIng"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_weight="1">
+                    android:layout_width="369dp"
+                    android:layout_height="147dp"
+                    android:layout_weight="2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/search_icon">
 
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
+                        android:scrollbars="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent">
-
-                        <ListView
-                            android:id="@+id/LVlistaIng"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </LinearLayout>
-
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        tools:listitem="@layout/card_ingrediente" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             </LinearLayout>
 
@@ -258,4 +315,5 @@
         </LinearLayout>
 
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
