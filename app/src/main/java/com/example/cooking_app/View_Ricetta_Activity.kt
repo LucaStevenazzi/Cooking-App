@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.widget.SearchView
-import android.view.MenuItem
 import android.widget.Toast
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
@@ -30,28 +28,13 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     }
 
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.edit_or_delete,menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.image_edit -> Toast.makeText(this, "Edit Selected", Toast.LENGTH_SHORT).show()
-            R.id.image_delete -> Toast.makeText(this, "Delete Selected", Toast.LENGTH_SHORT).show()
-        }
-        return super.onOptionsItemSelected(item)
-    //inizializzaizione OptionsMenu
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.edit_or_delete,menu)
-        return true
-    }
-
-    //test premuta pulsanti
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.image_edit -> Toast.makeText(this, "Edit Selected", Toast.LENGTH_SHORT).show()
             R.id.image_delete -> Toast.makeText(this, "Delete Selected", Toast.LENGTH_SHORT).show()
         }

@@ -7,12 +7,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.view.MenuItem
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import android.view.View
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
@@ -25,12 +22,6 @@ Main Activity con lista di ricette
  */
 
 class List_Ricette_Activity : AppCompatActivity() , onClickListener {
-
-    lateinit var toggle: ActionBarDrawerToggle
-
-    private  val img = arrayOf(
-            R.drawable.img_1,R.drawable.img_2,R.drawable.img_3,
-            R.drawable.img_4,R.drawable.img_5,R.drawable.img_6)
     //array di ricette
     private  val img = arrayListOf(
             R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
