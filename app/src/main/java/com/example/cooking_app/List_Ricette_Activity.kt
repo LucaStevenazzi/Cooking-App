@@ -38,18 +38,14 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
 
 
         initRecyclerView() //inizializzazione Lista delle ricette
+        initBarMenuLateral() //inizializzazione Barra laterale del menu
     }
 
-    private fun initRecyclerView() {
-
-        lista_ricette.layoutManager = LinearLayoutManager(this)
-        lista_ricette.adapter = Lista_Ricette_Adapter(img, this)
-
+    private fun initBarMenuLateral() {
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         navView.setNavigationItemSelectedListener{
             when(it.itemId){
                 R.id.miItem1 -> Toast.makeText(applicationContext, "Clicked Item 1", Toast.LENGTH_SHORT).show()
@@ -59,6 +55,14 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
             true
         }
     }
+
+    private fun initRecyclerView() {
+
+        lista_ricette.layoutManager = LinearLayoutManager(this)
+        lista_ricette.adapter = Lista_Ricette_Adapter(img, this)
+
+    }
+
 
 
     //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata
@@ -81,7 +85,7 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
         inflater.inflate(R.menu.search, menu)
 
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchItem = menu?.findItem(R.id.search)
+        val searchItem = menu?.findItem(R.id.search_icon)
         val searchView = searchItem?.actionView as SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -100,6 +104,7 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
         return true
     }
 
+    //selezione del funzione della MenuBar laterale
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(toggle.onOptionsItemSelected(item)){
             return true

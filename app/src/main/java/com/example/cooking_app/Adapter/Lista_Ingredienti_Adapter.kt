@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.R
 
-class Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Adapter<Ingredienti_Adapter.ViewHolder>() {
+class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Adapter<Lista_Ingredienti_Adapter.ViewHolder>() {
 
     private var array = lista
 

@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cooking_app.Adapter.Ingredienti_Adapter
+import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
@@ -88,7 +88,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     }
     private fun setRecyclerView() {
         recyclerview.layoutManager = LinearLayoutManager(this)
-        recyclerview.adapter = Ingredienti_Adapter(lista)
+        recyclerview.adapter = Lista_Ingredienti_Adapter(lista)
 
     }
 
