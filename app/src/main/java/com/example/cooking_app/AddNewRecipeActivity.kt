@@ -1,7 +1,10 @@
 package com.example.cooking_app
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -72,13 +75,13 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     private fun add_Ingrediente_to_List(): Boolean {        //funzione che aggiunge gli ingredienti alla lista sottostante
         add_ing.setOnClickListener(View.OnClickListener{ v ->
-            var ingnome = ing_nome.text.toString()
-            var ingquanti = ing_quantità.text.toString()
-            var ingmisura = ing_misura.selectedItem.toString()
+            val ingnome = ing_nome.text.toString()
+            val ingquanti = ing_quantità.text.toString()
+            val ingmisura = ing_misura.selectedItem.toString()
             if(ingnome.isEmpty()||ingquanti.isEmpty()||!ingquanti.isDigitsOnly()||ingnome.isDigitsOnly()){
                 return@OnClickListener
             }
-            var ing : Ingredienti = Ingredienti(ingnome, ingquanti,ingmisura)
+            val ing = Ingredienti(ingnome, ingquanti,ingmisura)
             lista_ingredienti.add(0,ing)
             ing_nome.text.clear()
             ing_quantità.text.clear()
@@ -113,11 +116,27 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         val ricetta = Recipe(nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
         //Log.v("oggetto", ricetta.toString())
-        Toast.makeText(this,"Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show()
 
         //aggiunta ricetta al DB
 
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
     }
+
+    fun addImage(v : View) {        //funzione che permette di inserire l'immagine della ricetta
+
+        //apertura della galleria
+        val openGalleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(openGalleryIntent, 1000)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {       //funzione che recupera l'immagine scelta dall'utente e la inserisce
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1000 && resultCode == RESULT_OK) {
+            val imageUri = data?.data
+            IVimmagine.setImageURI(imageUri)
+        }
+    }
+
 }
