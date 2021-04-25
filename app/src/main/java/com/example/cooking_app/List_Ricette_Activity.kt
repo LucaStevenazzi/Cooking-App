@@ -13,7 +13,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
-import com.example.cooking_app.Listener.onClickListener
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 
 
@@ -21,7 +20,7 @@ import kotlinx.android.synthetic.main.list_ricette_activity.*
 Main Activity con lista di ricette
  */
 
-class List_Ricette_Activity : AppCompatActivity() , onClickListener {
+class List_Ricette_Activity : AppCompatActivity(){
 
     //array di ricette
     private  val img = arrayListOf(
@@ -59,18 +58,8 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
     private fun initRecyclerView() {
 
         lista_ricette.layoutManager = LinearLayoutManager(this)
-        lista_ricette.adapter = Lista_Ricette_Adapter(img, this)
+        lista_ricette.adapter = Lista_Ricette_Adapter(img)
 
-    }
-
-
-
-    //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata
-    //intent: passaggio dei dati
-    override fun onClickListenerItem(position: Int) {
-        val intent = Intent(this, View_Ricetta_Activity::class.java)
-        intent.putExtra("immagine", img[position])
-        startActivity(intent)
     }
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
