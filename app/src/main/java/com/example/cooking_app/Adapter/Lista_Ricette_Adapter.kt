@@ -5,13 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.Listener.onClickListener
 
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView)
  */
-class Lista_Ricette_Adapter(val img: ArrayList<Int>, private val onClickListener: onClickListener): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
+class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>, private val onClickListener: onClickListener): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
 
 
     class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -30,7 +31,7 @@ class Lista_Ricette_Adapter(val img: ArrayList<Int>, private val onClickListener
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli
-        holder.bindValue(img[position])
+        //holder.bindValue(img[position])                                                           togliere il commento per settare l'immagine
 
         holder.itemView.setOnClickListener{
             onClickListener.onClickListenerItem(position)

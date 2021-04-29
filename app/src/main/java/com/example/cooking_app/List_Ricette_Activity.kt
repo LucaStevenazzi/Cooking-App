@@ -4,6 +4,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.view.MenuItem
@@ -13,8 +14,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
+import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.Listener.onClickListener
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /*
@@ -23,10 +28,16 @@ Main Activity con lista di ricette
 
 class List_Ricette_Activity : AppCompatActivity() , onClickListener {
 
+    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference()
+    private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
+    private var img: MutableList<Ricetta> = ArrayList()
+    private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>, this)
+
+
     //array di ricette
-    private  val img = arrayListOf(
+   /* private  val img = arrayListOf(
             R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
-            R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)
+            R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)*/
 
     lateinit var toggle: ActionBarDrawerToggle
 
@@ -59,7 +70,7 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
     private fun initRecyclerView() {
 
         lista_ricette.layoutManager = LinearLayoutManager(this)
-        lista_ricette.adapter = Lista_Ricette_Adapter(img, this)
+        lista_ricette.adapter = mAdapter
 
     }
 
@@ -69,7 +80,7 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
     //intent: passaggio dei dati
     override fun onClickListenerItem(position: Int) {
         val intent = Intent(this, View_Ricetta_Activity::class.java)
-        intent.putExtra("immagine", img[position])
+        //intent.putExtra("immagine", img[position])                                                togliere il commento per passare l'immagine con l'intent
         startActivity(intent)
     }
 
@@ -110,6 +121,45 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStart() { super.onStart()
+        DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi sul riferimento al DB
+    }
+
+    override fun onStop() {
+        super.onStop()
+        DBricette!!.removeEventListener(mRicettaChildListener)
+    }
+
+    //funzione che crea il listener per le varie azioni effettuate sul DB e lo restituisce
+    private fun getRicetteChildEventListener(): ChildEventListener {
+        val childEventListener = object : ChildEventListener{
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                Log.v("messaggio", "messaggio")
+                val newRicetta = snapshot.getValue(Ricetta::class.java)
+                img.add(newRicetta!!)
+                mAdapter.notifyDataSetChanged()
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        }
+        return childEventListener
     }
 }
 
