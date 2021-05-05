@@ -6,4 +6,6 @@ classe degli ingredienti
 
 data class Ingredienti(val Name: String, val quantit: String, val misura: String?){
 
+    constructor(): this ("", "" , "")
+
 }

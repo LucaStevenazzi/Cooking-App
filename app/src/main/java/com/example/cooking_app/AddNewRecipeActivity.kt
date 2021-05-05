@@ -47,9 +47,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private fun setSpinner() {
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
-                this,
-                R.array.array_diff,
-                android.R.layout.simple_spinner_item
+            this,
+            R.array.array_diff,
+            android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -58,9 +58,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la misura
-                this,
-                R.array.array_misure,
-                android.R.layout.simple_spinner_item
+            this,
+            R.array.array_misure,
+            android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -69,9 +69,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la portata
-                this,
-                R.array.array_portata,
-                android.R.layout.simple_spinner_item
+            this,
+            R.array.array_portata,
+            android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -129,12 +129,13 @@ class AddNewRecipeActivity : AppCompatActivity() {
             3- ...
          */
 
-        val ricetta = Ricetta(0, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
+        val ricetta = Ricetta(0 ,nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
 
         //salvataggio degli ingredienti sul DB
 
+        val rn = "r1" //modificare il codice del salvataggio di una nuova ricetta per renderlo univoco
         val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
-        DBricette.child(nome).setValue(ricetta)
+        DBricette.child(ricetta.nome).setValue(ricetta)
 
         //salvataggio delle immagini
 
@@ -158,8 +159,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         //apertura della galleria
         val openGalleryIntent = Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
         startActivityForResult(openGalleryIntent, 1000)
     }

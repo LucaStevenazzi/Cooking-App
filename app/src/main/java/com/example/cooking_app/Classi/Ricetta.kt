@@ -1,13 +1,11 @@
 package com.example.cooking_app.Classi
 
-import android.graphics.drawable.Drawable
-
 /*
 Classe Ricette
  */
-data class Ricetta(val immagine : Int, val nome: String, val diff: String, val tempo: String, val tipologia: String, val portata: String, val persone: Int,
-                   val listaIngredienti: ArrayList<Ingredienti>, val note: ArrayList<String>){
+data class Ricetta(var immagine : Int, var nome : String, var diff : String, var tempo : String, var tipologia : String, var portata : String, var persone : Int,
+                   var listaIngredienti: ArrayList<Ingredienti>, var note : ArrayList<String>){
 
-    constructor(): this(0, "", "", "", "", "", 0, ArrayList(), ArrayList())
+    constructor(): this(0,"Ricetta Default", "", "", "", "", 0, ArrayList(), ArrayList())
 }
 
