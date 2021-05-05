@@ -1,26 +1,40 @@
 package com.example.cooking_app.Adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
-import com.example.cooking_app.Listener.onClickListener
+import com.example.cooking_app.View_Ricetta_Activity
 
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView)
  */
-class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>, private val onClickListener: onClickListener): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
+class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
 
+    private var array = img
 
-    class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        fun bindValue(image: Int){
-            itemView.findViewById<ImageView>(R.id.img_ricetta).setImageResource(image)
+        var cv : CardView
+        var img_ricetta : ImageView
 
+        init{
+            cv = itemView.findViewById(R.id.cv_lista_ricette)
+            img_ricetta = itemView.findViewById(R.id.img_ricetta)
 
+            //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata come CardView
+            //intent: passaggio dei dati
+            cv.setOnClickListener {
+                val intent = Intent(itemView.context, View_Ricetta_Activity::class.java)
+                intent.putExtra("immagine", array[layoutPosition].immagine)
+                array.clear()
+                itemView.context.startActivity(intent)
+            }
         }
 
     }
@@ -31,17 +45,13 @@ class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>, private val onClickList
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli
-        //holder.bindValue(img[position])                                                           togliere il commento per settare l'immagine
-
-        holder.itemView.setOnClickListener{
-            onClickListener.onClickListenerItem(position)
-        }
+        holder.img_ricetta.setImageResource(array[position].immagine)
 
     }
 
     //metoco che restituisce il numero di Item nella lista delle ricette
     override fun getItemCount(): Int {
-        return img.size
+        return array.size
     }
 
 }

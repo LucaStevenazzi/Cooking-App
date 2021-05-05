@@ -101,6 +101,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         )
         return false
     }
+
     private fun setRecyclerView() {     //settiamo la RecyclerView per la lista degli ingredienti
         recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
@@ -123,7 +124,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
             3- ...
          */
 
-        val ricetta = Ricetta(nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
+        val ricetta = Ricetta(0 ,nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
 
         //salvataggio degli ingredienti sul DB
 
