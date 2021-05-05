@@ -128,9 +128,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         //salvataggio degli ingredienti sul DB
 
-        val rn = "r1" //modificare il codice del salvataggio di una nuova ricetta per renderlo univoco
         val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
-        DBricette.child(rn).setValue(ricetta)
+        DBricette.child(ricetta.nome).setValue(ricetta)
 
         //Log.v("oggetto", ricetta.toString())
         Toast.makeText(this, "Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show()
