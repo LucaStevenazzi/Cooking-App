@@ -17,6 +17,7 @@
     <string name="STRlistaIng">Lista Ingredienti</string>
     <string name="STRnote">Note</string>
     <string name="STRbuttonOK">Inserisci</string>
+    <string name="IVdescription">Immagine della ricetta</string>
     <string-array name="array_diff">
         <item>BASSA</item>
         <item>MEDIA</item>
@@ -40,5 +41,8 @@
     </string-array>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="HINTing">Es: Farina</string>
+    <string name="HINTquantità">Es: 100</string>
+    <string name="addIng">+</string>
 
 </resources>

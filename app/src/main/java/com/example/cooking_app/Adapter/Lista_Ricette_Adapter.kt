@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 
@@ -14,6 +15,7 @@ import com.example.cooking_app.View_Ricetta_Activity
 classe adattatatrice che permette di gestire la Lista (RecyclerView)
  */
 class Lista_Ricette_Adapter(img: ArrayList<Int>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
+class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>, private val onClickListener: onClickListener): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
 
     private var array = img
 
@@ -44,6 +46,11 @@ class Lista_Ricette_Adapter(img: ArrayList<Int>): RecyclerView.Adapter<Lista_Ric
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli
         holder.img_ricetta.setImageResource(array[position])
+        //holder.bindValue(img[position])                                                           togliere il commento per settare l'immagine
+
+        holder.itemView.setOnClickListener{
+            onClickListener.onClickListenerItem(position)
+        }
 
     }
 

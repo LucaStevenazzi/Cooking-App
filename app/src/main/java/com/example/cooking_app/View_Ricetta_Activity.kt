@@ -19,7 +19,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_ricetta_activity)
 
-        Log.v("View_Ricetta_Activity", "Start onCreate")
+       // Log.v("View_Ricetta_Activity", "Start onCreate")
 
         val img = intent.getIntExtra("immagine", 0)
         img_ricetta.setImageResource(img)

@@ -44,7 +44,7 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemNomeIngrediente.text = array[position].Name
-        holder.itemQuantitàIngrediente.text = array[position].quantità +" " + array[position].tipo_quantità
+        holder.itemQuantitàIngrediente.text = array[position].quantit +" " + array[position].misura
     }
 
     override fun getItemCount(): Int {
