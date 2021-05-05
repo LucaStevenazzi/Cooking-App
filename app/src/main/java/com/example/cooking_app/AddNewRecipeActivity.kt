@@ -1,9 +1,11 @@
 package com.example.cooking_app
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +16,11 @@ import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
+
 
 // Activity per l'aggiunta delle ricette
 
@@ -42,9 +47,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private fun setSpinner() {
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
-            this,
-            R.array.array_diff,
-            android.R.layout.simple_spinner_item
+                this,
+                R.array.array_diff,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -53,9 +58,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la misura
-            this,
-            R.array.array_misure,
-            android.R.layout.simple_spinner_item
+                this,
+                R.array.array_misure,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -64,9 +69,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la portata
-            this,
-            R.array.array_portata,
-            android.R.layout.simple_spinner_item
+                this,
+                R.array.array_portata,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -124,13 +129,23 @@ class AddNewRecipeActivity : AppCompatActivity() {
             3- ...
          */
 
-        val ricetta = Ricetta(0 ,nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
+        val ricetta = Ricetta(0, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
 
         //salvataggio degli ingredienti sul DB
 
-        val rn = "r1" //modificare il codice del salvataggio di una nuova ricetta per renderlo univoco
         val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
-        DBricette.child(rn).setValue(ricetta)
+        DBricette.child(nome).setValue(ricetta)
+
+        //salvataggio delle immagini
+
+        //funzione che ritorna l'estensione del file passato come parametro (.png -> png)
+        fun getFileExtension(uri : Uri) : String {
+            val cr = contentResolver
+            val mime = MimeTypeMap.getSingleton()
+            return mime.getExtensionFromMimeType(cr.getType(uri))!!
+        }
+
+        val DBStorage : StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
 
         //Log.v("oggetto", ricetta.toString())
         Toast.makeText(this, "Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show()
@@ -143,8 +158,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         //apertura della galleria
         val openGalleryIntent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
         startActivityForResult(openGalleryIntent, 1000)
     }
