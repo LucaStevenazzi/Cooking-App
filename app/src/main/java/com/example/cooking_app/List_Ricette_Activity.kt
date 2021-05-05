@@ -15,7 +15,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
-import com.example.cooking_app.Listener.onClickListener
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
@@ -26,12 +25,12 @@ import kotlin.collections.ArrayList
 Main Activity con lista di ricette
  */
 
-class List_Ricette_Activity : AppCompatActivity() , onClickListener {
+class List_Ricette_Activity : AppCompatActivity(){
 
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference()
     private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
     private var img: MutableList<Ricetta> = ArrayList()
-    private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>, this)
+    private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>)
 
 
     //array di ricette
@@ -78,15 +77,16 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
 
     //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata
     //intent: passaggio dei dati
-    override fun onClickListenerItem(position: Int) {
+   /* override fun onClickListenerItem(position: Int) {
         val intent = Intent(this, View_Ricetta_Activity::class.java)
         //intent.putExtra("immagine", img[position])                                                togliere il commento per passare l'immagine con l'intent
         startActivity(intent)
-    }
+    }*/
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
     fun newRecipe(v: View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
+        img.clear()
         startActivity(it)
     }
 

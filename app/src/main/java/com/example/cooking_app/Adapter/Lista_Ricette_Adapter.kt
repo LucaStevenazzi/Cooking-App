@@ -14,8 +14,7 @@ import com.example.cooking_app.View_Ricetta_Activity
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView)
  */
-class Lista_Ricette_Adapter(img: ArrayList<Int>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
-class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>, private val onClickListener: onClickListener): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
+class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
 
     private var array = img
 
@@ -32,7 +31,8 @@ class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>, private val onClickList
             //intent: passaggio dei dati
             cv.setOnClickListener {
                 val intent = Intent(itemView.context, View_Ricetta_Activity::class.java)
-                intent.putExtra("immagine", array[layoutPosition])
+                intent.putExtra("immagine", array[layoutPosition].immagine)
+                array.clear()
                 itemView.context.startActivity(intent)
             }
         }
@@ -45,12 +45,7 @@ class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>, private val onClickList
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli
-        holder.img_ricetta.setImageResource(array[position])
-        //holder.bindValue(img[position])                                                           togliere il commento per settare l'immagine
-
-        holder.itemView.setOnClickListener{
-            onClickListener.onClickListenerItem(position)
-        }
+        holder.img_ricetta.setImageResource(array[position].immagine)
 
     }
 
