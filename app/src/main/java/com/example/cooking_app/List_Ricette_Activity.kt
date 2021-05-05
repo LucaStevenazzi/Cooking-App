@@ -15,7 +15,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -45,10 +47,9 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
 
-
-
         initRecyclerView() //inizializzazione Lista delle ricette
         initBarMenuLateral() //inizializzazione Barra laterale del menu
+
     }
 
     private fun initBarMenuLateral() {
@@ -73,16 +74,6 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     }
 
-
-
-    //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata
-    //intent: passaggio dei dati
-   /* override fun onClickListenerItem(position: Int) {
-        val intent = Intent(this, View_Ricetta_Activity::class.java)
-        //intent.putExtra("immagine", img[position])                                                togliere il commento per passare l'immagine con l'intent
-        startActivity(intent)
-    }*/
-
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
     fun newRecipe(v: View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
@@ -91,8 +82,8 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     //Codice per il tasto della ricerca
     override fun onCreateOptionsMenu(menu: Menu?):Boolean{
-        val inflater = menuInflater
-        inflater.inflate(R.menu.search, menu)
+
+        menuInflater.inflate(R.menu.search, menu)
 
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu?.findItem(R.id.search_icon)
