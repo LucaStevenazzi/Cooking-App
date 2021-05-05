@@ -6,12 +6,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
@@ -29,8 +29,11 @@ Main Activity con lista di ricette
 
 class List_Ricette_Activity : AppCompatActivity(){
 
-    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference()
+    private val TAG = "List_Ricette_Activity"
+
+    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette")
     private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
+    private var mRicetteValueListener: ValueEventListener = getDataToFireBase() //visulaizza i dati
     private var img: MutableList<Ricetta> = ArrayList()
     private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>)
 
@@ -114,23 +117,43 @@ class List_Ricette_Activity : AppCompatActivity(){
     }
 
     override fun onStart() { super.onStart()
-        DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi sul riferimento al DB
+        DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
+        //DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi per i figli sul riferimento al DB
     }
 
     override fun onStop() {
         super.onStop()
         img.clear()  //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
-        DBricette!!.removeEventListener(mRicettaChildListener)
+        //DBricette!!.removeEventListener(mRicettaChildListener)
+    }
+
+    //lettura dei dati da Firebase
+    private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                for (ds in dataSnapshot.children) {
+                    val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
+                    Log.d(TAG, "$ricetta")
+                    img.add(ricetta!!)
+                }
+                mAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Ricetta failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        return postListener
     }
 
     //funzione che crea il listener per le varie azioni effettuate sul DB e lo restituisce
     private fun getRicetteChildEventListener(): ChildEventListener {
+
         val childEventListener = object : ChildEventListener{
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.v("messaggio", "messaggio")
-                val newRicetta = snapshot.getValue(Ricetta::class.java)
-                img.add(newRicetta!!)
-                mAdapter.notifyDataSetChanged()
+
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -138,7 +161,7 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
+                mAdapter.notifyDataSetChanged()
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
