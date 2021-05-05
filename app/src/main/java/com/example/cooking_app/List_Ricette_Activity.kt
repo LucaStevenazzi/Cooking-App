@@ -86,7 +86,6 @@ class List_Ricette_Activity : AppCompatActivity(){
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
     fun newRecipe(v: View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
-        img.clear()
         startActivity(it)
     }
 
@@ -129,6 +128,7 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     override fun onStop() {
         super.onStop()
+        img.clear()  //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
         DBricette!!.removeEventListener(mRicettaChildListener)
     }
 

@@ -32,7 +32,6 @@ class Lista_Ricette_Adapter(val img: ArrayList<Ricetta>): RecyclerView.Adapter<L
             cv.setOnClickListener {
                 val intent = Intent(itemView.context, View_Ricetta_Activity::class.java)
                 intent.putExtra("immagine", array[layoutPosition].immagine)
-                array.clear()
                 itemView.context.startActivity(intent)
             }
         }
