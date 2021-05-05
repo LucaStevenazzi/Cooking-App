@@ -29,8 +29,8 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
 
             //controllo premuta icona di delete
             itemDelete.setOnClickListener{ v: View  ->
-                array.removeAt(adapterPosition)
-                notifyItemRemoved(adapterPosition)
+                array.removeAt(bindingAdapterPosition)
+                notifyItemRemoved(bindingAdapterPosition)
                 notifyDataSetChanged()
             }
         }
