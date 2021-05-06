@@ -83,7 +83,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance().reference
         val applesQuery: Query = ref.child("ricette").child(ricetta.nome)
 
-        applesQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+        applesQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (appleSnapshot in dataSnapshot.children) {
                     appleSnapshot.ref.removeValue()
