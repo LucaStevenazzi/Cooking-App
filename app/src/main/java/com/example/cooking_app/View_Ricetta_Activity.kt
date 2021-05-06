@@ -1,5 +1,6 @@
 package com.example.cooking_app
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -17,6 +18,8 @@ Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
  */
 class View_Ricetta_Activity : AppCompatActivity() {
 
+    private val TAG = "View_Ricetta_Activity"
+
     var ricetta : Ricetta = Ricetta()
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference()
 
@@ -26,8 +29,14 @@ class View_Ricetta_Activity : AppCompatActivity() {
         setContentView(R.layout.view_ricetta_activity)
 
         ricetta = getRicettaExtra()
-        img_ricetta.setImageResource(ricetta.immagine)
+        title = ricetta.nome // settagio del titolo della Activity
+        setDati(ricetta)
 
+    }
+
+    private fun setDati(ricetta: Ricetta) {
+        img_ricetta.setImageResource(ricetta.immagine)
+        //....
     }
 
     private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent di creazione
@@ -41,29 +50,36 @@ class View_Ricetta_Activity : AppCompatActivity() {
         ricetta.portata = intent.getStringExtra("Portata").toString()
         ricetta.persone = intent.getIntExtra("Persone", 0)
         ricetta.listaIngredienti = intent.getStringArrayListExtra("ListaIngredienti") as ArrayList<Ingredienti>
-        ricetta.note = intent.getStringArrayListExtra("Note") as ArrayList<String>
+        ricetta.note = intent.getStringArrayListExtra("Note").toString()
         return ricetta
     }
 
-    //inizializzaizione OptionsMenu
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean { //inizializzaizione OptionsMenu
         menuInflater.inflate(R.menu.edit_or_delete, menu)
         return true
     }
 
-    //test premuta pulsanti
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean { //Premuta pulsanti opzioni per la modifica o la cancellazione della ricetta
         when(item.itemId){
-            R.id.image_edit -> Toast.makeText(this, "Edit Selected", Toast.LENGTH_SHORT).show()
+            R.id.image_edit -> {
+                Toast.makeText(this, "Edit ${ricetta.nome}", Toast.LENGTH_SHORT).show()
+                editRicetta()
+            }
             R.id.image_delete -> {
-                Toast.makeText(this, "Delete Selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Delete ${ricetta.nome}", Toast.LENGTH_SHORT).show()
                 deleteRicettaToList()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-   private fun deleteRicettaToList() { //elimino la ricetta che è stata aperta
+    private fun editRicetta() {
+        var intent = Intent(this, AddNewRecipeActivity::class.java)
+        intent.putExtras(getIntent())
+        startActivity(intent)
+    }
+
+    private fun deleteRicettaToList() { //elimino la ricetta che è stata aperta
         val ref = FirebaseDatabase.getInstance().reference
         val applesQuery: Query = ref.child("ricette").child(ricetta.nome)
 
@@ -74,7 +90,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
                 }
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
+            override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
                 Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
             }
         })

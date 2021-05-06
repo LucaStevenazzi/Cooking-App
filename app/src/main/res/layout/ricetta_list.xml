@@ -35,13 +35,15 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:text="Nome Ricetta"
-                android:background="@color/teal_200"
-                app:layout_constraintBottom_toTopOf="@+id/desc_ricetta"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/tv_tempo_ricetta"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_ricetta"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/desc_ricetta"
+                android:id="@+id/tv_tempo_ricetta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -49,7 +51,21 @@
                 android:layout_marginBottom="16dp"
                 android:text="@string/descrizione_ricetta"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_difficoltà_ricetta"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/img_ricetta"
+                app:layout_constraintTop_toBottomOf="@+id/titolo_ricetta" />
+
+            <TextView
+                android:id="@+id/tv_difficoltà_ricetta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/descrizione_ricetta"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_tempo_ricetta"
                 app:layout_constraintTop_toBottomOf="@+id/titolo_ricetta" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

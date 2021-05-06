@@ -11,7 +11,7 @@
         android:theme="@style/Theme.CookingApp">
         <activity android:name=".AddNewRecipeActivity"
             android:label="Aggiungi una ricetta"/>
-        <activity android:name=".View_Ricetta_Activity" />
+        <activity android:name=".View_Ricetta_Activity"/>
         <activity android:name=".List_Ricette_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
