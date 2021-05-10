@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.Listener.onClickListener
-import com.google.firebase.database.*
+import com.google.firebase.database.
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
 import kotlin.collections.ArrayList
