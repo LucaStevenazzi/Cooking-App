@@ -44,5 +44,6 @@
     <string name="HINTing">Es: Farina</string>
     <string name="HINTquantità">Es: 100</string>
     <string name="addIng">+</string>
+    <string name="title" />
 
 </resources>
