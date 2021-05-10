@@ -21,9 +21,11 @@ import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
 
 class AddNewRecipeActivity : AppCompatActivity() {
 
+    private val TAG = "AddNewRecipeActivity"
+
     //dati
+    var ricetta: Ricetta = Ricetta()
     var lista_ingredienti = arrayListOf<Ingredienti>()
-    var arraylist_note : ArrayList<String> = arrayListOf()
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +39,56 @@ class AddNewRecipeActivity : AppCompatActivity() {
         setRecyclerView()
         add_Ingrediente_to_List()
 
+        if(intent.extras !=null){ //se esite l'intent con degli extra allora carica la ricetta scelta per la modifica
+            ButtonOK.text = "Aggiorna ricetta"
+            setDatiRicetta()
+            getRicettaExtra()
+        }
+
+    }
+
+    private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
+        ricetta.immagine = intent.getIntExtra("Immagine", 0)
+        ricetta.nome = intent.getStringExtra("Nome").toString()
+        ricetta.diff = intent.getStringExtra("Difficoltà").toString()
+        ricetta.tempo = intent.getStringExtra("Tempo").toString()
+        ricetta.tipologia = intent.getStringExtra("Tipologia").toString()
+        ricetta.portata = intent.getStringExtra("Portata").toString()
+        ricetta.persone = intent.getIntExtra("Persone", 0)
+        ricetta.listaIngredienti = intent.getStringArrayListExtra("ListaIngredienti") as ArrayList<Ingredienti>
+        ricetta.note = intent.getStringArrayListExtra("Note").toString()
+    }
+    private fun setDatiRicetta() { //settagio dei dati per l'intent
+        IVimmagine.setImageResource(intent.getIntExtra("Immagine", 0))
+        ETnome.setText(intent.getStringExtra("Nome").toString())
+        when(intent.getStringExtra("Difficoltà").toString()){
+            "BASSA" -> spinner_diff.setSelection(0)
+            "MEDIA" -> spinner_diff.setSelection(1)
+            "ALTA" -> spinner_diff.setSelection(2)
+        }
+        ETtempo.setText(intent.getStringExtra("Tempo").toString())
+        ETtipologia.setText(intent.getStringExtra("Tipologia").toString())
+        when(intent.getStringExtra("Portata").toString()){
+            "Antipasto" -> spinner_portata.setSelection(0)
+            "Primo" -> spinner_portata.setSelection(1)
+            "Secondo" -> spinner_portata.setSelection(2)
+            "Contorno" -> spinner_portata.setSelection(3)
+            "Dolce" -> spinner_portata.setSelection(4)
+        }
+        ETpersone.setText(intent.getIntExtra("Persone", 0).toString())
+        setIngredienti()
+        ETnote.setText(intent.getStringArrayListExtra("Note").toString() )
+    }
+    private fun setIngredienti() {
+        val count = intent.getIntExtra("Count", 0)
+        if(count == 0) return
+        for(i in 0 until count){
+            val nome_ing = intent.getStringExtra("Ingrediente $i nome").toString()
+            val quantità_ing = intent.getStringExtra("Ingrediente $i quantità").toString()
+            val misura_ing = intent.getStringExtra("Ingrediente $i misura").toString()
+            val ing = Ingredienti(nome_ing , quantità_ing , misura_ing)
+            lista_ingredienti.add(ing)
+        }
     }
 
     private fun setSpinner() {
@@ -75,7 +127,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
     }
 
-    private fun add_Ingrediente_to_List(): Boolean{        //funzione che aggiunge gli ingredienti alla lista sottostante
+    private fun add_Ingrediente_to_List(){        //funzione che aggiunge gli ingredienti alla lista sottostante
         add_ing.setOnClickListener(View.OnClickListener { v ->
             val ingnome = ing_nome.text.toString()
             val ingquanti = ing_quantità.text.toString()
@@ -86,7 +138,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
             val ing = Ingredienti(ingnome, ingquanti, ingmisura)
 
             //salvataggio degli ingredienti sul DB
-
             val cn = "c2" //modificare il codice univoco
             val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("liste_ingredienti")       //implementare l'eliminazione da DB dell'ing quando si elimina dalla lista delle ricette
             DBricette.child(cn).child(ingnome).setValue(ing)
@@ -99,40 +150,43 @@ class AddNewRecipeActivity : AppCompatActivity() {
             return@OnClickListener
         }
         )
-        return false
     }
+
     private fun setRecyclerView() {     //settiamo la RecyclerView per la lista degli ingredienti
         recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
 
     }
 
-    fun saveRecipe(v: View) {      //funzione che salva i dati della ricetta
+    fun saveRecipe(v: View) {      //onClick del button che salva i dati della ricetta
 
-        val nome = ETnome.text.toString()
-        val diff = spinner_diff.selectedItem.toString()
-        val tempo = ETtempo.text.toString()
-        val tipologia = ETtipologia.text.toString()
-        val portata = spinner_portata.selectedItem.toString()
-        val numPersone = ETpersone.text.toString().toInt()
-        arraylist_note.add(ETnote.text.toString())
+        if(intent.extras != null){ //se l'intent esiste allora UPDATE ricetta al DB
 
-        /*fare i check prima di salvare la ricetta
-            1- nessun campo vuoto
-            2- nome diverso dalle altre ricette nel DB
-            3- ...
-         */
+        }else{ //altrimenti aggiungo ricetta al DB
 
-        val ricetta = Ricetta(nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
+            val nome = ETnome.text.toString()
+            val diff = spinner_diff.selectedItem.toString()
+            val tempo = ETtempo.text.toString()
+            val tipologia = ETtipologia.text.toString()
+            val portata = spinner_portata.selectedItem.toString()
+            val numPersone = ETpersone.text.toString().toInt()
+            val note = ETnote.text.toString()
 
-        //salvataggio degli ingredienti sul DB
+            /*fare i check prima di salvare la ricetta
+                1- nessun campo vuoto
+                2- nome diverso dalle altre ricette nel DB
+                3- ...
+             */
 
-        val rn = "r1" //modificare il codice del salvataggio di una nuova ricetta per renderlo univoco
-        val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
-        DBricette.child(rn).setValue(ricetta)
+            val ricetta = Ricetta(0 ,nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
 
-        //Log.v("oggetto", ricetta.toString())
-        Toast.makeText(this, "Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show()
+            //salvataggio degli ingredienti sul DB
+
+            val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
+            DBricette.child(ricetta.nome).setValue(ricetta)
+            Toast.makeText(this, "Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show()
+
+        }
 
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()

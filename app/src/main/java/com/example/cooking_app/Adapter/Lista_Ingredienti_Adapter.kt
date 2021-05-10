@@ -22,7 +22,7 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
         var itemDelete: ImageView
 
         init{
-            cv = itemView.findViewById(R.id.cv)
+            cv = itemView.findViewById(R.id.cv_lista_ingredienti)
             itemDelete = itemView.findViewById(R.id.img_delete)
             itemNomeIngrediente = itemView.findViewById(R.id.list_ing_name)
             itemQuantitàIngrediente = itemView.findViewById(R.id.list_ing_quantità)
