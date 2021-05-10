@@ -6,35 +6,36 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.View
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
-import com.example.cooking_app.Listener.onClickListener
-import com.google.firebase.database.
+import com.example.cooking_app.MainViewModel.MainViewModel
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 /*
-Main Activity con lista di ricette
+Main Activity con lista com.example.cooking_app.di ricette
  */
 
-class List_Ricette_Activity : AppCompatActivity() , onClickListener {
+class List_Ricette_Activity : AppCompatActivity(){
 
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference()
     private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
     private var img: MutableList<Ricetta> = ArrayList()
     private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>, this)
+    private val mainViewModel: MainViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
 
-
-    //array di ricette
+    //array com.example.cooking_app.di ricette
    /* private  val img = arrayListOf(
             R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
             R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)*/
@@ -74,17 +75,15 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
 
     }
 
-
-
     //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata
     //intent: passaggio dei dati
-    override fun onClickListenerItem(position: Int) {
+    fun onClickListenerItem(position: Int) {
         val intent = Intent(this, View_Ricetta_Activity::class.java)
         //intent.putExtra("immagine", img[position])                                                togliere il commento per passare l'immagine con l'intent
         startActivity(intent)
     }
 
-    //OnClick: apertura nuova activity per l'aggiunta di una ricetta
+    //OnClick: apertura nuova activity per l'aggiunta com.example.cooking_app.di una ricetta
     fun newRecipe(v: View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
         startActivity(it)
@@ -108,13 +107,25 @@ class List_Ricette_Activity : AppCompatActivity() , onClickListener {
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
+            override fun onQueryTextChange(query: String?): Boolean {
+                if(query != null){
+                    searchDatabase(query)
+                }
+                return true
             }
         })
         return true
     }
 
+    private fun searchDatabase(query: String) {
+        val searchQuery = "%$query%"
+
+        mainViewModel.searchDatabase(searchQuery).observe(this) { list ->
+            list.let {
+              //  mAdapter.setData(it)
+            }
+        }
+    }
     //selezione del funzione della MenuBar laterale
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(toggle.onOptionsItemSelected(item)){

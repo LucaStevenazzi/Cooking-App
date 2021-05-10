@@ -11,16 +11,18 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.List_Ricette_Activity
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 
 /*
-classe adattatatrice che permette di gestire la Lista (RecyclerView)
+classe adattatatrice che permette com.example.cooking_app.di gestire la Lista (RecyclerView)
  */
-class Lista_Ricette_Adapter(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
+class Lista_Ricette_Adapter(img: ArrayList<Ricetta>, listRicetteActivity: List_Ricette_Activity): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
 
     private val TAG = "Lista_Ricette_Adapter"
     private var array = img
+    private var oldData = ArrayList<Ricetta>()
 
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -56,12 +58,12 @@ class Lista_Ricette_Adapter(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista
 
     }
 
-    //metoco che restituisce il numero di Item nella lista delle ricette
+    //metoco che restituisce il numero com.example.cooking_app.di Item nella lista delle ricette
     override fun getItemCount(): Int {
         return array.size
     }
 
-    //estendo la classe putExtra con questo metodo per il salvataggio di ricette da un activity all'altra
+    //estendo la classe putExtra con questo metodo per il salvataggio com.example.cooking_app.di ricette da un activity all'altra
     private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {
 
         intent.putExtra("Immagine" , ricetta.immagine)
@@ -89,8 +91,10 @@ class Lista_Ricette_Adapter(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista
         intent.putExtra( "Count" , count)
     }
 
-
-
+    fun setData(it: Any) {
+        oldData = it as ArrayList<Ricetta>
+        notifyDataSetChanged()
+    }
 }
 
 

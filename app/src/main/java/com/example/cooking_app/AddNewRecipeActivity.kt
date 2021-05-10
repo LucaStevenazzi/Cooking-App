@@ -47,7 +47,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     }
 
-    private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
+    private fun getRicettaExtra() { //ottenere la ricetta dall'intent com.example.cooking_app.di creazione
         ricetta.immagine = intent.getIntExtra("Immagine", 0)
         ricetta.nome = intent.getStringExtra("Nome").toString()
         ricetta.diff = intent.getStringExtra("Difficoltà").toString()
@@ -56,7 +56,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.portata = intent.getStringExtra("Portata").toString()
         ricetta.persone = intent.getIntExtra("Persone", 0)
         ricetta.listaIngredienti = intent.getStringArrayListExtra("ListaIngredienti") as ArrayList<Ingredienti>
-        ricetta.note = intent.getStringArrayListExtra("Note").toString()
+        ricetta.note = intent.getStringArrayListExtra("Note") as ArrayList<String>
     }
     private fun setDatiRicetta() { //settagio dei dati per l'intent
         IVimmagine.setImageResource(intent.getIntExtra("Immagine", 0))
@@ -170,9 +170,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
             val tipologia = ETtipologia.text.toString()
             val portata = spinner_portata.selectedItem.toString()
             val numPersone = ETpersone.text.toString().toInt()
-            val note = ETnote.text.toString()
+            var note = arrayListOf<String>()
 
-            /*fare i check prima di salvare la ricetta
+            /*fare i check prima com.example.cooking_app.di salvare la ricetta
                 1- nessun campo vuoto
                 2- nome diverso dalle altre ricette nel DB
                 3- ...
@@ -188,11 +188,11 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         }
 
-        //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
+        //chiusura activity dell'aggiunta com.example.cooking_app.di una ricetta e apertura activity principale
         finish()
     }
 
-    fun addImage(v: View) {        //funzione che permette di inserire l'immagine della ricetta
+    fun addImage(v: View) {        //funzione che permette com.example.cooking_app.di inserire l'immagine della ricetta
 
         //apertura della galleria
         val openGalleryIntent = Intent(

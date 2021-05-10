@@ -27,7 +27,7 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
             itemNomeIngrediente = itemView.findViewById(R.id.list_ing_name)
             itemQuantitàIngrediente = itemView.findViewById(R.id.list_ing_quantità)
 
-            //controllo premuta icona di delete
+            //controllo premuta icona com.example.cooking_app.di delete
             itemDelete.setOnClickListener{ v: View  ->
                 array.removeAt(bindingAdapterPosition)
                 notifyItemRemoved(bindingAdapterPosition)

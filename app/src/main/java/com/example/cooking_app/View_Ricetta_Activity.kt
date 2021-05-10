@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
 
 /*
-Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
+Activity com.example.cooking_app.di visualizzazione scelta della ricetta dall'elenco (Lista)
  */
 class View_Ricetta_Activity : AppCompatActivity() {
 
@@ -39,7 +39,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         //....
     }
 
-    private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent di creazione
+    private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent com.example.cooking_app.di creazione
 
         var ricetta : Ricetta = Ricetta()
         ricetta.immagine = intent.getIntExtra("Immagine", 0)
@@ -50,7 +50,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         ricetta.portata = intent.getStringExtra("Portata").toString()
         ricetta.persone = intent.getIntExtra("Persone", 0)
         ricetta.listaIngredienti = intent.getStringArrayListExtra("ListaIngredienti") as ArrayList<Ingredienti>
-        ricetta.note = intent.getStringArrayListExtra("Note").toString()
+        ricetta.note = intent.getStringArrayListExtra("Note") as ArrayList<String>
         return ricetta
     }
 
@@ -90,7 +90,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
                 }
             }
 
-            override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
+            override fun onCancelled(databaseError: DatabaseError) { // in caso com.example.cooking_app.di errore
                 Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
             }
         })
