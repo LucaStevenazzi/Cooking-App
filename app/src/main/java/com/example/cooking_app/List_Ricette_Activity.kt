@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -15,12 +17,11 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 
 /*
@@ -37,11 +38,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     private var img: MutableList<Ricetta> = ArrayList()
     private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>)
 
-
-    //array di ricette
-   /* private  val img = arrayListOf(
-            R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
-            R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)*/
+    private lateinit var adapter: ArrayAdapter<*>
 
     lateinit var toggle: ActionBarDrawerToggle
 
@@ -51,11 +48,18 @@ class List_Ricette_Activity : AppCompatActivity(){
         setContentView(R.layout.list_ricette_activity)
 
         initRecyclerView() //inizializzazione Lista delle ricette
-        initBarMenuLateral() //inizializzazione Barra laterale del menu
+        //initBarMenuLateral() //inizializzazione Barra laterale del menu
+        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,
+            resources.getStringArray(R.array.array_diff))
+        lv_listView.adapter=adapter
+        lv_listView.onItemClickListener = AdapterView.OnItemClickListener{ parent, view, position, id ->
+            Toast.makeText(applicationContext, parent?.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show()
+        }
+        lv_listView.emptyView = tv_emptyTextView
 
     }
 
-    private fun initBarMenuLateral() {
+   /* private fun initBarMenuLateral() {
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -66,9 +70,9 @@ class List_Ricette_Activity : AppCompatActivity(){
                 R.id.miItem2 -> Toast.makeText(applicationContext, "Clicked Item 2", Toast.LENGTH_SHORT).show()
                 R.id.miItem3 -> Toast.makeText(applicationContext, "Clicked Item 3", Toast.LENGTH_SHORT).show()
             }
-            true
+           true
         }
-    }
+    }*/
 
     private fun initRecyclerView() {
 
@@ -91,6 +95,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu?.findItem(R.id.search_icon)
         val searchView = searchItem?.actionView as SearchView
+        searchView.queryHint = "Search"
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -102,7 +107,8 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return false
+                adapter.filter.filter(newText)
+                return true
             }
         })
         return true
