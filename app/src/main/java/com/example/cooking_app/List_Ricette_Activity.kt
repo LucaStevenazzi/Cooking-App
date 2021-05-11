@@ -29,11 +29,11 @@ class List_Ricette_Activity : AppCompatActivity(){
     private val TAG = "List_Ricette_Activity"
 
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette") //radice dell'albero per la View delle ricette
-    private var mRicetteValueListener: ValueEventListener = getDataToFireBase() //visulaizza i dati delle ricette
-    private var img: ArrayList<Ricetta> = ArrayList()
-    private var mAdapter = Lista_Ricette_Adapter(img)
+    private lateinit var mRicetteValueListener: ValueEventListener
+    private lateinit var img: ArrayList<Ricetta>
+    private lateinit var mAdapter: Lista_Ricette_Adapter
 
-    lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var toggle: ActionBarDrawerToggle
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +62,8 @@ class List_Ricette_Activity : AppCompatActivity(){
     }
 
     private fun initRecyclerView() {
+        img = ArrayList()
+        mAdapter = Lista_Ricette_Adapter(img)
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
     }
@@ -100,6 +102,7 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     override fun onStart() {
         super.onStart()
+        mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
         //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
     }

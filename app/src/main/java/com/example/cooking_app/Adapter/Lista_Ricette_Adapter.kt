@@ -25,8 +25,13 @@ classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricet
 class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
 
     private val TAG = "Lista_Ricette_Adapter"
-    private var array : ArrayList<Ricetta> = img
+    private val array : ArrayList<Ricetta> = img
     private val array_copy : ArrayList<Ricetta> = array
+
+    init{
+
+    }
+
 
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -57,8 +62,8 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
         //setting delle immagini e titoli delle ricette
         holder.img_ricetta.setImageResource(array[position].immagine)
         holder.titolo_ricetta.text = array[position].nome
-        holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
-        holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
+        //holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
+        //holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
 
     }
 
@@ -102,13 +107,13 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
 
     private var searchFilter: Filter = object : Filter() {
         override fun performFiltering(constraint: CharSequence): FilterResults {
-            val filterPattern = constraint.toString().toLowerCase(Locale.getDefault()).trim()
-            var filteredList: ArrayList<Ricetta> = ArrayList()
-            if (filterPattern.isEmpty()) {
+            val filteredList: ArrayList<Ricetta> = ArrayList()
+            if (constraint.toString().isEmpty()) {
                 filteredList.addAll(array_copy)
             } else {
+                val filterPattern = constraint.toString().toLowerCase()
                 for (item in array_copy) {
-                    if (item.nome.toLowerCase(Locale.getDefault()).contains(filterPattern)) {
+                    if (item.nome.toLowerCase().contains(filterPattern)) {
                         filteredList.add(item)
                     }
                 }
@@ -120,14 +125,8 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
         }
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
-            if(results.count >= 1){
-                array.clear()
-                array.addAll(results.values as List<Ricetta>)
-            }else{
-                array.clear()
-                array.addAll(array_copy)
-            }
-
+            array.clear()
+            array.addAll(results.values as List<Ricetta>)
             notifyDataSetChanged()
         }
     }
