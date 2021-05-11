@@ -36,7 +36,8 @@
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="0dp"
-            android:id="@+id/img_ricetta" />
+            android:id="@+id/img_ricetta"
+            motion:layout_constraintHorizontal_bias="0.0" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">

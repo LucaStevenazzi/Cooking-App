@@ -36,7 +36,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     private fun setDati(ricetta: Ricetta) {
         img_ricetta.setImageResource(ricetta.immagine)
-        //....
+        name_ricetta.text=ricetta.nome
     }
 
     private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent com.example.cooking_app.di creazione

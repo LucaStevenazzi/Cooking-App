@@ -12,14 +12,9 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
-import com.example.cooking_app.MainViewModel.MainViewModel
-import com.example.cooking_app.data.Repository
-import com.example.cooking_app.data.RicettaDatabase
-import com.example.cooking_app.data.RicettaTab
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
@@ -32,7 +27,7 @@ Main Activity con lista com.example.cooking_app.di ricette
 
 class List_Ricette_Activity : AppCompatActivity(){
 
-    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference()
+    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette")
     private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
     private var img: MutableList<Ricetta> = ArrayList()
     private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>, this)
