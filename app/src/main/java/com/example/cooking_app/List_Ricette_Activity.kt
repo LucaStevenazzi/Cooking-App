@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -25,14 +27,15 @@ import kotlin.collections.ArrayList
 Main Activity con lista di ricette
  */
 
+@Suppress("UNREACHABLE_CODE")
 class List_Ricette_Activity : AppCompatActivity(){
 
     private val TAG = "List_Ricette_Activity"
 
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette") //radice dell'albero per la View delle ricette
     private var mRicetteValueListener: ValueEventListener = getDataToFireBase() //visulaizza i dati delle ricette
-    private var img: MutableList<Ricetta> = ArrayList()
-    private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>)
+    private var img: ArrayList<Ricetta> = ArrayList()
+    private var mAdapter = Lista_Ricette_Adapter(img)
 
     lateinit var toggle: ActionBarDrawerToggle
 
@@ -73,25 +76,22 @@ class List_Ricette_Activity : AppCompatActivity(){
         startActivity(it)
     }
 
-    //Codice per il tasto della ricerca
+    //Ricerca
     override fun onCreateOptionsMenu(menu: Menu?):Boolean{
         val inflater = menuInflater
         inflater.inflate(R.menu.search, menu)
-
-        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu?.findItem(R.id.search_icon)
         val searchView = searchItem?.actionView as SearchView
-
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                searchView.clearFocus()
-                searchView.setQuery("", false)
-                searchItem.collapseActionView()
-                Toast.makeText(this@List_Ricette_Activity, "Looking for $query", Toast.LENGTH_LONG).show()
-                return true
+                return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                //controlla nell'array di ricette
+                mAdapter.filter.filter(newText)
+                mAdapter.notifyDataSetChanged()
                 return false
             }
         })
@@ -108,33 +108,32 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     override fun onStart() {
         super.onStart()
-        img.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
+        //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
     }
 
     override fun onStop() {
+        Log.e(TAG,"onStop")
         super.onStop()
-
+        DBricette!!.removeEventListener(mRicetteValueListener)
     }
 
     //lettura dei dati da Firebase
     private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
                 img.clear()
                 for (ds in dataSnapshot.children) {
                     val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
                     img.add(ricetta!!)
                 }
-                Log.d(TAG, "$img")
                 mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Ricetta failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                mAdapter.notifyDataSetChanged()
+                //mAdapter.notifyDataSetChanged()
             }
         }
         return postListener

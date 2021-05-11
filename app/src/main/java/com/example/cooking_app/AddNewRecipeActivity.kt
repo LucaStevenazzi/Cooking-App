@@ -27,6 +27,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     //dati
     var ricetta: Ricetta = Ricetta()
     var lista_ingredienti = arrayListOf<Ingredienti>()
+    val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         add_Ingrediente_to_List()
 
         if(intent.extras !=null){ //se esite l'intent con degli extra allora carica la ricetta scelta per la modifica
+            title = "Update Ricetta "
             ButtonOK.text = "Aggiorna ricetta"
             setDatiRicetta()
             getRicettaExtra()
@@ -57,7 +59,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.portata = intent.getStringExtra("Portata").toString()
         ricetta.persone = intent.getIntExtra("Persone", 0)
         ricetta.listaIngredienti = intent.getStringArrayListExtra("ListaIngredienti") as ArrayList<Ingredienti>
-        ricetta.note = intent.getStringArrayListExtra("Note").toString()
+        ricetta.note = intent.getStringExtra("Note").toString()
     }
     private fun setDatiRicetta() { //settagio dei dati per l'intent
         IVimmagine.setImageResource(intent.getIntExtra("Immagine", 0))
@@ -78,7 +80,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
         ETpersone.setText(intent.getIntExtra("Persone", 0).toString())
         setIngredienti()
-        ETnote.setText(intent.getStringArrayListExtra("Note").toString() )
+        ETnote.setText(intent.getStringExtra("Note").toString() )
     }
     private fun setIngredienti() {
         val count = intent.getIntExtra("Count", 0)
@@ -159,12 +161,19 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     }
 
-    fun saveRecipe(v: View) {      //onClick del button che salva i dati della ricetta
+    fun saveRecipe(v: View) {      //onClick del button che salva i dati della ricetta nel DB
 
         if(intent.extras != null){ //se l'intent esiste allora UPDATE ricetta al DB
 
+            val update_ricetta = saveRicettoDB()
+
+            Log.v(TAG , "${DBricette.child(ricetta.nome).key}")
+            DBricette.child(ricetta.nome).setValue(update_ricetta)
+            Toast.makeText(this, "Aggiornata: ${update_ricetta.nome}", Toast.LENGTH_LONG).show()
+
         }else{ //altrimenti aggiungo ricetta al DB
 
+            //salvataggio immagine
             val nome = ETnome.text.toString()
             val diff = spinner_diff.selectedItem.toString()
             val tempo = ETtempo.text.toString()
@@ -183,14 +192,26 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
             //salvataggio degli ingredienti sul DB
 
-            val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
             DBricette.child(ricetta.nome).setValue(ricetta)
-            Toast.makeText(this, "Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
 
         }
 
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
+    }
+
+    private fun saveRicettoDB(): Ricetta {
+        var ricetta: Ricetta = Ricetta()
+        ricetta.nome = ETnome.text.toString()
+        ricetta.diff = spinner_diff.selectedItem.toString()
+        ricetta.tempo = ETtempo.text.toString()
+        ricetta.tipologia = ETtipologia.text.toString()
+        ricetta.portata = spinner_portata.selectedItem.toString()
+        ricetta.persone = ETpersone.text.toString().toInt()
+        ricetta.listaIngredienti = lista_ingredienti
+        ricetta.note = ETnote.text.toString()
+        return ricetta
     }
 
     fun addImage(v: View) {        //funzione che permette di inserire l'immagine della ricetta

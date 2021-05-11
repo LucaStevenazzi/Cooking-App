@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.example.cooking_app.Adapter
 
 import android.content.Intent
@@ -5,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -15,12 +19,13 @@ import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 
 /*
-classe adattatatrice che permette di gestire la Lista (RecyclerView)
+classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
  */
-class Lista_Ricette_Adapter(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
+class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>?): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
 
     private val TAG = "Lista_Ricette_Adapter"
-    private var array = img
+    private var array : ArrayList<Ricetta> = img!!
+    private val array_search : ArrayList<Ricetta> = img!!
 
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -64,16 +69,16 @@ class Lista_Ricette_Adapter(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista
     //estendo la classe putExtra con questo metodo per il salvataggio di ricette da un activity all'altra
     private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {
 
-        intent.putExtra("Immagine" , ricetta.immagine)
-        intent.putExtra("Nome" , ricetta.nome)
-        intent.putExtra("Difficoltà" , ricetta.diff)
-        intent.putExtra("Tempo" , ricetta.tempo)
-        intent.putExtra("Tipologia" , ricetta.tipologia)
-        intent.putExtra("Portata" , ricetta.portata)
-        intent.putExtra("Persone" , ricetta.persone)
-        putIngredintiExtra(intent,ricetta.listaIngredienti)
-        intent.putExtra("ListaIngredienti" ,ricetta.listaIngredienti)
-        intent.putExtra("Note" , ricetta.note)
+        intent.putExtra("Immagine", ricetta.immagine)
+        intent.putExtra("Nome", ricetta.nome)
+        intent.putExtra("Difficoltà", ricetta.diff)
+        intent.putExtra("Tempo", ricetta.tempo)
+        intent.putExtra("Tipologia", ricetta.tipologia)
+        intent.putExtra("Portata", ricetta.portata)
+        intent.putExtra("Persone", ricetta.persone)
+        putIngredintiExtra(intent, ricetta.listaIngredienti)
+        intent.putExtra("ListaIngredienti", ricetta.listaIngredienti)
+        intent.putExtra("Note", ricetta.note)
 
     }
 
@@ -82,14 +87,44 @@ class Lista_Ricette_Adapter(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista
         val count = listaIngredienti.size
         if(count == 0) return
         for( i in listaIngredienti.indices) {
-            intent.putExtra( "Ingrediente $i nome", listaIngredienti[i].Name)
-            intent.putExtra( "Ingrediente $i quantità", listaIngredienti[i].quantit)
-            intent.putExtra( "Ingrediente $i misura", listaIngredienti[i].misura)
+            intent.putExtra("Ingrediente $i nome", listaIngredienti[i].Name)
+            intent.putExtra("Ingrediente $i quantità", listaIngredienti[i].quantit)
+            intent.putExtra("Ingrediente $i misura", listaIngredienti[i].misura)
         }
-        intent.putExtra( "Count" , count)
+        intent.putExtra("Count", count)
     }
 
+    //metodo per la il filtraggio della ricerca in base al testo che scrivi
+    override fun getFilter(): Filter {
+        return searchFilter
+    }
 
+    private var searchFilter: Filter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence): FilterResults {
+            val filteredList: ArrayList<Ricetta> = ArrayList<Ricetta>()
+            if (constraint.toString().isEmpty()) {
+                filteredList.addAll(array_search)
+            } else {
+                val filterPattern = constraint.toString().toLowerCase().trim()
+                for (item in array_search) {
+                    if (item.nome.toLowerCase().contains(filterPattern)) {
+                        Log.v(TAG,"${item.nome}")
+                        filteredList.add(item)
+                    }
+                }
+            }
+            Log.e(TAG,"Fine controllo")
+            val results = FilterResults()
+            results.values = filteredList
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence, results: FilterResults) {
+            array.clear()
+            array.addAll(results.values as ArrayList<Ricetta>)
+            notifyDataSetChanged()
+        }
+    }
 
 }
 
