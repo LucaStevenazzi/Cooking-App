@@ -1,13 +1,12 @@
 package com.example.cooking_app
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -17,26 +16,24 @@ import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 
 /*
-Main Activity con lista com.example.cooking_app.di ricette
+Main Activity con lista di ricette
  */
 
+@Suppress("UNREACHABLE_CODE")
 class List_Ricette_Activity : AppCompatActivity(){
 
-    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette")
-    private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
-    private var img: MutableList<Ricetta> = ArrayList()
-    private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>, this)
-    //array com.example.cooking_app.di ricette
-   /* private  val img = arrayListOf(
-            R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
-            R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)*/
+    private val TAG = "List_Ricette_Activity"
 
-    private lateinit var toggle: ActionBarDrawerToggle
+    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette") //radice dell'albero per la View delle ricette
+    private var mRicetteValueListener: ValueEventListener = getDataToFireBase() //visulaizza i dati delle ricette
+    private var img: ArrayList<Ricetta> = ArrayList()
+    private var mAdapter = Lista_Ricette_Adapter(img)
+
+    lateinit var toggle: ActionBarDrawerToggle
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,46 +62,32 @@ class List_Ricette_Activity : AppCompatActivity(){
     }
 
     private fun initRecyclerView() {
-
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
-
     }
 
-    //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata
-    //intent: passaggio dei dati
-    fun onClickListenerItem(position: Int) {
-        val intent = Intent(this, View_Ricetta_Activity::class.java)
-        //intent.putExtra("immagine", img[position])                                                togliere il commento per passare l'immagine con l'intent
-        startActivity(intent)
-    }
-
-    //OnClick: apertura nuova activity per l'aggiunta com.example.cooking_app.di una ricetta
+    //OnClick: apertura nuova activity per l'aggiunta di una ricetta
     fun newRecipe(v: View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
         startActivity(it)
     }
 
-    //Codice per il tasto della ricerca
-    override fun onCreateOptionsMenu(menu: Menu?):Boolean{
-        val inflater = menuInflater
-        inflater.inflate(R.menu.search, menu)
-
-        getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchItem = menu?.findItem(R.id.search_icon)
-        val searchView = searchItem?.actionView as SearchView
-
+    //Ricerca
+    override fun onCreateOptionsMenu(menu: Menu):Boolean{
+        menuInflater.inflate(R.menu.search, menu)
+        val searchItem = menu.findItem(R.id.search_icon)
+        val searchView = searchItem.actionView as SearchView
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE //cambio pulsante della tastiera da search a conferma
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                searchView.clearFocus()
-                searchView.setQuery("", false)
-                searchItem.collapseActionView()
-                Toast.makeText(this@List_Ricette_Activity, "Looking for $query", Toast.LENGTH_LONG).show()
-                return true
+            override fun onQueryTextSubmit(query: String): Boolean {
+                mAdapter.filter.filter(query)
+                return false
             }
 
-            override fun onQueryTextChange(query: String?): Boolean {
-                return true
+            override fun onQueryTextChange(newText: String): Boolean {
+                //controlla nell'array di ricette
+                mAdapter.filter.filter(newText)
+                return false
             }
         })
         return true
@@ -112,49 +95,40 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     //selezione del funzione della MenuBar laterale
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(toggle.onOptionsItemSelected(item)){
-            return true
-        }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStart() { super.onStart()
-        DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi sul riferimento al DB
+    override fun onStart() {
+        super.onStart()
+        //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
+        DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
     }
 
     override fun onStop() {
+        Log.e(TAG,"onStop")
         super.onStop()
-        DBricette!!.removeEventListener(mRicettaChildListener)
+        DBricette!!.removeEventListener(mRicetteValueListener)
     }
 
-    //funzione che crea il listener per le varie azioni effettuate sul DB e lo restituisce
-    private fun getRicetteChildEventListener(): ChildEventListener {
-        val childEventListener = object : ChildEventListener{
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.v("messaggio", "messaggio")
-                val newRicetta = snapshot.getValue(Ricetta::class.java)
-                img.add(newRicetta!!)
+    //lettura dei dati da Firebase
+    private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                img.clear()
+                for (ds in dataSnapshot.children) {
+                    val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
+                    img.add(ricetta!!)
+                }
+                mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Ricetta failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
                 mAdapter.notifyDataSetChanged()
             }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
         }
-        return childEventListener
+        return postListener
     }
 }
 

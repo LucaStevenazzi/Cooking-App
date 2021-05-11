@@ -1,28 +1,32 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.example.cooking_app.Adapter
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
-import com.example.cooking_app.List_Ricette_Activity
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
+import java.util.*
+import kotlin.collections.ArrayList
 
 /*
-classe adattatatrice che permette com.example.cooking_app.di gestire la Lista (RecyclerView)
+classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
  */
-class Lista_Ricette_Adapter(img: ArrayList<Ricetta>, listRicetteActivity: List_Ricette_Activity): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() {
+class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
 
     private val TAG = "Lista_Ricette_Adapter"
-    private var array = img
-    private var oldData = ArrayList<Ricetta>()
+    private var array : ArrayList<Ricetta> = img
+    private val array_copy : ArrayList<Ricetta> = array
 
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -58,24 +62,24 @@ class Lista_Ricette_Adapter(img: ArrayList<Ricetta>, listRicetteActivity: List_R
 
     }
 
-    //metoco che restituisce il numero com.example.cooking_app.di Item nella lista delle ricette
+    //metoco che restituisce il numero di Item nella lista delle ricette
     override fun getItemCount(): Int {
         return array.size
     }
 
-    //estendo la classe putExtra con questo metodo per il salvataggio com.example.cooking_app.di ricette da un activity all'altra
+    //estendo la classe putExtra con questo metodo per il salvataggio di ricette da un activity all'altra
     private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {
 
-        intent.putExtra("Immagine" , ricetta.immagine)
-        intent.putExtra("Nome" , ricetta.nome)
-        intent.putExtra("Difficoltà" , ricetta.diff)
-        intent.putExtra("Tempo" , ricetta.tempo)
-        intent.putExtra("Tipologia" , ricetta.tipologia)
-        intent.putExtra("Portata" , ricetta.portata)
-        intent.putExtra("Persone" , ricetta.persone)
-        putIngredintiExtra(intent,ricetta.listaIngredienti)
-        intent.putExtra("ListaIngredienti" ,ricetta.listaIngredienti)
-        intent.putExtra("Note" , ricetta.note)
+        intent.putExtra("Immagine", ricetta.immagine)
+        intent.putExtra("Nome", ricetta.nome)
+        intent.putExtra("Difficoltà", ricetta.diff)
+        intent.putExtra("Tempo", ricetta.tempo)
+        intent.putExtra("Tipologia", ricetta.tipologia)
+        intent.putExtra("Portata", ricetta.portata)
+        intent.putExtra("Persone", ricetta.persone)
+        putIngredintiExtra(intent, ricetta.listaIngredienti)
+        intent.putExtra("ListaIngredienti", ricetta.listaIngredienti)
+        intent.putExtra("Note", ricetta.note)
 
     }
 
@@ -84,17 +88,50 @@ class Lista_Ricette_Adapter(img: ArrayList<Ricetta>, listRicetteActivity: List_R
         val count = listaIngredienti.size
         if(count == 0) return
         for( i in listaIngredienti.indices) {
-            intent.putExtra( "Ingrediente $i nome", listaIngredienti[i].Name)
-            intent.putExtra( "Ingrediente $i quantità", listaIngredienti[i].quantit)
-            intent.putExtra( "Ingrediente $i misura", listaIngredienti[i].misura)
+            intent.putExtra("Ingrediente $i nome", listaIngredienti[i].Name)
+            intent.putExtra("Ingrediente $i quantità", listaIngredienti[i].quantit)
+            intent.putExtra("Ingrediente $i misura", listaIngredienti[i].misura)
         }
-        intent.putExtra( "Count" , count)
+        intent.putExtra("Count", count)
     }
 
-    fun setData(it: Any) {
-        oldData = it as ArrayList<Ricetta>
-        notifyDataSetChanged()
+    //metodo per la il filtraggio della ricerca in base al testo che scrivi
+    override fun getFilter(): Filter {
+        return searchFilter
     }
+
+    private var searchFilter: Filter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence): FilterResults {
+            val filterPattern = constraint.toString().toLowerCase(Locale.getDefault()).trim()
+            var filteredList: ArrayList<Ricetta> = ArrayList()
+            if (filterPattern.isEmpty()) {
+                filteredList.addAll(array_copy)
+            } else {
+                for (item in array_copy) {
+                    if (item.nome.toLowerCase(Locale.getDefault()).contains(filterPattern)) {
+                        filteredList.add(item)
+                    }
+                }
+            }
+            val results = FilterResults()
+            results.values = filteredList
+            results.count = filteredList.size
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence, results: FilterResults) {
+            if(results.count >= 1){
+                array.clear()
+                array.addAll(results.values as List<Ricetta>)
+            }else{
+                array.clear()
+                array.addAll(array_copy)
+            }
+
+            notifyDataSetChanged()
+        }
+    }
+
 }
 
 
