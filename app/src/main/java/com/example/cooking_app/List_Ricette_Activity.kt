@@ -1,7 +1,5 @@
 package com.example.cooking_app
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +16,6 @@ import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -77,21 +73,20 @@ class List_Ricette_Activity : AppCompatActivity(){
     }
 
     //Ricerca
-    override fun onCreateOptionsMenu(menu: Menu?):Boolean{
-        val inflater = menuInflater
-        inflater.inflate(R.menu.search, menu)
-        val searchItem = menu?.findItem(R.id.search_icon)
-        val searchView = searchItem?.actionView as SearchView
-        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+    override fun onCreateOptionsMenu(menu: Menu):Boolean{
+        menuInflater.inflate(R.menu.search, menu)
+        val searchItem = menu.findItem(R.id.search_icon)
+        val searchView = searchItem.actionView as SearchView
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE //cambio pulsante della tastiera da search a conferma
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                mAdapter.filter.filter(query)
                 return false
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
                 //controlla nell'array di ricette
                 mAdapter.filter.filter(newText)
-                mAdapter.notifyDataSetChanged()
                 return false
             }
         })
@@ -100,9 +95,6 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     //selezione del funzione della MenuBar laterale
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(toggle.onOptionsItemSelected(item)){
-            return true
-        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -133,7 +125,7 @@ class List_Ricette_Activity : AppCompatActivity(){
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Ricetta failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                //mAdapter.notifyDataSetChanged()
+                mAdapter.notifyDataSetChanged()
             }
         }
         return postListener

@@ -3,7 +3,6 @@
 package com.example.cooking_app.Adapter
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,15 +16,17 @@ import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
+import java.util.*
+import kotlin.collections.ArrayList
 
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
  */
-class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>?): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
+class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
 
     private val TAG = "Lista_Ricette_Adapter"
-    private var array : ArrayList<Ricetta> = img!!
-    private val array_search : ArrayList<Ricetta> = img!!
+    private var array : ArrayList<Ricetta> = img
+    private val array_copy : ArrayList<Ricetta> = array
 
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
@@ -101,27 +102,32 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>?): Recy
 
     private var searchFilter: Filter = object : Filter() {
         override fun performFiltering(constraint: CharSequence): FilterResults {
-            val filteredList: ArrayList<Ricetta> = ArrayList<Ricetta>()
-            if (constraint.toString().isEmpty()) {
-                filteredList.addAll(array_search)
+            val filterPattern = constraint.toString().toLowerCase(Locale.getDefault()).trim()
+            var filteredList: ArrayList<Ricetta> = ArrayList()
+            if (filterPattern.isEmpty()) {
+                filteredList.addAll(array_copy)
             } else {
-                val filterPattern = constraint.toString().toLowerCase().trim()
-                for (item in array_search) {
-                    if (item.nome.toLowerCase().contains(filterPattern)) {
-                        Log.v(TAG,"${item.nome}")
+                for (item in array_copy) {
+                    if (item.nome.toLowerCase(Locale.getDefault()).contains(filterPattern)) {
                         filteredList.add(item)
                     }
                 }
             }
-            Log.e(TAG,"Fine controllo")
             val results = FilterResults()
             results.values = filteredList
+            results.count = filteredList.size
             return results
         }
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
-            array.clear()
-            array.addAll(results.values as ArrayList<Ricetta>)
+            if(results.count >= 1){
+                array.clear()
+                array.addAll(results.values as List<Ricetta>)
+            }else{
+                array.clear()
+                array.addAll(array_copy)
+            }
+
             notifyDataSetChanged()
         }
     }
