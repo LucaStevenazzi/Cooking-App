@@ -12,10 +12,14 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.MainViewModel.MainViewModel
+import com.example.cooking_app.data.Repository
+import com.example.cooking_app.data.RicettaDatabase
+import com.example.cooking_app.data.RicettaTab
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
@@ -32,15 +36,12 @@ class List_Ricette_Activity : AppCompatActivity(){
     private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
     private var img: MutableList<Ricetta> = ArrayList()
     private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>, this)
-    private val mainViewModel: MainViewModel by viewModels()
-    private lateinit var binding: ActivityMainBinding
-
     //array com.example.cooking_app.di ricette
    /* private  val img = arrayListOf(
             R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
             R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)*/
 
-    lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var toggle: ActionBarDrawerToggle
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +95,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         val inflater = menuInflater
         inflater.inflate(R.menu.search, menu)
 
-        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchItem = menu?.findItem(R.id.search_icon)
         val searchView = searchItem?.actionView as SearchView
 
@@ -108,24 +109,12 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
-                if(query != null){
-                    searchDatabase(query)
-                }
                 return true
             }
         })
         return true
     }
 
-    private fun searchDatabase(query: String) {
-        val searchQuery = "%$query%"
-
-        mainViewModel.searchDatabase(searchQuery).observe(this) { list ->
-            list.let {
-              //  mAdapter.setData(it)
-            }
-        }
-    }
     //selezione del funzione della MenuBar laterale
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(toggle.onOptionsItemSelected(item)){
