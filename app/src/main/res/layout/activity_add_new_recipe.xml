@@ -29,6 +29,12 @@
                 android:onClick="addImage"
                 app:srcCompat="@android:drawable/ic_menu_report_image" />
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

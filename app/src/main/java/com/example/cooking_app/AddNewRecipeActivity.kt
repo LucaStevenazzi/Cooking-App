@@ -3,6 +3,7 @@ package com.example.cooking_app
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -14,10 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.Classi.Upload
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
 
@@ -27,8 +28,10 @@ import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
 class AddNewRecipeActivity : AppCompatActivity() {
 
     //dati
-    var lista_ingredienti = arrayListOf<Ingredienti>()
-    var arraylist_note : ArrayList<String> = arrayListOf()
+    private var lista_ingredienti = arrayListOf<Ingredienti>()
+    private var arraylist_note : ArrayList<String> = arrayListOf()
+    private lateinit var imageUri : Uri
+    private lateinit var mUploadTask: StorageTask<*>  //evita il salvataggio multiplo delle immagini
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +50,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private fun setSpinner() {
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
-            this,
-            R.array.array_diff,
-            android.R.layout.simple_spinner_item
+                this,
+                R.array.array_diff,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -58,9 +61,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la misura
-            this,
-            R.array.array_misure,
-            android.R.layout.simple_spinner_item
+                this,
+                R.array.array_misure,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -69,9 +72,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la portata
-            this,
-            R.array.array_portata,
-            android.R.layout.simple_spinner_item
+                this,
+                R.array.array_portata,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specifica il layout da usare quando la lista appare
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -129,24 +132,18 @@ class AddNewRecipeActivity : AppCompatActivity() {
             3- ...
          */
 
-        val ricetta = Ricetta(0 ,nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
+        val ricetta = Ricetta(0, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, arraylist_note)
 
         //salvataggio degli ingredienti sul DB
 
-        val rn = "r1" //modificare il codice del salvataggio di una nuova ricetta per renderlo univoco
         val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
         DBricette.child(ricetta.nome).setValue(ricetta)
 
-        //salvataggio delle immagini
-
-        //funzione che ritorna l'estensione del file passato come parametro (.png -> png)
-        fun getFileExtension(uri : Uri) : String {
-            val cr = contentResolver
-            val mime = MimeTypeMap.getSingleton()
-            return mime.getExtensionFromMimeType(cr.getType(uri))!!
+        if (mUploadTask != null && mUploadTask.isInProgress()) {
+            Toast.makeText(this, "Upload in progress", Toast.LENGTH_SHORT).show()
+        } else {
+            uploadFile()
         }
-
-        val DBStorage : StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
 
         //Log.v("oggetto", ricetta.toString())
         Toast.makeText(this, "Aggiunta la ricetta: $nome", Toast.LENGTH_LONG).show()
@@ -154,13 +151,54 @@ class AddNewRecipeActivity : AppCompatActivity() {
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
     }
+        //salvataggio delle immagini
+
+        val DBimmagini = FirebaseDatabase.getInstance().getReference("immagini")
+        val DBStorage : StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
+
+        //funzione che ritorna l'estensione del file passato come parametro (.png -> png)
+        fun getFileExtension(uri: Uri) : String {
+            val cr = contentResolver
+            val mime = MimeTypeMap.getSingleton()
+            return mime.getExtensionFromMimeType(cr.getType(uri))!!
+        }
+
+        //funzione che aggiunge allo Storage l'immagine
+
+        fun uploadFile(){
+            if (imageUri != null){
+
+                val nameUp = System.currentTimeMillis().toString() + "." + getFileExtension(imageUri)
+                val fileReference = DBStorage.child(nameUp)
+
+                //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
+                mUploadTask = fileReference.putFile(imageUri).addOnSuccessListener {
+                    //settiamo di nuovo la barra a 0%
+                    taskSnapshot -> val handler = Handler()
+                    handler.postDelayed(Runnable { progress_bar  .setProgress(0) }, 500)
+                    Toast.makeText(this, "Upload successful", Toast.LENGTH_LONG).show()
+                    val upload = Upload(nameUp, taskSnapshot.metadata.toString())               //ci vorrebbe il metodo getDownloadUrl al posto di metadata ma non me lo trova
+                    //si entra nel DB e si crea un id unico per ogni immagine e la si salva
+                    val uploadId: String? = DBimmagini.push().key
+                    DBimmagini.child(uploadId!!).setValue(upload)
+                }.addOnFailureListener {
+                    //mostra l'errore
+                    e -> Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+                }.addOnProgressListener {
+                    //percentuale dei byte trasferiti in contronto a quelli totali
+                    taskSnapshot -> val progress = 100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount
+                    progress_bar.setProgress(progress.toInt())
+                }
+            }
+        }
+
 
     fun addImage(v: View) {        //funzione che permette di inserire l'immagine della ricetta
 
         //apertura della galleria
         val openGalleryIntent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         )
         startActivityForResult(openGalleryIntent, 1000)
     }
@@ -168,7 +206,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {       //funzione che recupera l'immagine scelta dall'utente e la inserisce
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1000 && resultCode == RESULT_OK) {
-            val imageUri = data?.data
+            imageUri = data?.data!!
             IVimmagine.setImageURI(imageUri)
         }
     }

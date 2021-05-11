@@ -19,6 +19,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 
 /*
@@ -30,10 +31,9 @@ class List_Ricette_Activity : AppCompatActivity(){
     private val TAG = "List_Ricette_Activity"
 
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette")
-    private var mRicettaChildListener: ChildEventListener = getRicetteChildEventListener() //recupera il listener con le azioni da svolgere
     private var mRicetteValueListener: ValueEventListener = getDataToFireBase() //visulaizza i dati
-    private var img: MutableList<Ricetta> = ArrayList()
-    private val mAdapter = Lista_Ricette_Adapter(img as ArrayList<Ricetta>)
+    private var img: ArrayList<Ricetta> = ArrayList()
+    private val mAdapter = Lista_Ricette_Adapter(img)
 
 
     //array di ricette
@@ -117,17 +117,17 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     override fun onStart() { super.onStart()
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
-        //DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi per i figli sul riferimento al DB
     }
 
     override fun onStop() {
         super.onStop()
         img.clear()  //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
-        //DBricette!!.removeEventListener(mRicettaChildListener)
+        DBricette!!.removeEventListener(mRicetteValueListener)
     }
 
     //lettura dei dati da Firebase
     private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -145,34 +145,6 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
         }
         return postListener
-    }
-
-    //funzione che crea il listener per le varie azioni effettuate sul DB e lo restituisce
-    private fun getRicetteChildEventListener(): ChildEventListener {
-
-        val childEventListener = object : ChildEventListener{
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                mAdapter.notifyDataSetChanged()
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        }
-        return childEventListener
     }
 }
 
