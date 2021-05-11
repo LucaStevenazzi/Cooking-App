@@ -16,7 +16,7 @@
     <string name="HINT">Riempi il campo</string>
     <string name="STRlistaIng">Lista Ingredienti</string>
     <string name="STRnote">Note</string>
-    <string name="STRbuttonOK">Inserisci</string>
+    <string name="STRbuttonOK">Aggiungi ricetta</string>
     <string name="IVdescription">Immagine della ricetta</string>
     <string-array name="array_diff">
         <item>BASSA</item>

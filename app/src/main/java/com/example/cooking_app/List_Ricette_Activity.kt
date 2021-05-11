@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -19,29 +20,23 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
 
 
 /*
 Main Activity con lista di ricette
  */
 
+@Suppress("UNREACHABLE_CODE")
 class List_Ricette_Activity : AppCompatActivity(){
 
     private val TAG = "List_Ricette_Activity"
 
-    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette")
-    private var mRicetteValueListener: ValueEventListener = getDataToFireBase() //visulaizza i dati
-    private var img: ArrayList<Ricetta> = ArrayList()
-    private val mAdapter = Lista_Ricette_Adapter(img)
+    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette") //radice dell'albero per la View delle ricette
+    private lateinit var mRicetteValueListener: ValueEventListener
+    private lateinit var img: ArrayList<Ricetta>
+    private lateinit var mAdapter: Lista_Ricette_Adapter
 
-
-    //array di ricette
-   /* private  val img = arrayListOf(
-            R.drawable.img_1, R.drawable.img_2, R.drawable.img_3,
-            R.drawable.img_4, R.drawable.img_5, R.drawable.img_6)*/
-
-    lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var toggle: ActionBarDrawerToggle
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,10 +65,10 @@ class List_Ricette_Activity : AppCompatActivity(){
     }
 
     private fun initRecyclerView() {
-
+        img = ArrayList()
+        mAdapter = Lista_Ricette_Adapter(img)
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
-
     }
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
@@ -82,25 +77,21 @@ class List_Ricette_Activity : AppCompatActivity(){
         startActivity(it)
     }
 
-    //Codice per il tasto della ricerca
-    override fun onCreateOptionsMenu(menu: Menu?):Boolean{
-        val inflater = menuInflater
-        inflater.inflate(R.menu.search, menu)
-
-        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchItem = menu?.findItem(R.id.search_icon)
-        val searchView = searchItem?.actionView as SearchView
-
+    //Ricerca
+    override fun onCreateOptionsMenu(menu: Menu):Boolean{
+        menuInflater.inflate(R.menu.search, menu)
+        val searchItem = menu.findItem(R.id.search_icon)
+        val searchView = searchItem.actionView as SearchView
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE //cambio pulsante della tastiera da search a conferma
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                searchView.clearFocus()
-                searchView.setQuery("", false)
-                searchItem.collapseActionView()
-                Toast.makeText(this@List_Ricette_Activity, "Looking for $query", Toast.LENGTH_LONG).show()
-                return true
+            override fun onQueryTextSubmit(query: String): Boolean {
+                mAdapter.filter.filter(query)
+                return false
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
+            override fun onQueryTextChange(newText: String): Boolean {
+                //controlla nell'array di ricette
+                mAdapter.filter.filter(newText)
                 return false
             }
         })
@@ -109,39 +100,39 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     //selezione del funzione della MenuBar laterale
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(toggle.onOptionsItemSelected(item)){
-            return true
-        }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStart() { super.onStart()
+    override fun onStart() {
+        super.onStart()
+        mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
+        //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
+        //DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi per i figli sul riferimento al DB
     }
 
     override fun onStop() {
+        Log.e(TAG,"onStop")
         super.onStop()
-        img.clear()  //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
         DBricette!!.removeEventListener(mRicetteValueListener)
     }
 
     //lettura dei dati da Firebase
     private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
-
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
+                img.clear()
                 for (ds in dataSnapshot.children) {
                     val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
-                    Log.d(TAG, "$ricetta")
                     img.add(ricetta!!)
                 }
-                mAdapter.notifyDataSetChanged()
+                mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Ricetta failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                mAdapter.notifyDataSetChanged()
             }
         }
         return postListener
