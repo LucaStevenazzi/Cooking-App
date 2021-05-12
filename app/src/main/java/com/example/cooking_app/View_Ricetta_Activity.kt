@@ -71,14 +71,14 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     private fun setDati(ricetta: Ricetta) {
         title = ricetta.nome // settagio del titolo della Activity
-        img_ricetta.setImageResource(ricetta.immagine) //set immagine
+        //img_ricetta.setImageResource(ricetta.immagine) //set immagine         togliere il commento e modificare
         //....
     }
 
     private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent di creazione
 
-        var ricetta : Ricetta = Ricetta()
-        ricetta.immagine = intent.getIntExtra("Immagine", 0)
+        val ricetta = Ricetta()
+        ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
         ricetta.diff = intent.getStringExtra("Difficoltà").toString()
         ricetta.tempo = intent.getStringExtra("Tempo").toString()

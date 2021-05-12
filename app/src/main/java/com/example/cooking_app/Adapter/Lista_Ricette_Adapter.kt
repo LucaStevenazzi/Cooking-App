@@ -60,10 +60,10 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli delle ricette
-        holder.img_ricetta.setImageResource(array[position].immagine)
+        //holder.img_ricetta.setImageURI(array[position].immagine)
         holder.titolo_ricetta.text = array[position].nome
-        //holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
-        //holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
+        holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
+        holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
 
     }
 
