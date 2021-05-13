@@ -3,20 +3,20 @@
 package com.example.cooking_app.Adapter
 
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
-import java.util.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.File
 import kotlin.collections.ArrayList
 
 /*
@@ -27,6 +27,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
     private val TAG = "Lista_Ricette_Adapter"
     private val array : ArrayList<Ricetta> = img
     private val array_copy : ArrayList<Ricetta> = array
+    private val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
 
     init{
 
@@ -60,7 +61,12 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli delle ricette
-        //holder.img_ricetta.setImageURI(array[position].immagine)
+
+        val immagine = array[position].immagine                                                     //prendo la stringa associata al campo immagine della ricetta contenente il nome dell'immagine
+        val arrayPrefixSuffix = immagine.split(".")                                     //splitto la stringa presa per pttenere un prefisso (nome immagine) e un postfisso (formato)
+        val localFile = File.createTempFile(arrayPrefixSuffix[0], arrayPrefixSuffix[1])             //creo un file temporaneo con le informazioni ottenute
+        DBStorage.getFile(localFile)                                                                //cerco il file appena creato nello storage firebase
+        holder.img_ricetta.setImageURI(Uri.fromFile(localFile));                                    //prendo il file ottenuto, lo casto ad Uri e lo setto nella ImageView della lista
         holder.titolo_ricetta.text = array[position].nome
         holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
         holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"

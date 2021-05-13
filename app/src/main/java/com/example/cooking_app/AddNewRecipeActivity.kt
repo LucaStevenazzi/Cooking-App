@@ -233,7 +233,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     fun uploadFile():String {
 
-        nameUp = Random.nextInt(1000000000).toString() + "_" + getFileExtension(imageUri)
+        nameUp = Random.nextInt(1000000000).toString() + "." + getFileExtension(imageUri)
         val fileReference = DBStorage.child(nameUp)
 
         //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
