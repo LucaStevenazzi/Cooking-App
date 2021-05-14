@@ -233,21 +233,27 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     fun uploadFile():String {
 
-        nameUp = Random.nextInt(1000000000).toString() + "." + getFileExtension(imageUri)
+        nameUp = Random.nextInt(1000000000).toString() + "_" + getFileExtension(imageUri)
         val fileReference = DBStorage.child(nameUp)
+        var URL : String? = ""
 
         //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
         fileReference.putFile(imageUri).addOnSuccessListener {
-            //settiamo di nuovo la barra a 0%
             taskSnapshot ->
             Toast.makeText(List_Ricette_Activity@this, "Upload successful", Toast.LENGTH_SHORT).show()
-            val upload = Upload(nameUp, taskSnapshot.metadata.toString())               //ci vorrebbe il metodo getDownloadUrl al posto di metadata ma non me lo trova
-            DBimmagini.child(nameUp).setValue(upload)
+            fileReference.downloadUrl.addOnCompleteListener() {
+                taskSnapshot ->
+                URL = taskSnapshot.result.toString()
+                Log.v("url", URL!!)
+                val upload = Upload(nameUp, URL!!)
+                DBimmagini.child(nameUp).setValue(upload)
+            }
         }.addOnFailureListener {
             //mostra l'errore
             e ->
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
+        Log.v("url", URL!!)
         return nameUp
     }
 

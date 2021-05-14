@@ -4,6 +4,7 @@ package com.example.cooking_app.Adapter
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,12 +62,18 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli delle ricette
-
+        /*
         val immagine = array[position].immagine                                                     //prendo la stringa associata al campo immagine della ricetta contenente il nome dell'immagine
         val arrayPrefixSuffix = immagine.split(".")                                     //splitto la stringa presa per pttenere un prefisso (nome immagine) e un postfisso (formato)
-        val localFile = File.createTempFile(arrayPrefixSuffix[0], arrayPrefixSuffix[1])             //creo un file temporaneo con le informazioni ottenute
+        val prefisso = arrayPrefixSuffix[0].toString()
+        val suffisso = arrayPrefixSuffix[1].toString()
+        Log.v("prefisso", prefisso)
+        Log.v("suffisso", suffisso)
+        val localFile = File.createTempFile(prefisso, suffisso)                                     //creo un file temporaneo con le informazioni ottenute
+        Log.v("suffisso", localFile.toString())
         DBStorage.getFile(localFile)                                                                //cerco il file appena creato nello storage firebase
         holder.img_ricetta.setImageURI(Uri.fromFile(localFile));                                    //prendo il file ottenuto, lo casto ad Uri e lo setto nella ImageView della lista
+        */
         holder.titolo_ricetta.text = array[position].nome
         holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
         holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
