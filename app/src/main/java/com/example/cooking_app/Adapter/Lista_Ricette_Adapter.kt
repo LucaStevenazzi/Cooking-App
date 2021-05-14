@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.example.cooking_app.Adapter
 
 import android.content.Intent
@@ -22,11 +20,11 @@ import kotlin.collections.ArrayList
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
  */
-class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
+class Lista_Ricette_Adapter internal constructor(val img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
 
     private val TAG = "Lista_Ricette_Adapter"
     private val array : ArrayList<Ricetta> = img
-    private val array_copy : ArrayList<Ricetta> = array
+    private val arraycopy : ArrayList<Ricetta> = ArrayList(img)
 
     init{
 
@@ -47,7 +45,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
             //intent: passaggio dei dati
             cv.setOnClickListener {
                 val intent = Intent(itemView.context, View_Ricetta_Activity::class.java)
-                putRicettaExtra(intent, array[layoutPosition])   //passaggio ddlla ricetta cliccata dall elenco tramite l'intent
+  //              putRicettaExtra(intent, array[layoutPosition])   //passaggio ddlla ricetta cliccata dall elenco tramite l'intent
                 it.context.startActivity(intent)
             }
         }
@@ -55,15 +53,15 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ricetta_list,parent,false))
+        return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ricetta_list, parent, false))
     }
 
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        //setting delle immagini e titoli delle ricette
-        holder.img_ricetta.setImageResource(array[position].immagine)
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {//setting delle immagini e titoli delle ricette
+
+        //holder.img_ricetta.setImageResource(array[position].immagine.toInt())
         holder.titolo_ricetta.text = array[position].nome
-        //holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
-        //holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
+        holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
+        holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
 
     }
 
@@ -109,10 +107,10 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
         override fun performFiltering(constraint: CharSequence): FilterResults {
             val filteredList: ArrayList<Ricetta> = ArrayList()
             if (constraint.toString().isEmpty()) {
-                filteredList.addAll(array_copy)
+                filteredList.addAll(arraycopy)
             } else {
-                val filterPattern = constraint.toString().toLowerCase()
-                for (item in array_copy) {
+                val filterPattern = constraint.toString().toLowerCase().trim()
+                for (item in arraycopy) {
                     if (item.nome.toLowerCase().contains(filterPattern)) {
                         filteredList.add(item)
                     }
@@ -120,13 +118,12 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
             }
             val results = FilterResults()
             results.values = filteredList
-            results.count = filteredList.size
             return results
         }
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
             array.clear()
-            array.addAll(results.values as List<Ricetta>)
+            array.addAll(results.values as ArrayList<Ricetta>)
             notifyDataSetChanged()
         }
     }

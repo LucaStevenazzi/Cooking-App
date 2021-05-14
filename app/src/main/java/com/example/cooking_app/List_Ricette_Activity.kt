@@ -40,8 +40,14 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
 
+        initData()
 
+    }
 
+    private fun initData() {
+        mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
+        //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
+        DBricette!!.addValueEventListener(mRicetteValueListener) //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
         initRecyclerView() //inizializzazione Lista delle ricette
         initBarMenuLateral() //inizializzazione Barra laterale del menu
     }
@@ -60,13 +66,31 @@ class List_Ricette_Activity : AppCompatActivity(){
             true
         }
     }
-
     private fun initRecyclerView() {
-        img = ArrayList()
+        lista_ricette.setHasFixedSize(true)
         mAdapter = Lista_Ricette_Adapter(img)
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
     }
+    private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
+        img = ArrayList()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.children) {
+                    val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
+                    img.add(ricetta!!)
+                }
+                mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Ricetta failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                mAdapter.notifyDataSetChanged()
+            }
+        }
+        return postListener
+    } //lettura dei dati da Firebase
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
     fun newRecipe(v: View) {
@@ -100,38 +124,9 @@ class List_Ricette_Activity : AppCompatActivity(){
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStart() {
-        super.onStart()
-        mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
-        //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
-        DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
-    }
-
     override fun onStop() {
-        Log.e(TAG,"onStop")
         super.onStop()
         DBricette!!.removeEventListener(mRicetteValueListener)
-    }
-
-    //lettura dei dati da Firebase
-    private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                img.clear()
-                for (ds in dataSnapshot.children) {
-                    val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
-                    img.add(ricetta!!)
-                }
-                mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Ricetta failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                mAdapter.notifyDataSetChanged()
-            }
-        }
-        return postListener
     }
 }
 
