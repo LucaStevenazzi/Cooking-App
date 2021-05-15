@@ -235,7 +235,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         nameUp = Random.nextInt(1000000000).toString() + "_" + getFileExtension(imageUri)
         val fileReference = DBStorage.child(nameUp)
-        var URL : String? = ""
 
         //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
         fileReference.putFile(imageUri).addOnSuccessListener {
@@ -243,9 +242,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
             Toast.makeText(List_Ricette_Activity@this, "Upload successful", Toast.LENGTH_SHORT).show()
             fileReference.downloadUrl.addOnCompleteListener() {
                 taskSnapshot ->
-                URL = taskSnapshot.result.toString()
-                Log.v("url", URL!!)
-                val upload = Upload(nameUp, URL!!)
+                val url = taskSnapshot.result.toString()
+                Log.v("url", url)
+                val upload = Upload(nameUp, url)
                 DBimmagini.child(nameUp).setValue(upload)
             }
         }.addOnFailureListener {
@@ -253,7 +252,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
             e ->
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
-        Log.v("url", URL!!)
         return nameUp
     }
 
