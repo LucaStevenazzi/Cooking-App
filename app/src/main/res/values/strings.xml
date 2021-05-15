@@ -46,5 +46,6 @@
     <string name="addIng">+</string>
     <string name="anteprima_ricetta">Anteprima ricetta</string>
     <string name="nome_ricetta">Nome Ricetta</string>
+    <string name="search">Search</string>
 
 </resources>
