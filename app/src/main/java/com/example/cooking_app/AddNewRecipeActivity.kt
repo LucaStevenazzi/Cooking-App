@@ -1,27 +1,21 @@
 package com.example.cooking_app
 
-import android.Manifest
+import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
-import com.example.cooking_app.Classi.Upload
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.*
@@ -35,8 +29,8 @@ import kotlin.random.Random
 class AddNewRecipeActivity : AppCompatActivity() {
 
     private val TAG = "AddNewRecipeActivity"
-    private val STORAGE_PERMISSION_CODE = 1
     private lateinit var nameUp : String
+    private var context : Context = this
 
     //dati
     var ricetta: Ricetta = Ricetta()
@@ -157,11 +151,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
             }
             val ing = Ingredienti(ingnome, ingquanti, ingmisura)
 
-            //salvataggio degli ingredienti sul DB
-            val cn = "c2" //modificare il codice univoco
-            val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("liste_ingredienti")       //implementare l'eliminazione da DB dell'ing quando si elimina dalla lista delle ricette
-            DBricette.child(cn).child(ingnome).setValue(ing)
-
             lista_ingredienti.add(0, ing)
             ing_nome.text.clear()
             ing_quantità.text.clear()
@@ -191,36 +180,13 @@ class AddNewRecipeActivity : AppCompatActivity() {
         } else { //altrimenti aggiungo ricetta al DB
 
             //salvataggio immagine
-            val immagine = uploadFile()
-            val nome = ETnome.text.toString()
-            val diff = spinner_diff.selectedItem.toString()
-            val tempo = ETtempo.text.toString()
-            val tipologia = ETtipologia.text.toString()
-            val portata = spinner_portata.selectedItem.toString()
-            val numPersone = ETpersone.text.toString().toInt()
-            val note = ETnote.text.toString()
-
-            /*fare i check prima di salvare la ricetta
-                1- nessun campo vuoto
-                2- nome diverso dalle altre ricette nel DB
-                3- ...
-             */
-
-            val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
-
-
-            //salvataggio degli ingredienti sul DB
-
-            DBricette.child(ricetta.nome).setValue(ricetta)
-            Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
+            uploadFile()
         }
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
     }
     //salvataggio delle immagini
 
-    val DBimmagini = FirebaseDatabase.getInstance().getReference("immagini")
-    val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
 
     //funzione che ritorna l'estensione del file passato come parametro (.png -> png)
     fun getFileExtension(uri: Uri): String {
@@ -231,30 +197,50 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     //funzione che aggiunge allo Storage l'immagine
 
-    fun uploadFile():String {
+    fun uploadFile() {
 
-        nameUp = Random.nextInt(1000000000).toString() + "_" + getFileExtension(imageUri)
+        val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
+        nameUp = Random.nextInt(1000000000).toString() + "." + getFileExtension(imageUri)
         val fileReference = DBStorage.child(nameUp)
 
         //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
         fileReference.putFile(imageUri).addOnSuccessListener {
             taskSnapshot ->
-            Toast.makeText(List_Ricette_Activity@this, "Upload successful", Toast.LENGTH_SHORT).show()
             fileReference.downloadUrl.addOnCompleteListener() {
                 taskSnapshot ->
                 val url = taskSnapshot.result.toString()
-                Log.v("url", url)
-                val upload = Upload(nameUp, url)
-                DBimmagini.child(nameUp).setValue(upload)
+
+                val immagine = url
+                val nome = ETnome.text.toString()
+                val diff = spinner_diff.selectedItem.toString()
+                val tempo = ETtempo.text.toString()
+                val tipologia = ETtipologia.text.toString()
+                val portata = spinner_portata.selectedItem.toString()
+                val numPersone = ETpersone.text.toString().toInt()
+                val note = ETnote.text.toString()
+
+                /*fare i check prima di salvare la ricetta
+                    1- nessun campo vuoto
+                    2- nome diverso dalle altre ricette nel DB
+                    3- ...
+                 */
+
+                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
+
+
+                //salvataggio degli ingredienti sul DB
+
+                DBricette.child(ricetta.nome).setValue(ricetta)
+                Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
             }
         }.addOnFailureListener {
             //mostra l'errore
             e ->
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         }
-        return nameUp
     }
 
+    //funzione che serve per
     private fun saveRicettaDB(): Ricetta {
         val ricetta= Ricetta()
         ricetta.nome = ETnome.text.toString()
