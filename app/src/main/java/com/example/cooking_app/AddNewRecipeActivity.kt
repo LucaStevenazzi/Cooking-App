@@ -51,7 +51,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     }
 
     private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
-        ricetta.immagine = intent.getIntExtra("Immagine", 0)
+        ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
         ricetta.diff = intent.getStringExtra("Difficoltà").toString()
         ricetta.tempo = intent.getStringExtra("Tempo").toString()
@@ -188,7 +188,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
                 3- ...
              */
 
-            val ricetta = Ricetta(0 ,nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
+            val ricetta = Ricetta("" ,nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
 
             //salvataggio degli ingredienti sul DB
 

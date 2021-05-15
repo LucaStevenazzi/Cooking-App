@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/relativeLayout"
     app:layoutDescription="@xml/activity_main_scene"
     tools:context=".View_Ricetta_Activity">
 
-
     <ImageView
         android:id="@+id/img_ricetta"
-        android:layout_width="0dp"
-        android:layout_height="350dp"
-        android:adjustViewBounds="true"
+        android:layout_width="393dp"
+        android:layout_height="378dp"
         android:contentDescription="@string/todo"
         android:scaleType="centerCrop"
         android:src="@drawable/img_5"
@@ -22,41 +21,115 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:id="@+id/scrollView3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/desc_Ricetta"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/descrizione_ricetta" />
-        </LinearLayout>
-    </ScrollView>
+    <TextView
+        android:id="@+id/ricetta_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/STRtempo"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="207dp"
+        tools:layout_editor_absoluteY="447dp" />
 
     <TextView
-        android:id="@+id/name_ricetta"
-        android:layout_width="172dp"
-        android:layout_height="48dp"
-        android:background="#8DFFFFFF"
-        android:text="@string/name_ricetta"
-        android:textColor="@color/black"
-        android:textSize="27sp"
-        android:textStyle="normal|bold"
-        android:visibility="visible"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="301dp"
-        tools:visibility="visible" />
+        android:id="@+id/ricetta_difficolta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/STRdiff"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="188dp"
+        tools:layout_editor_absoluteY="498dp" />
 
+    <TextView
+        android:id="@+id/ricetta_persone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/STRpersone"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="194dp"
+        tools:layout_editor_absoluteY="554dp" />
+
+    <TextView
+        android:id="@+id/ricetta_portata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/STRportata"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="530dp" />
+
+    <TextView
+        android:id="@+id/ricetta_ingredienti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:scrollbars="vertical"
+        android:text="@string/STRingredienti"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="85dp"
+        tools:layout_editor_absoluteY="729dp" />
+
+    <TextView
+        android:id="@+id/tempo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Tempo di preparazione:"
+        android:textColor="#CC000000"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="33dp"
+        tools:layout_editor_absoluteY="287dp" />
+
+    <TextView
+        android:id="@+id/difficolta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Difficolta di preparazione:"
+        android:textColor="#CC000000"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteY="502dp" />
+
+    <TextView
+        android:id="@+id/persone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Numero di persone:"
+        android:textColor="#CC000000"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="523dp" />
+
+    <TextView
+        android:id="@+id/portata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Portata:"
+        android:textColor="#CC000000"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="62dp"
+        tools:layout_editor_absoluteY="628dp" />
+
+    <TextView
+        android:id="@+id/ingredienti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Ingredienti:"
+        android:textColor="#CC000000"
+        android:textSize="16sp"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="667dp" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
