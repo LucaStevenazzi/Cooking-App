@@ -1,5 +1,7 @@
 package com.example.cooking_app
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +18,7 @@ import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -105,6 +108,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
         //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
+        //DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi per i figli sul riferimento al DB
     }
 
     override fun onStop() {

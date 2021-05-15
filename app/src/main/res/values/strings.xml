@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Cooking-App</string>
     <string name="name_ricetta">Cooking-App</string>
-    <string name="descrizione">Inserisci la descrizione</string>
+    <string name="descrizione">La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!ndjovndwojnjvndknvjkosvndskovndskovndsvkodnvksnvkodnvods</string>
     <string name="descrizione_ricetta">Descrizione Ricetta</string>
     <string name="ADD">add</string>
     <string name="BI">Background Image</string>
@@ -12,7 +12,7 @@
     <string name="STRtipologia">Tipologia</string>
     <string name="STRportata">Portata</string>
     <string name="STRpersone">Persone</string>
-    <string name="STRingredienti">Ingredienti</string>
+    <string name="STRingredienti">Aggiunta Ingredienti</string>
     <string name="HINT">Riempi il campo</string>
     <string name="STRlistaIng">Lista Ingredienti</string>
     <string name="STRnote">Note</string>
@@ -31,7 +31,7 @@
         <item>Dolce</item>
     </string-array>
     <string-array name="array_misure">
-
+        <item></item>
         <item>g</item>
         <item>kg</item>
         <item>ml</item>
@@ -44,10 +44,7 @@
     <string name="HINTing">Es: Farina</string>
     <string name="HINTquantità">Es: 100</string>
     <string name="addIng">+</string>
-    <string name="title" />
-    <string name="todo">TODO</string>
-    <string name="tempo_di_preparazione">Tempo di preparazione</string>
-    <string name="ingredienti">Ingredienti</string>
-    <string name="textview">TextView</string>
+    <string name="anteprima_ricetta">Anteprima ricetta</string>
+    <string name="nome_ricetta">Nome Ricetta</string>
 
 </resources>
