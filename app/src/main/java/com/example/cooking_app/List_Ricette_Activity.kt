@@ -66,7 +66,7 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     private fun initRecyclerView() {
         img = ArrayList()
-        mAdapter = Lista_Ricette_Adapter(img)
+        mAdapter = Lista_Ricette_Adapter(img, context = this)
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
     }

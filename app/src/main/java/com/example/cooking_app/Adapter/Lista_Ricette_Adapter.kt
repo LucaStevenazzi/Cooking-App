@@ -2,6 +2,7 @@
 
 package com.example.cooking_app.Adapter
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -10,24 +11,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.List_Ricette_Activity
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.squareup.picasso.Picasso
 import java.io.File
 import kotlin.collections.ArrayList
 
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
  */
-class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
+class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, context : Context): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
 
     private val TAG = "Lista_Ricette_Adapter"
     private val array : ArrayList<Ricetta> = img
     private val array_copy : ArrayList<Ricetta> = array
+    private val ct = context
     private val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
 
     init{
@@ -62,18 +67,10 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>): Recyc
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         //setting delle immagini e titoli delle ricette
-        /*
-        val immagine = array[position].immagine                                                     //prendo la stringa associata al campo immagine della ricetta contenente il nome dell'immagine
-        val arrayPrefixSuffix = immagine.split(".")                                     //splitto la stringa presa per pttenere un prefisso (nome immagine) e un postfisso (formato)
-        val prefisso = arrayPrefixSuffix[0].toString()
-        val suffisso = arrayPrefixSuffix[1].toString()
-        Log.v("prefisso", prefisso)
-        Log.v("suffisso", suffisso)
-        val localFile = File.createTempFile(prefisso, suffisso)                                     //creo un file temporaneo con le informazioni ottenute
-        Log.v("suffisso", localFile.toString())
-        DBStorage.getFile(localFile)                                                                //cerco il file appena creato nello storage firebase
-        holder.img_ricetta.setImageURI(Uri.fromFile(localFile));                                    //prendo il file ottenuto, lo casto ad Uri e lo setto nella ImageView della lista
-        */
+
+        val immagine = array[position].immagine
+
+        Picasso.with(ct).load(immagine).into(holder.img_ricetta)
         holder.titolo_ricetta.text = array[position].nome
         holder.tempo_ricetta.text = "Tempo : ${array[position].tempo}"
         holder.difficoltà_ricetta.text = "Difficoltà : ${array[position].diff}"
