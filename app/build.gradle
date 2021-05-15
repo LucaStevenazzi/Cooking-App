@@ -45,9 +45,12 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'com.google.firebase:firebase-database-ktx:19.7.0'
     implementation 'com.google.firebase:firebase-storage:19.2.2'
+    implementation 'com.google.firebase:firebase-database:19.7.0'
+    implementation 'androidx.room:room-runtime:2.3.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
-    implementation 'com.google.android.material:material:1.4.0-alpha02'
+    //noinspection GradleDependency
+    implementation 'com.google.android.material:material:1.4.0-beta01'
+    annotationProcessor 'androidx.room:room-compiler:2.3.0'
 }

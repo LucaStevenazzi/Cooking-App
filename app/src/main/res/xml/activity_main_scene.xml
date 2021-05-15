@@ -5,38 +5,146 @@
     xmlns:app="http://schemas.android.com/tools"
     app:ignore="NamespaceTypo">
 
-    <Transition
-        motion:constraintSetEnd="@+id/end"
-        motion:constraintSetStart="@id/start"
-        motion:duration="1000">
-        <KeyFrameSet>
-            <KeyAttribute
-                motion:motionTarget="@+id/img_ricetta"
-                motion:framePosition="100"
-                android:alpha="0" />
-            <KeyAttribute
-                motion:motionTarget="@+id/img_ricetta"
-                motion:framePosition="100"
-                android:scaleX="1" />
-            <KeyAttribute
-                motion:motionTarget="@+id/img_ricetta"
-                motion:framePosition="100"
-                android:scaleY="1" />
-        </KeyFrameSet>
-        <OnSwipe
-            motion:touchAnchorId="@+id/img_ricetta"
-            motion:touchAnchorSide="bottom" />
-        <OnSwipe />
-    </Transition>
-
     <ConstraintSet android:id="@+id/start">
         <Constraint
-            android:layout_height="350dp"
+            motion:layout_constraintVertical_bias="1.0"
+            android:layout_height="0dp"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="0dp"
-            android:id="@+id/img_ricetta" />
+            motion:layout_constraintTop_toBottomOf="@+id/name_ricetta"
+            android:id="@+id/scrollView3" />
+        <Constraint
+            motion:layout_editor_absoluteY="310dp"
+            android:layout_height="wrap_content"
+            motion:layout_editor_absoluteX="25dp"
+            android:layout_width="wrap_content"
+            android:id="@+id/textView" />
+        <Constraint
+            android:layout_height="35dp"
+            android:layout_width="150dp"
+            android:id="@+id/ricetta_time"
+            android:visibility="visible"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp" />
+        <Constraint
+            android:layout_height="35dp"
+            android:layout_width="150dp"
+            android:id="@+id/ricetta_difficolta"
+            android:visibility="visible"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="95dp" />
+        <Constraint
+            motion:layout_editor_absoluteY="393dp"
+            android:layout_height="38dp"
+            motion:layout_editor_absoluteX="3dp"
+            android:layout_width="142dp"
+            android:id="@+id/textView3" />
+        <Constraint
+            android:id="@+id/ricetta_portata"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:visibility="visible"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginTop="195dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"/>
+        <Constraint
+            android:layout_height="35dp"
+            android:layout_width="150dp"
+            android:id="@+id/ricetta_persone"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="145dp"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta" />
+        <Constraint
+            motion:layout_editor_absoluteY="16dp"
+            android:id="@+id/constraintLayout3"
+            motion:layout_constraintEnd_toEndOf="@+id/ricetta_difficolta" />
+        <Constraint
+            android:layout_height="165dp"
+            android:layout_width="150dp"
+            android:id="@+id/ricetta_ingredienti"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="250dp" />
+        <Constraint
+            android:layout_height="35dp"
+            android:layout_width="190dp"
+            android:id="@+id/tempo"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginTop="45dp"
+            android:visibility="visible" />
+        <Constraint
+            android:layout_height="35dp"
+            android:layout_width="190dp"
+            android:id="@+id/difficolta"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="95dp"
+            android:visibility="visible" />
+        <Constraint
+            android:layout_height="35dp"
+            android:layout_width="190dp"
+            android:id="@+id/persone"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginTop="145dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            motion:layout_editor_absoluteY="532dp"
+            android:visibility="visible" />
+        <Constraint
+            android:layout_height="35dp"
+            android:layout_width="190dp"
+            android:id="@+id/portata"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginTop="195dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:visibility="visible" />
+        <Constraint
+            android:layout_height="165sp"
+            android:layout_width="190sp"
+            android:id="@+id/ingredienti"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="250dp"
+            android:visibility="visible" />
+        <Constraint
+            android:id="@+id/descrizione"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+        <Constraint
+            android:layout_height="353dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="393dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/img_ricetta"
+            motion:layout_editor_absoluteY="-1dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -47,7 +155,165 @@
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_editor_absoluteX="205dp"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent" />
+            motion:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible" />
+        <Constraint
+            android:id="@+id/descrizione"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="25dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginRight="25dp"
+            android:layout_marginEnd="25dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="25dp" />
+        <Constraint
+            android:layout_height="768dp"
+            android:layout_width="346dp"
+            android:id="@+id/note"
+            motion:layout_constraintTop_toBottomOf="@+id/img_ricetta"
+            android:layout_marginTop="30dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            motion:layout_editor_absoluteY="-68dp" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/ricetta_time"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/ricetta_time"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/ricetta_difficolta"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/img_ricetta"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/tempo"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/difficolta"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/img_ricetta"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/persone"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/ricetta_persone"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintHorizontal_bias="0.546"
+            motion:layout_constraintTop_toTopOf="@+id/ricetta_time"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/portata"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/img_ricetta"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/ricetta_portata"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/ricetta_time"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/ingredienti"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/img_ricetta"
+            android:visibility="invisible" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/ricetta_ingredienti"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible" />
     </ConstraintSet>
+    <Transition
+        motion:constraintSetStart="@+id/start"
+        motion:constraintSetEnd="@+id/end" >
+        <KeyFrameSet >
+            <KeyAttribute
+                motion:motionTarget="@+id/img_ricetta"
+                motion:framePosition="100"
+                android:alpha="0" />
+            <KeyAttribute
+                motion:motionTarget="@+id/ricetta_time"
+                motion:framePosition="100"
+                android:alpha="0" />
+            <KeyAttribute
+                motion:motionTarget="@+id/ricetta_difficolta"
+                motion:framePosition="100"
+                android:alpha="0" />
+            <KeyAttribute
+                motion:motionTarget="@+id/ricetta_persone"
+                motion:framePosition="100"
+                android:alpha="0.5" />
+            <KeyAttribute
+                motion:motionTarget="@+id/ricetta_portata"
+                motion:framePosition="100"
+                android:alpha="0.5" />
+            <KeyAttribute
+                motion:motionTarget="@+id/ricetta_ingredienti"
+                motion:framePosition="100"
+                android:alpha="0.5" />
+            <KeyAttribute
+                motion:motionTarget="@+id/tempo"
+                motion:framePosition="100"
+                android:alpha="0.5" />
+            <KeyAttribute
+                motion:motionTarget="@+id/difficolta"
+                motion:framePosition="100"
+                android:alpha="0.5" />
+            <KeyAttribute
+                motion:motionTarget="@+id/persone"
+                motion:framePosition="100"
+                android:alpha="0.5" />
+            <KeyAttribute
+                motion:motionTarget="@+id/ingredienti"
+                motion:framePosition="100"
+                android:alpha="0.5" />
+        </KeyFrameSet>
+    </Transition>
 
 </MotionScene>
