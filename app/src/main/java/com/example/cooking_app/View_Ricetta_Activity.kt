@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
 
@@ -71,7 +72,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     private fun setDati(ricetta: Ricetta) {
         title = ricetta.nome // settagio del titolo della Activity
-       // img_ricetta.setImageResource(ricetta.immagine) //set immagine
+        Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
         ricetta_time.text = ricetta.tempo
         ricetta_difficolta.text = ricetta.diff
         ricetta_persone.text = ricetta.persone.toString()
