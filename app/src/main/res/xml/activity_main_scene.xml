@@ -294,13 +294,13 @@
                 motion:framePosition="100"
                 android:alpha="0.5" />
             <KeyAttribute
-                motion:motionTarget="@+id/img_ricetta"
-                motion:framePosition="0"
-                android:translationY="30dp" />
-            <KeyAttribute
                 motion:motionTarget="@+id/ricetta_time"
                 motion:framePosition="100"
                 android:translationY="30dp" />
+            <KeyAttribute
+                motion:motionTarget="@+id/img_ricetta"
+                motion:framePosition="100"
+                android:alpha="0.5" />
         </KeyFrameSet>
         <OnSwipe motion:touchAnchorSide="bottom" />
     </Transition>
