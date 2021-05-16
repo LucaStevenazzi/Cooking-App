@@ -24,7 +24,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
     private var ricetta : Ricetta = Ricetta()
     private var ingredienti : Ingredienti = Ingredienti()
     private val ref = FirebaseDatabase.getInstance().reference
-    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette")
+    private var flag_update =  false
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,55 +32,11 @@ class View_Ricetta_Activity : AppCompatActivity() {
         setContentView(R.layout.view_ricetta_activity)
 
         Log.v(TAG , "onCreate")
-        ricetta = getRicettaExtra()
-        setDati(ricetta)
+
+        ricetta = getRicettaExtra() // prende la ricetta dagli extra dell'intent
+        updateRicetta()
+        setDati() // setta i dati della ricetta sull'layout dell'activity
     }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.v(TAG , "onRestart")
-        ricetta = updateRicetta()
-        setDati(ricetta)
-    }
-
-    private fun updateRicetta(): Ricetta {
-        var ricetta_update: Ricetta = Ricetta()
-        val applesQuery: Query = ref.child("ricette").child(ricetta.nome)
-
-        applesQuery.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val key = dataSnapshot.key
-                Log.v(TAG , "$key")
-                for (ds in dataSnapshot.children) {
-                    if (key == ricetta.nome){
-                        ricetta_update = ds.getValue(Ricetta::class.java)!!
-                        Log.v(TAG , "$ricetta_update")
-                    }else{
-                        Log.v(TAG , "ricetta non letta")
-                    }
-
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
-                Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
-            }
-        })
-
-        return ricetta_update
-    }
-
-    private fun setDati(ricetta: Ricetta) {
-        title = ricetta.nome // settagio del titolo della Activity
-        Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
-        ricetta_time.text = ricetta.tempo
-        ricetta_difficolta.text = ricetta.diff
-        ricetta_persone.text = ricetta.persone.toString()
-        ricetta_portata.text = ricetta.portata
-        ricetta_ingredienti.text = ricetta.listaIngredienti.toString()
-        //ricetta_note.text = ricetta.note
-    }
-
     private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent di creazione
 
         var ricetta : Ricetta = Ricetta()
@@ -95,7 +51,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
         ricetta.note = intent.getStringExtra("Note").toString()
         return ricetta
     }
-
     private fun getIngredientiExtra() {
         val count = intent.getIntExtra("Count" , 0)
         if(count == 0) return
@@ -106,12 +61,49 @@ class View_Ricetta_Activity : AppCompatActivity() {
             ricetta.listaIngredienti.add(ingredienti)
         }
     }
+    private fun setDati() {
+        title = ricetta.nome // settagio del titolo della Activity
+        Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
+        ricetta_time.text = ricetta.tempo
+        ricetta_difficolta.text = ricetta.diff
+        ricetta_persone.text = ricetta.persone.toString()
+        ricetta_portata.text = ricetta.portata
+        ricetta_ingredienti.text = ricetta.listaIngredienti.toString()
+        //ricetta_note.text = ricetta.note
+    }
 
+    //fare l'update della ricetta modificata
+    override fun onRestart() {
+        super.onRestart()
+        Log.v(TAG , "onRestart")
+        updateRicetta()
+        setDati()
+    }
+    private fun updateRicetta() {
+        val applesQuery = ref.child("ricette")
+
+        applesQuery.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (ds in dataSnapshot.children) {
+                    if (ds.key == ricetta.nome){
+                        ricetta = ds.getValue(Ricetta::class.java)!!
+                        Toast.makeText(this@View_Ricetta_Activity , "Update ${ricetta.nome} succes ", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
+                Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
+            }
+        })
+    }
+
+
+
+    //creazione dell'option menu Edit and Delete delle ricette
     override fun onCreateOptionsMenu(menu: Menu?): Boolean { //inizializzaizione OptionsMenu
         menuInflater.inflate(R.menu.edit_or_delete, menu)
         return true
     }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean { //Premuta pulsanti opzioni per la modifica o la cancellazione della ricetta
         when(item.itemId){
             R.id.image_edit -> {
@@ -125,13 +117,11 @@ class View_Ricetta_Activity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun editRicetta() {
-        var intent = Intent(this, AddNewRecipeActivity::class.java)
-        intent.putExtras(getIntent())
+    private fun editRicetta() { //far partire una l'activity per l'edit di una ricetta
+        val intent = Intent(this, AddNewRecipeActivity::class.java)
+        intent.putExtras(this.intent) // prendo l'intent gia precedentemente utilizzato per quest'activity
         startActivity(intent)
     }
-
     private fun deleteRicettaToList() { //elimino la ricetta che è stata aperta
         val applesQuery: Query = ref.child("ricette").child(ricetta.nome)
 
