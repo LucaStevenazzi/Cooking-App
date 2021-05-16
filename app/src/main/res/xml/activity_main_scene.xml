@@ -150,8 +150,8 @@
             android:id="@+id/ricetta_descrizione"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            motion:layout_editor_absoluteY="361dp"
-            motion:layout_editor_absoluteX="155dp"
+            motion:layout_editor_absoluteY="254dp"
+            motion:layout_editor_absoluteX="0dp"
             android:visibility="invisible" />
         <Constraint
             android:id="@+id/scrollView2"

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cooking_app.Classi.Ingredienti
@@ -79,7 +80,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         ricetta_persone.text = ricetta.persone.toString()
         ricetta_portata.text = ricetta.portata
         ricetta_ingredienti.text = ricetta.listaIngredienti.toString()
-     //   ricetta_descrizione.text = ricetta.note
+        ricetta_descrizione.text = ricetta.note
     }
 
     private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent di creazione
