@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutDescription="@xml/activity_main_scene"
+    android:scrollbars="vertical"
     tools:context=".View_Ricetta_Activity">
+
 
     <ImageView
         android:id="@+id/img_ricetta"
@@ -63,7 +65,7 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="530dp" />
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ricetta_ingredienti"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

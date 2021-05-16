@@ -139,7 +139,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.note = intent.getStringExtra("Note").toString()
     }
     private fun getIngredientiExtra() {
-        val ingredienti = Ingredienti()
         val count = intent.getIntExtra("Count" , 0)
         if(count == 0) return
         for(i in 0 until count){
