@@ -130,16 +130,28 @@
         tools:layout_editor_absoluteX="29dp"
         tools:layout_editor_absoluteY="667dp" />
 
-    <TextView
-        android:id="@+id/ricetta_descrizione"
-        android:layout_width="0dp"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/detailScrollView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:scrollbars="vertical"
-        android:text="@string/descrizione"
-        android:textColor="#CC000000"
-        android:textSize="17sp"
-        tools:layout_editor_absoluteX="155dp"
-        tools:layout_editor_absoluteY="361dp" />
+        tools:layout_editor_absoluteY="330dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ricetta_descrizione"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/descrizione"
+                android:textColor="#CC000000"
+                android:textSize="17sp"
+                tools:layout_editor_absoluteX="155dp"
+                tools:layout_editor_absoluteY="361dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
