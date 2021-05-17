@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="378dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_5"
+        android:src="@android:drawable/ic_menu_report_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +84,7 @@
         android:fontFamily="sans-serif"
         android:text="Tempo di preparazione:"
         android:textColor="#CC000000"
-        android:textSize="16sp"
+        android:textSize="17sp"
         tools:layout_editor_absoluteX="33dp"
         tools:layout_editor_absoluteY="287dp" />
 
@@ -95,7 +95,7 @@
         android:fontFamily="sans-serif"
         android:text="Difficolta di preparazione:"
         android:textColor="#CC000000"
-        android:textSize="16sp"
+        android:textSize="17sp"
         tools:layout_editor_absoluteX="15dp"
         tools:layout_editor_absoluteY="502dp" />
 
@@ -106,7 +106,7 @@
         android:fontFamily="sans-serif"
         android:text="Numero di persone:"
         android:textColor="#CC000000"
-        android:textSize="16sp"
+        android:textSize="17sp"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="523dp" />
 
@@ -117,7 +117,7 @@
         android:fontFamily="sans-serif"
         android:text="Portata:"
         android:textColor="#CC000000"
-        android:textSize="16sp"
+        android:textSize="17sp"
         tools:layout_editor_absoluteX="62dp"
         tools:layout_editor_absoluteY="628dp" />
 
@@ -128,8 +128,32 @@
         android:fontFamily="sans-serif"
         android:text="Ingredienti:"
         android:textColor="#CC000000"
-        android:textSize="16sp"
+        android:textSize="17sp"
         tools:layout_editor_absoluteX="29dp"
         tools:layout_editor_absoluteY="667dp" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/detailScrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="330dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ricetta_descrizione"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/descrizione"
+                android:textColor="#CC000000"
+                android:textSize="17sp"
+                tools:layout_editor_absoluteX="155dp"
+                tools:layout_editor_absoluteY="361dp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
