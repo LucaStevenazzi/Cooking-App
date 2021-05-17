@@ -4,24 +4,19 @@ package com.example.cooking_app.Adapter
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
-import com.example.cooking_app.List_Ricette_Activity
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
-import java.io.File
 import kotlin.collections.ArrayList
 
 /*
@@ -33,11 +28,6 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     private val array : ArrayList<Ricetta> = img
     private val array_copy : ArrayList<Ricetta> = array
     private val ct = context
-    private val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
-
-    init{
-
-    }
 
 
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -140,7 +130,4 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
             notifyDataSetChanged()
         }
     }
-
 }
-
-

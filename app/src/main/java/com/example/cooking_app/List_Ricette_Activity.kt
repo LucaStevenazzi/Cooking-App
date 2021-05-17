@@ -1,7 +1,5 @@
 package com.example.cooking_app
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,8 +16,8 @@ import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
-import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 
 /*
@@ -30,20 +28,16 @@ Main Activity con lista di ricette
 class List_Ricette_Activity : AppCompatActivity(){
 
     private val TAG = "List_Ricette_Activity"
-
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette") //radice dell'albero per la View delle ricette
     private lateinit var mRicetteValueListener: ValueEventListener
     private lateinit var img: ArrayList<Ricetta>
     private lateinit var mAdapter: Lista_Ricette_Adapter
-
     private lateinit var toggle: ActionBarDrawerToggle
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
-
-
 
         initRecyclerView() //inizializzazione Lista delle ricette
         initBarMenuLateral() //inizializzazione Barra laterale del menu
@@ -105,10 +99,10 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     override fun onStart() {
         super.onStart()
-        mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
-        //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
+        thread{
+        mRicetteValueListener = getDataToFireBase()                      //visulaizza i dati delle ricette
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
-        //DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi per i figli sul riferimento al DB
+        }
     }
 
     override fun onStop() {
@@ -138,4 +132,3 @@ class List_Ricette_Activity : AppCompatActivity(){
         return postListener
     }
 }
-

@@ -13,7 +13,6 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
-
 /*
 Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
  */
@@ -24,7 +23,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
     private var ricetta : Ricetta = Ricetta()
     private var ingredienti : Ingredienti = Ingredienti()
     private val ref = FirebaseDatabase.getInstance().reference
-    private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette")
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +42,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
     }
 
     private fun updateRicetta(): Ricetta {
-        var ricetta_update: Ricetta = Ricetta()
+        var ricetta_update = Ricetta()
         val applesQuery: Query = ref.child("ricette").child(ricetta.nome)
 
         applesQuery.addValueEventListener(object : ValueEventListener {
@@ -72,7 +70,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     private fun setDati(ricetta: Ricetta) {
         title = ricetta.nome // settagio del titolo della Activity
-        Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
+        Picasso.with(this).load(ricetta.immagine).into(img_ricetta)     //setta l'immagine della ricetta come immagine nell'activity
         ricetta_time.text = ricetta.tempo
         ricetta_difficolta.text = ricetta.diff
         ricetta_persone.text = ricetta.persone.toString()
@@ -83,7 +81,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     private fun getRicettaExtra(): Ricetta { //ottenere la ricetta dall'intent di creazione
 
-        var ricetta : Ricetta = Ricetta()
+        val ricetta = Ricetta()
         ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
         ricetta.diff = intent.getStringExtra("Difficoltà").toString()

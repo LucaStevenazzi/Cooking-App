@@ -1,5 +1,6 @@
 package com.example.cooking_app
 
+import android.app.ActionBar
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -9,9 +10,12 @@ import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.isDigitsOnly
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
@@ -19,8 +23,10 @@ import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.*
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
+import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import kotlin.random.Random
 
 
@@ -53,26 +59,15 @@ class AddNewRecipeActivity : AppCompatActivity() {
         if (intent.extras != null) { //se esite l'intent con degli extra allora carica la ricetta scelta per la modifica
             title = "Update Ricetta "
             ButtonOK.text = "Aggiorna ricetta"
+            ETnome.isEnabled = false
             setDatiRicetta()
-            getRicettaExtra()
         }
 
     }
 
-    private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
-        ricetta.immagine = intent.getStringExtra("immagine").toString()
-        ricetta.nome = intent.getStringExtra("Nome").toString()
-        ricetta.diff = intent.getStringExtra("Difficoltà").toString()
-        ricetta.tempo = intent.getStringExtra("Tempo").toString()
-        ricetta.tipologia = intent.getStringExtra("Tipologia").toString()
-        ricetta.portata = intent.getStringExtra("Portata").toString()
-        ricetta.persone = intent.getIntExtra("Persone", 0)
-        ricetta.listaIngredienti = intent.getStringArrayListExtra("ListaIngredienti") as ArrayList<Ingredienti>
-        ricetta.note = intent.getStringExtra("Note").toString()
-    }
-
     private fun setDatiRicetta() { //settagio dei dati per l'intent
-        IVimmagine.setImageResource(intent.getIntExtra("Immagine", 0))
+        ricetta.immagine = intent.getStringExtra("Immagine").toString()
+        Picasso.with(this).load(ricetta.immagine).into(IVimmagine)
         ETnome.setText(intent.getStringExtra("Nome").toString())
         when (intent.getStringExtra("Difficoltà").toString()) {
             "BASSA" -> spinner_diff.setSelection(0)
@@ -169,7 +164,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     fun saveRecipe(v: View) {      //onClick del button che salva i dati della ricetta nel DB
 
-        if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
+        if (intent.extras != null) { //se l'intent esiste allora si apre l'activity per fare UPDATE della ricetta al DB
 
             val update_ricetta = saveRicettaDB()
 
@@ -179,7 +174,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         } else { //altrimenti aggiungo ricetta al DB
 
-            //salvataggio immagine
+            //salvataggio nuova ricetta
             uploadFile()
         }
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
@@ -206,10 +201,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
         //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
         fileReference.putFile(imageUri).addOnSuccessListener {
             taskSnapshot ->
-            fileReference.downloadUrl.addOnCompleteListener() {
+            fileReference.downloadUrl.addOnCompleteListener {
                 taskSnapshot ->
                 val url = taskSnapshot.result.toString()
-
                 val immagine = url
                 val nome = ETnome.text.toString()
                 val diff = spinner_diff.selectedItem.toString()
@@ -243,6 +237,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     //funzione che serve per
     private fun saveRicettaDB(): Ricetta {
         val ricetta= Ricetta()
+        //ricetta.immagine =
         ricetta.nome = ETnome.text.toString()
         ricetta.diff = spinner_diff.selectedItem.toString()
         ricetta.tempo = ETtempo.text.toString()
