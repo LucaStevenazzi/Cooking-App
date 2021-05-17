@@ -65,7 +65,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     }//metoco che restituisce il numero di Item nella lista delle ricette
 
     //passaggio tramite intent della ricetta selezionata
-    private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {
+    private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
         ricette = ricetta
         intent.putExtra("Immagine", ricette.immagine)
         intent.putExtra("Nome", ricette.nome)
@@ -77,9 +77,8 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         putIngredintiExtra(intent)
         intent.putExtra("ListaIngredienti", ricette.listaIngredienti)
         intent.putExtra("Note", ricette.note)
-
-    } //inserisco nell'intent i valori della ricetta che è stata cliccata
-    private fun putIngredintiExtra(intent: Intent) {
+    }
+    private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti
         val count = ricette.listaIngredienti.size
         if(count == 0) return
         for( i in ricette.listaIngredienti.indices) {
@@ -88,10 +87,10 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
             intent.putExtra("Ingrediente $i misura", ricette.listaIngredienti[i].misura)
         }
         intent.putExtra("Count", count)
-    }//salvataggio nell'intent dei dati degli ingredienti
+    }
 
     //ricerca
-    private var searchFilter: Filter = object : Filter() {
+    private var searchFilter: Filter = object : Filter() { //funzione che restituisce un oggetto Filter per la ricerca
         override fun performFiltering(constraint: CharSequence): FilterResults {
             val filteredList: ArrayList<Ricetta> = ArrayList()
             if (constraint.toString().isEmpty()) {
@@ -116,9 +115,9 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
             notifyDataSetChanged()
         }
     } //variabile filtro per nome nella ricerca
-    override fun getFilter(): Filter {
+    override fun getFilter(): Filter {//metodo per la il filtraggio della ricerca in base al testo che scrivi
         return searchFilter
-    }//metodo per la il filtraggio della ricerca in base al testo che scrivi
+    }
 
 
 

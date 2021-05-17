@@ -26,11 +26,9 @@ import kotlin.collections.ArrayList
 Main Activity con lista di ricette
  */
 
-@Suppress("UNREACHABLE_CODE")
 class List_Ricette_Activity : AppCompatActivity(){
 
     private val TAG = "List_Ricette_Activity"
-
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette") //radice dell'albero per la View delle ricette
     private lateinit var mRicetteValueListener: ValueEventListener
     private lateinit var img: ArrayList<Ricetta>
@@ -43,12 +41,11 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
 
-
         setCompopnent()
 
     }
 
-    //settaggio componenti Activity
+    //settaggio dei componenti
     private fun setCompopnent() {
         initRecyclerView() //inizializzazione Lista delle ricette
         initBarMenuLateral() //inizializzazione Barra laterale del menu
@@ -69,7 +66,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     }
     private fun initRecyclerView() {
         img = ArrayList()
-        mAdapter = Lista_Ricette_Adapter(img, context = this)
+        mAdapter = Lista_Ricette_Adapter(img, this)
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
     }
