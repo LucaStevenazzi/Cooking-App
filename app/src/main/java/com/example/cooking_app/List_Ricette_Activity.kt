@@ -44,11 +44,15 @@ class List_Ricette_Activity : AppCompatActivity(){
         setContentView(R.layout.list_ricette_activity)
 
 
+        setCompopnent()
 
+    }
+
+    //settaggio componenti Activity
+    private fun setCompopnent() {
         initRecyclerView() //inizializzazione Lista delle ricette
         initBarMenuLateral() //inizializzazione Barra laterale del menu
     }
-
     private fun initBarMenuLateral() {
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -63,7 +67,6 @@ class List_Ricette_Activity : AppCompatActivity(){
             true
         }
     }
-
     private fun initRecyclerView() {
         img = ArrayList()
         mAdapter = Lista_Ricette_Adapter(img, context = this)
@@ -103,6 +106,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         return super.onOptionsItemSelected(item)
     }
 
+    //lettura dei dati da Firebase
     override fun onStart() {
         super.onStart()
         mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
@@ -110,14 +114,11 @@ class List_Ricette_Activity : AppCompatActivity(){
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
         //DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi per i figli sul riferimento al DB
     }
-
     override fun onStop() {
         Log.e(TAG,"onStop")
         super.onStop()
         DBricette!!.removeEventListener(mRicetteValueListener)
     }
-
-    //lettura dei dati da Firebase
     private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {

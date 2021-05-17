@@ -40,6 +40,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     }
 
+    //settaggio dei componenti nell'activity
     private fun setComponent() { //settiamo la RecyclerView per la lista degli ingredienti nella View_Ricetta
         ricetta_ingredienti.layoutManager = LinearLayoutManager(this)
         ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti) //pasaggio del context per capie che activity chiama l'adapter
@@ -110,6 +111,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         putRicettaExtra(intent)
         startActivity(intent)
     }
+
     //passaggio tramite intent della ricetta selezionata
     private fun putRicettaExtra(intent: Intent) {//inserisco nell'intent i valori della ricetta che è stata cliccata
         intent.putExtra("Immagine", ricetta.immagine)

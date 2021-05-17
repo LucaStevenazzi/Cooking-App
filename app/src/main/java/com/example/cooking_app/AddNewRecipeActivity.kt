@@ -43,12 +43,12 @@ class AddNewRecipeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_recipe)
 
-        setComponent() // settaggio di tutti i componenti dell'activity
+        setComponent()
 
-        checkUpdateMode() // Update della ricetta
-
+        checkUpdateMode()
     }
 
+    // settaggio di tutti i componenti dell'activity
     private fun setComponent() {
         setSpinner() //settaggio degli spinner per la visualizzazione delle PORTATE / DIFFICOLTà / MISURE
         setRecyclerView()//Codice per la lista degli ingredianti
@@ -114,6 +114,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         )
     }
 
+    // Update della ricetta
     private fun checkUpdateMode() {
         if (intent.extras != null) { //se esite l'intent con degli extra allora carica la ricetta scelta per essere modificafata
             setComponentToUpdate()//dove vengono settatti tutti componeti per l'update
@@ -171,6 +172,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ETnote.setText(ricetta.note)
     }
 
+    //onClick sul salvataggio della nuova ricetta o l'update della ricetta selezionata
     fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
 
         if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
