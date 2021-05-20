@@ -23,11 +23,11 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
 
     private val TAG = "Lista_Ricette_Adapter"
     private val array : ArrayList<Ricetta> = img
-    private val arrayCopy : ArrayList<Ricetta> = array
+    private val arrayCopy : ArrayList<Ricetta> = ArrayList(array)
     private lateinit var ricette : Ricetta
     private val ct = context
 
-    inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
 
         private var cv : CardView = itemView.findViewById(R.id.cv_lista_ricette)
         var img_ricetta : ImageView = itemView.findViewById(R.id.img_ricetta)
@@ -46,11 +46,11 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
             }
         }
 
-    }//classe che gestisce le View della RecycleView
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ricetta_list,parent,false))
-    }//assegnazione del tipo di layout all'Hoder della RecycleView
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+    }
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {//assegna i dati alle righe della RecycleView
         //setting delle immagini e titoli delle ricette
         Picasso.with(ct).load(array[position].immagine).into(holder.img_ricetta)
         holder.titolo_ricetta.text = array[position].nome
@@ -59,10 +59,10 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         val diff = "Difficoltà : ${array[position].diff}"
         holder.difficolta_ricetta.text = diff
 
-    }//assegna i dati alle righe della RecycleView
-    override fun getItemCount(): Int {
+    }
+    override fun getItemCount(): Int {//metoco che restituisce il numero di Item nella lista delle ricette
         return array.size
-    }//metoco che restituisce il numero di Item nella lista delle ricette
+    }
 
     //passaggio tramite intent della ricetta selezionata
     private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
@@ -90,6 +90,9 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     }
 
     //ricerca
+    override fun getFilter(): Filter {//metodo per la il filtraggio della ricerca in base al testo che scrivi
+        return searchFilter
+    }
     private var searchFilter: Filter = object : Filter() { //funzione che restituisce un oggetto Filter per la ricerca
         override fun performFiltering(constraint: CharSequence): FilterResults {
             val filteredList: ArrayList<Ricetta> = ArrayList()
@@ -98,7 +101,9 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
             } else {
                 val filterPattern = constraint.toString().toLowerCase(Locale.ROOT)
                 for (item in arrayCopy) {
-                    if (item.nome.toLowerCase(Locale.ROOT).contains(filterPattern)) {
+                    //tipo di ricerca
+
+                    if (item.nome.toLowerCase(Locale.ROOT).contains(filterPattern)) {//per nome
                         filteredList.add(item)
                     }
                 }
@@ -111,15 +116,10 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
             array.clear()
-            array.addAll(results.values as List<Ricetta>)
+            array.addAll(results.values as ArrayList<Ricetta>)
             notifyDataSetChanged()
         }
     } //variabile filtro per nome nella ricerca
-    override fun getFilter(): Filter {//metodo per la il filtraggio della ricerca in base al testo che scrivi
-        return searchFilter
-    }
-
-
 
 }
 

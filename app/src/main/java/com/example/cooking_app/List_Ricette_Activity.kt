@@ -1,7 +1,5 @@
 package com.example.cooking_app
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,15 +10,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
+import androidx.appcompat.widget.SearchView
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
-import java.util.*
-import kotlin.collections.ArrayList
-
 
 /*
 Main Activity con lista di ricette
@@ -31,7 +26,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     private val TAG = "List_Ricette_Activity"
     private var DBricette : DatabaseReference? = FirebaseDatabase.getInstance().getReference().child("ricette") //radice dell'albero per la View delle ricette
     private lateinit var mRicetteValueListener: ValueEventListener
-    private lateinit var img: ArrayList<Ricetta>
+    private var img: ArrayList<Ricetta> = ArrayList()
     private lateinit var mAdapter: Lista_Ricette_Adapter
 
     private lateinit var toggle: ActionBarDrawerToggle
@@ -47,7 +42,6 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     //settaggio dei componenti
     private fun setCompopnent() {
-        initRecyclerView() //inizializzazione Lista delle ricette
         initBarMenuLateral() //inizializzazione Barra laterale del menu
     }
     private fun initBarMenuLateral() {
@@ -65,7 +59,6 @@ class List_Ricette_Activity : AppCompatActivity(){
         }
     }
     private fun initRecyclerView() {
-        img = ArrayList()
         mAdapter = Lista_Ricette_Adapter(img, this)
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
@@ -77,39 +70,76 @@ class List_Ricette_Activity : AppCompatActivity(){
         startActivity(it)
     }
 
-    //Ricerca
-    override fun onCreateOptionsMenu(menu: Menu):Boolean{
+    //Settaggio ToolBar
+    override fun onCreateOptionsMenu(menu: Menu):Boolean {
         menuInflater.inflate(R.menu.search, menu)
-        val searchItem = menu.findItem(R.id.search_icon)
-        val searchView = searchItem.actionView as SearchView
-        searchView.imeOptions = EditorInfo.IME_ACTION_DONE //cambio pulsante della tastiera da search a conferma
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                mAdapter.filter.filter(query)
-                return false
+        val search = menu.findItem(R.id.search_icon)
+        val filter = menu.findItem(R.id.search_filter)
+        val carrello = menu.findItem(R.id.carrello)
+
+
+        search.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+                carrello.isVisible = false
+                filter.isVisible = true
+                search.isVisible = false
+                return true
             }
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                //controlla nell'array di ricette
-                mAdapter.filter.filter(newText)
-                return false
+            override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {  //fine della ricerca inizializza la OptionMenu
+                invalidateOptionsMenu()
+                return true
             }
         })
         return true
     }
 
-    //selezione del funzione della MenuBar laterale
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {//selezione del funzione dell'OptionMenu
+        return when(item.itemId){
+            R.id.search_filter -> {
+                //fragment per la scelta del filtro della ricerca
+                applicaFiltro()
+                true
+            }
+            R.id.search_icon -> {
+                search(item)
+                true
+            }
+            R.id.carrello -> {
+                //start fragment carrello
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    private fun applicaFiltro() {
+
+    }
+
+    //ricerca
+    private fun search(item: MenuItem) {
+        val searchItem = item.actionView as SearchView
+        searchItem.imeOptions = EditorInfo.IME_ACTION_DONE //cambio pulsante della tastiera da search a conferma
+        searchItem.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                //controlla nell'array di ricette
+                mAdapter.filter.filter(newText)
+                return true
+            }
+        })
     }
 
     //lettura dei dati da Firebase
     override fun onStart() {
         super.onStart()
         mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
-        //img?.clear() //cancello la lista delle ricette per non aggiungerle piu volte nel list_ricette = RecyclerView
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
-        //DBricette!!.addChildEventListener(mRicettaChildListener)         //aggiungiamo il listener degli eventi per i figli sul riferimento al DB
     }
     override fun onStop() {
         Log.e(TAG,"onStop")
@@ -124,6 +154,7 @@ class List_Ricette_Activity : AppCompatActivity(){
                     val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
                     img.add(ricetta!!)
                 }
+                initRecyclerView() //inizializzazione Lista delle ricette
                 mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
             }
 
@@ -135,5 +166,6 @@ class List_Ricette_Activity : AppCompatActivity(){
         }
         return postListener
     }
+
 }
 
