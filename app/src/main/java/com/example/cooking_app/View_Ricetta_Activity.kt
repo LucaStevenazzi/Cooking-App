@@ -60,6 +60,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         ricetta.portata = intent.getStringExtra("Portata").toString()
         ricetta.persone = intent.getIntExtra("Persone", 0)
         getIngredientiExtra()
+        ricetta.descrizione = intent.getStringExtra("Descrizione").toString()
         ricetta.note = intent.getStringExtra("Note").toString()
     }
     private fun getIngredientiExtra() {
@@ -81,7 +82,8 @@ class View_Ricetta_Activity : AppCompatActivity() {
         ricetta_persone.text = ricetta.persone.toString()
         ricetta_portata.text = ricetta.portata
         ricetta.listaIngredienti = lista_ingredienti
-        //ricetta_note.text = ricetta.note
+        ricetta_descrizione.text = ricetta.descrizione
+        ricetta_note.text = ricetta.note
     }
 
     //fare l'update della ricetta modificata
@@ -125,6 +127,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
         intent.putExtra("Persone", ricetta.persone)
         putIngredintiExtra(intent)
         intent.putExtra("ListaIngredienti", ricetta.listaIngredienti)
+        intent.putExtra("Descrizione", ricetta.descrizione)
         intent.putExtra("Note", ricetta.note)
 
     }

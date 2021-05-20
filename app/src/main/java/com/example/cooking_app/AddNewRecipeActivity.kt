@@ -152,6 +152,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.portata = intent.getStringExtra("Portata").toString()
         ricetta.persone = intent.getIntExtra("Persone", 0)
         getIngredientiExtra()
+        ricetta.descrizione = intent.getStringExtra("Descrizione").toString()
         ricetta.note = intent.getStringExtra("Note").toString()
     }
     private fun getIngredientiExtra() {
@@ -184,6 +185,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
         ETpersone.setText(ricetta.persone.toString())
         //gli ingredienti sono gia stati settati tramite l'adapter collegato alla ricetta_ingredienti
+        ETdescrizione.setText(ricetta.descrizione)
         ETnote.setText(ricetta.note)
     }
 
@@ -213,6 +215,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.portata = spinner_portata.selectedItem.toString()
         ricetta.persone = ETpersone.text.toString().toInt()
         ricetta.listaIngredienti = lista_ingredienti
+        ricetta.descrizione = ETdescrizione.text.toString()
         ricetta.note = ETnote.text.toString()
     }
     private fun uploadFile() {//funzione che aggiunge allo DBStorage l'immagine scelta
@@ -232,6 +235,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
                 val tipologia = ETtipologia.text.toString()
                 val portata = spinner_portata.selectedItem.toString()
                 val numPersone = ETpersone.text.toString().toInt()
+                val descrizione = ETdescrizione.text.toString()
                 val note = ETnote.text.toString()
 
                 /*fare i check prima di salvare la ricetta
@@ -240,7 +244,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
                     3- ...
                  */
 
-                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
+                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, descrizione, note)
 
 
                 //salvataggio degli ingredienti sul DB

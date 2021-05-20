@@ -76,6 +76,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         intent.putExtra("Persone", ricette.persone)
         putIngredintiExtra(intent)
         intent.putExtra("ListaIngredienti", ricette.listaIngredienti)
+        intent.putExtra("Descrizione", ricetta.descrizione)
         intent.putExtra("Note", ricette.note)
     }
     private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti

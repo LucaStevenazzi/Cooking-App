@@ -51,5 +51,12 @@
     <string name="carrello">carrello</string>
     <string name="scegli_il_metodo_di_inserimento">Scegli il metodo di inserimento:</string>
     <string name="annulla">Annulla</string>
+    <string name="Descrizione">Descrizione</string>
+    <string name="aggiungi_metodo_di_preparazione">Aggiungi metodo di preparazione</string>
+    <string name="tempo_di_preparazione">Tempo di preparazione:</string>
+    <string name="difficolta_di_preparazione">Difficolta di preparazione:</string>
+    <string name="numero_di_persone">Numero di persone:</string>
+    <string name="portata">Portata:</string>
+    <string name="ingredienti">Ingredienti:</string>
 
 </resources>

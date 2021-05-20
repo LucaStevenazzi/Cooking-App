@@ -13,16 +13,16 @@
         android:layout_height="match_parent"
         tools:context=".View_Ricetta_Activity">
 
-    <ImageView
-        android:id="@+id/img_ricetta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_report_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/img_ricetta"
+            android:layout_width="match_parent"
+            android:layout_height="378dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_report_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/ricetta_time"
@@ -80,22 +80,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ricetta_persone" />
 
-    <TextView
-        android:id="@+id/ricetta_ingredienti"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
-        android:fontFamily="sans-serif"
-        android:scrollbars="vertical"
-        android:text="@string/STRingredienti"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ricetta_portata" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ricetta_ingredienti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:fontFamily="sans-serif"
+            android:scrollbars="vertical"
+            android:text="@string/STRingredienti"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ricetta_portata" />
 
-    <TextView
+        <TextView
         android:id="@+id/tempo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:fontFamily="sans-serif"
-        android:text="Tempo di preparazione:"
+        android:text="@string/tempo_di_preparazione"
         android:textColor="#CC000000"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +117,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:fontFamily="sans-serif"
-        android:text="Difficolta di preparazione:"
+        android:text="@string/difficolta_di_preparazione"
         android:textColor="#CC000000"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +130,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:fontFamily="sans-serif"
-        android:text="Numero di persone:"
+        android:text="@string/numero_di_persone"
         android:textColor="#CC000000"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +144,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:fontFamily="sans-serif"
-        android:text="Portata:"
+        android:text="@string/portata"
         android:textColor="#CC000000"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -158,31 +158,39 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:fontFamily="sans-serif"
-        android:text="Ingredienti:"
+        android:text="@string/ingredienti"
         android:textColor="#CC000000"
         android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/portata" />
 
-    <TextView
-        android:id="@+id/ricetta_descrizione"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/descrizione"
-        android:scrollbars="vertical"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ricetta_ingredienti" />
+        <TextView
+            android:id="@+id/ricetta_descrizione"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginRight="25dp"
+            android:fontFamily="sans-serif"
+            android:scrollbars="vertical"
+            android:text="@string/descrizione"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ricetta_ingredienti" />
 
         <TextView
             android:id="@+id/ricetta_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginLeft="25dp"
             android:layout_marginTop="35dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginRight="25dp"
             android:fontFamily="sans-serif"
             android:text="@string/STRnote"
             android:textColor="#000000"

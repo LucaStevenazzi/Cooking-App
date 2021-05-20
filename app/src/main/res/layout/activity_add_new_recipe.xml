@@ -293,6 +293,29 @@
 
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/TVdescrizione"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/Descrizione" />
+
+                <EditText
+                    android:id="@+id/ETdescrizione"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:hint="@string/aggiungi_metodo_di_preparazione"
+                    android:inputType="text" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
