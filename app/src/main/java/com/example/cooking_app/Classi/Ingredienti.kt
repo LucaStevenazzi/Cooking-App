@@ -11,4 +11,8 @@ data class Ingredienti(var Name: String, var quantit: String, var misura: String
 
     constructor(): this ("", "" , "")
 
+    override fun toString(): String {
+        return "${this.Name}  " + "${this.quantit}  " + "${this.misura}"
+    }
+
 }

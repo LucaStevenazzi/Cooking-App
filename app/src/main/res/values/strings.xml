@@ -47,5 +47,9 @@
     <string name="anteprima_ricetta">Anteprima ricetta</string>
     <string name="nome_ricetta">Nome Ricetta</string>
     <string name="search">Search</string>
+    <string name="filter">filter</string>
+    <string name="carrello">carrello</string>
+    <string name="scegli_il_metodo_di_inserimento">Scegli il metodo di inserimento:</string>
+    <string name="annulla">Annulla</string>
 
 </resources>
