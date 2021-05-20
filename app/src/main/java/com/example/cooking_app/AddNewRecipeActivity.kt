@@ -1,15 +1,25 @@
 package com.example.cooking_app
 
+
+import android.Manifest.permission.*
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.*
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
@@ -21,7 +31,11 @@ import com.google.firebase.storage.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
+import kotlinx.android.synthetic.main.choice_image.view.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
+import java.io.*
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 
@@ -37,6 +51,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
     private lateinit var imageUri: Uri
+    private var flag_img : Boolean = true
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,13 +204,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
     }
-    private fun getFileExtension(uri: Uri): String {
-        val cr = contentResolver
-        val mime = MimeTypeMap.getSingleton()
-        return mime.getExtensionFromMimeType(cr.getType(uri))!!
-    }//funzione che ritorna l'estensione del file passato come parametro (.png -> png)
     private fun saveRicettaDB() {
-        ricetta.immagine
+        //ricetta.immagine = url
         ricetta.nome = ETnome.text.toString()
         ricetta.diff = spinner_diff.selectedItem.toString()
         ricetta.tempo = ETtempo.text.toString()
@@ -205,97 +215,138 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.listaIngredienti = lista_ingredienti
         ricetta.note = ETnote.text.toString()
     }
-    private fun uploadFile() {
-
+    private fun uploadFile() {//funzione che aggiunge allo DBStorage l'immagine scelta
         val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
-        nameUp = Random.nextInt(1000000000).toString() + "." + getFileExtension(imageUri)
+        nameUp = randomName()
         val fileReference = DBStorage.child(nameUp)
-        lateinit var url : String
-
         //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
         fileReference.putFile(imageUri).addOnSuccessListener {
-            taskSnapshot ->
-            fileReference.downloadUrl.addOnCompleteListener {
                 taskSnapshot ->
-                url = taskSnapshot.result.toString()
+            fileReference.downloadUrl.addOnCompleteListener {
+                    taskSnapshot ->
+                val url = taskSnapshot.result.toString()
+                val immagine = url
+                val nome = ETnome.text.toString()
+                val diff = spinner_diff.selectedItem.toString()
+                val tempo = ETtempo.text.toString()
+                val tipologia = ETtipologia.text.toString()
+                val portata = spinner_portata.selectedItem.toString()
+                val numPersone = ETpersone.text.toString().toInt()
+                val note = ETnote.text.toString()
+
+                /*fare i check prima di salvare la ricetta
+                    1- nessun campo vuoto
+                    2- nome diverso dalle altre ricette nel DB
+                    3- ...
+                 */
+
+                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
+
+
+                //salvataggio degli ingredienti sul DB
+
+                DBricette.child(ricetta.nome).setValue(ricetta)
+                Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
             }
         }.addOnFailureListener {
-            e ->
+            //mostra l'errore
+                e ->
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
-        }//mostra l'errore
-
-        val immagine = url
-        val nome = ETnome.text.toString()
-        val diff = spinner_diff.selectedItem.toString()
-        val tempo = ETtempo.text.toString()
-        val tipologia = ETtipologia.text.toString()
-        val portata = spinner_portata.selectedItem.toString()
-        val numPersone = ETpersone.text.toString().toInt()
-        val note = ETnote.text.toString()
-
-        /*fare i check prima di salvare la ricetta
-            1- nessun campo vuoto
-            2- nome diverso dalle altre ricette nel DB
-            3- ...
-         */
-
-        val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note) // creazione della ricetta
-
-
-        //salvataggio della ricetta sul DB
-        DBricette.child(ricetta.nome).setValue(ricetta)
-        Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
-    }//funzione che aggiunge allo Storage l'immagine
-    fun addImage(v: View) {        //funzione che permette di inserire l'immagine della ricetta
-
-        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestStoragePermission()
-            //ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
-            accesso = true
-        }*/
-        //if (accesso == true) {
+        }
+    }
+    private fun randomName(): String {
+        if(flag_img){
+            nameUp = Random.nextInt(1000000000).toString() + "." + getFileExtension(imageUri)
+        }else{
+            nameUp = Random.nextInt(1000000000).toString() + ".jpg"
+        }
+        return nameUp
+    }
+    private fun getFileExtension(uri: Uri): String?{//funzione che ritorna l'estensione del file passato come parametro (.png -> png)
+        val cr = contentResolver
+        val mime = MimeTypeMap.getSingleton()
+        return mime.getExtensionFromMimeType(cr.getType(uri))!!
+    }
+    val REQUEST_IMAGE_CAPTURE = 1001
+    val REQUEST_GALLERY_CAPTURE = 1002
+    fun addImage(v: View) {//funzione che permette di inserire l'immagine della ricetta
+        permessi()
+        val mDialogView = LayoutInflater.from(this).inflate(R.layout.choice_image, null)//Inflate del DialogView con la CustomView
+        val mBuilder = AlertDialog.Builder(this)//AlertDialogBuilder
+        mBuilder.setView(mDialogView)//set del Dialog con la  View
+        val  mAlertDialog = mBuilder.show()//mostra il DialogView
+        mDialogView.btn_photo.setOnClickListener {//predi foto dalla fotocamer
+            flag_img = false
+            takePhotoByCamera()
+            mAlertDialog.dismiss()
+        }
+        mDialogView.btn_gallery.setOnClickListener {//prendi foto dalla gallery
+            flag_img = true
             val openGalleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(openGalleryIntent, 1000)
-        //}
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1000 && resultCode == RESULT_OK) {
-            imageUri = data?.data!!
-            IVimmagine.setImageURI(imageUri)
+            startActivityForResult(openGalleryIntent, REQUEST_GALLERY_CAPTURE)
+            mAlertDialog.dismiss()
         }
-    }//funzione che recupera l'immagine scelta dall'utente nella galleria e la inserisce nella variabile imageUri
-
-
-/*
-
-    //funzione che richiede l'accesso alla galleria e in caso contrario mostra un dialog che informa del perchè della richiesta
-    private fun requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            AlertDialog.Builder(this)
-                    .setTitle("Permesso richiesto")
-                    .setMessage("Permesso per accedere alla galleria e caricare un'immagine")
-                    .setPositiveButton("ok") { dialog, which -> ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE) }
-                    .setNegativeButton("cancella") { dialog, which -> dialog.dismiss() }
-                    .create().show()
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
+        mDialogView.btn_annulla_img.setOnClickListener{//annulla
+            mAlertDialog.dismiss()
         }
     }
+    private fun permessi() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(CAMERA) != PERMISSION_GRANTED && checkSelfPermission(WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(CAMERA , WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE), 1)
 
-    //funzione che controlla se l'accesso è stato garantito o meno
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-            if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Accesso garantito", Toast.LENGTH_SHORT).show()
-                //accesso = false
-            } else {
-                Toast.makeText(this, "Accesso NON garantito", Toast.LENGTH_SHORT).show()
-                //accesso = true
+                //tutto ok se accettatti entrami ma da gestire meglio in caso di non accettazione dei permessi
             }
         }
     }
+    private fun takePhotoByCamera() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {//funzione che recupera l'immagine scelta dall'utente nella galleria o dalla fotocamera e la inserisce nella variabile imageUri
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_GALLERY_CAPTURE && resultCode == RESULT_OK) {
+            imageUri = data?.data!!
+            IVimmagine.setImageURI(imageUri)
+        } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val bitMap = data?.extras?.get("data") as Bitmap
+            IVimmagine.setImageBitmap(bitMap)
+            convertBitMapToUri(this, bitMap)
+        }
+    }
+    private fun convertBitMapToUri(context: Context, inImage: Bitmap) {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(context.contentResolver,inImage, "Title",null)
+        imageUri = Uri.parse(path)
+    }
+
+    private fun saveToGallery() {
+        val bitmapDrawable = IVimmagine.drawable as BitmapDrawable
+        val bitmap = bitmapDrawable.bitmap
+        var outputStream: FileOutputStream? = null
+        val file = Environment.getExternalStorageDirectory()
+        val dir = File(file.absolutePath.toString() + "/Cooking-App")
+        dir.mkdirs()
+        val filename = randomName()
+        val outFile = File(dir, filename)
+        try {
+            outputStream = FileOutputStream(outFile)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        try {
+            outputStream!!.flush()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            outputStream!!.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
 
-     */
 }

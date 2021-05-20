@@ -5,7 +5,20 @@
         android:id="@+id/search_icon"
         android:title="@string/search"
         android:icon="@drawable/ic_baseline_search_24"
-        app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-    />
+        app:showAsAction="ifRoom|collapseActionView"
+        />
+    <item
+        android:id="@+id/search_filter"
+        android:title="@string/filter"
+        android:icon="@drawable/ic_baseline_filter_list_24"
+        app:showAsAction="always"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/carrello"
+        android:title="@string/carrello"
+        android:icon="@drawable/ic_baseline_shopping_cart_24"
+        app:showAsAction="always"
+        />
 </menu>
