@@ -43,6 +43,21 @@ class List_Ricette_Activity : AppCompatActivity(){
         initBarMenuLateral() //inizializzazione Barra laterale del menu
     }
 
+    override fun onStart() {
+        super.onStart()
+        thread{
+        mRicetteValueListener = getDataToFireBase()                      //visulaizza i dati delle ricette
+        DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
+        }
+    }
+
+    override fun onStop() {
+        Log.e(TAG,"onStop")
+        super.onStop()
+        DBricette!!.removeEventListener(mRicetteValueListener)
+    }
+
+    //inizializzazione della barra laterale
     private fun initBarMenuLateral() {
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -58,6 +73,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         }
     }
 
+    //inizializzazione della lista della ricette
     private fun initRecyclerView() {
         img = ArrayList()
         mAdapter = Lista_Ricette_Adapter(img, context = this)
@@ -71,7 +87,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         startActivity(it)
     }
 
-    //Ricerca
+    //Ricerca delle ricette nella lista
     override fun onCreateOptionsMenu(menu: Menu):Boolean{
         menuInflater.inflate(R.menu.search, menu)
         val searchItem = menu.findItem(R.id.search_icon)
@@ -97,19 +113,6 @@ class List_Ricette_Activity : AppCompatActivity(){
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStart() {
-        super.onStart()
-        thread{
-        mRicetteValueListener = getDataToFireBase()                      //visulaizza i dati delle ricette
-        DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
-        }
-    }
-
-    override fun onStop() {
-        Log.e(TAG,"onStop")
-        super.onStop()
-        DBricette!!.removeEventListener(mRicetteValueListener)
-    }
 
     //lettura dei dati da Firebase
     private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
