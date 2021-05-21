@@ -8,6 +8,7 @@
     app:layoutDescription="@xml/activity_main_scene"
     tools:context=".View_Ricetta_Activity">
 
+
     <ImageView
         android:id="@+id/img_ricetta"
         android:layout_width="match_parent"
@@ -63,7 +64,7 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="530dp" />
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ricetta_ingredienti"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -147,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="@string/descrizione"
+                android:text="@string/close"
                 android:textColor="#CC000000"
                 android:textSize="17sp"
                 tools:layout_editor_absoluteX="155dp"
