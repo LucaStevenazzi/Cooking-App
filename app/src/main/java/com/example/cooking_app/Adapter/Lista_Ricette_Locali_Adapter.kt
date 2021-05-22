@@ -1,31 +1,25 @@
 package com.example.cooking_app.Adapter
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
-import com.squareup.picasso.Picasso
-import java.util.*
-import kotlin.collections.ArrayList
 
-/*
-classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
- */
-class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, context : Context): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
+//Adapter per gestire la recycler view delle ricette in locale
 
-    private val TAG = "Lista_Ricette_Adapter"
+class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapter<Lista_Ricette_Locali_Adapter.CustomViewHolder>(){
+
     private val array : ArrayList<Ricetta> = img
-    private val arrayCopy : ArrayList<Ricetta> = ArrayList(array)
     private lateinit var ricette : Ricetta
-    private val ct = context
 
+    //classe interna che aggiunge un listener ad ogni ricetta, il quale apre l'activity per la sua visualizzazione
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
 
         private var cv : CardView = itemView.findViewById(R.id.cv_lista_ricette)
@@ -46,20 +40,25 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         }
 
     }
+
+    //funzione che permette di usare il layout che gestisce i singoli elementi della lista
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ricetta_list,parent,false))
     }
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {//assegna i dati alle righe della RecycleView
-        //setting delle immagini e titoli delle ricette
-        Picasso.with(ct).load(array[position].immagine).into(holder.img_ricetta)
+
+    //funzione che associa al layout appena preso i valori che deve mostrare
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+
+        //inserire il codice per settare l'immagine
         holder.titolo_ricetta.text = array[position].nome
         val tempo =  "Tempo : ${array[position].tempo}"
         holder.tempo_ricetta.text = tempo
         val diff = "Difficoltà : ${array[position].diff}"
         holder.difficolta_ricetta.text = diff
-
     }
-    override fun getItemCount(): Int {//metoco che restituisce il numero di Item nella lista delle ricette
+
+    //funzinoe che restituisce il numero di elementi dell'array di ricette passato al costruttore
+    override fun getItemCount(): Int {
         return array.size
     }
 
@@ -77,6 +76,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         intent.putExtra("ListaIngredienti", ricette.listaIngredienti)
         intent.putExtra("Note", ricette.note)
     }
+    //passaggio degli ingredienti
     private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti
         val count = ricette.listaIngredienti.size
         if(count == 0) return
@@ -88,38 +88,4 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         intent.putExtra("Count", count)
     }
 
-    //ricerca
-    override fun getFilter(): Filter {//metodo per la il filtraggio della ricerca in base al testo che scrivi
-        return searchFilter
-    }
-    private var searchFilter: Filter = object : Filter() { //funzione che restituisce un oggetto Filter per la ricerca
-        override fun performFiltering(constraint: CharSequence): FilterResults {
-            val filteredList: ArrayList<Ricetta> = ArrayList()
-            if (constraint.toString().isEmpty()) {
-                filteredList.addAll(arrayCopy)
-            } else {
-                val filterPattern = constraint.toString().toLowerCase(Locale.ROOT)
-                for (item in arrayCopy) {
-                    //tipo di ricerca
-
-                    if (item.nome.toLowerCase(Locale.ROOT).contains(filterPattern)) {//per nome
-                        filteredList.add(item)
-                    }
-                }
-            }
-            val results = FilterResults()
-            results.values = filteredList
-            results.count = filteredList.size
-            return results
-        }
-
-        override fun publishResults(constraint: CharSequence, results: FilterResults) {
-            array.clear()
-            array.addAll(results.values as ArrayList<Ricetta>)
-            notifyDataSetChanged()
-        }
-    } //variabile filtro per nome nella ricerca
-
 }
-
-

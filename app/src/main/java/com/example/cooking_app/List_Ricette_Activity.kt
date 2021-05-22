@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.list_ricette_activity.*
 Main Activity con lista di ricette
  */
 
-@Suppress("UNREACHABLE_CODE")
 class List_Ricette_Activity : AppCompatActivity(){
 
     private val TAG = "List_Ricette_Activity"
@@ -72,6 +71,11 @@ class List_Ricette_Activity : AppCompatActivity(){
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
     fun newRecipe(v: View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
+        startActivity(it)
+    }
+
+    fun apriRicettarioLocale(v : View){
+        val it = Intent(this, Lista_Ricette_Locali_Activity::class.java)
         startActivity(it)
     }
 
