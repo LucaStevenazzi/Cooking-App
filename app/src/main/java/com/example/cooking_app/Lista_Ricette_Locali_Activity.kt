@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Locali_Adapter
 import com.example.cooking_app.Classi.DataBaseHelper
-import com.example.cooking_app.Classi.Ricetta
 import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 
 //Activity per la visualizzazione delle proprie ricette in locale
@@ -19,8 +18,12 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
 
 
         //queste due righe vanno eliminate, sono di prova
-        val r = Ricetta("null", "nome", "ALTA", "5 minuti", "prova", "primo", 5, ArrayList(), "descrizione")
-        db.insertData(r)
+
+     /*   val i = Ingredienti("pane", "400", "gr")
+        val li = ArrayList<Ingredienti>()
+        li.add(i)
+        val r = Ricetta("prova 2", "nome", "ALTA", "5 minuti", "prova", "primo", 5, li, "descrizione")
+        db.insertData(r)*/
 
 
         val lista = db.readData() //lettura del DB locale

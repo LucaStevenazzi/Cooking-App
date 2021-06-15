@@ -1,6 +1,7 @@
 package com.example.cooking_app.Adapter
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
+import java.io.ByteArrayOutputStream
+
 
 //Adapter per gestire la recycler view delle ricette in locale
 
@@ -19,11 +22,12 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
     private val array : ArrayList<Ricetta> = img
     private lateinit var ricette : Ricetta
 
+
     //classe interna che aggiunge un listener ad ogni ricetta, il quale apre l'activity per la sua visualizzazione
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
 
         private var cv : CardView = itemView.findViewById(R.id.cv_lista_ricette)
-        var img_ricetta : ImageView = itemView.findViewById(R.id.img_ricetta)
+        var img_ricetta : ImageView = itemView.findViewById(R.id.img_ricetta)       //va usato quando si prende l'immagine da DB
         var titolo_ricetta : TextView = itemView.findViewById(R.id.titolo_ricetta)
         var difficolta_ricetta : TextView = itemView.findViewById(R.id.tv_difficoltà_ricetta)
         var tempo_ricetta : TextView = itemView.findViewById(R.id.tv_tempo_ricetta)
@@ -49,8 +53,8 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
     //funzione che associa al layout appena preso i valori che deve mostrare
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
 
-        //inserire il codice per settare l'immagine
         holder.titolo_ricetta.text = array[position].nome
+        holder.img_ricetta.setImageBitmap(Bitmap.createScaledBitmap(array[position].bit!!, 200, 200, false))
         val tempo =  "Tempo : ${array[position].tempo}"
         holder.tempo_ricetta.text = tempo
         val diff = "Difficoltà : ${array[position].diff}"
@@ -65,6 +69,12 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
     //passaggio tramite intent della ricetta selezionata
     private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
         ricette = ricetta
+        //conversione immagine in bytearray
+        val objByteArrayOutputStream = ByteArrayOutputStream()
+        ricette.bit!!.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)
+        val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()
+
+        intent.putExtra("Bitmap", imageInBytes)
         intent.putExtra("Immagine", ricette.immagine)
         intent.putExtra("Nome", ricette.nome)
         intent.putExtra("Difficoltà", ricette.diff)

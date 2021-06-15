@@ -1,6 +1,7 @@
 package com.example.cooking_app
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -45,13 +46,17 @@ class View_Ricetta_Activity : AppCompatActivity() {
     //settaggio dei componenti nell'activity
     private fun setComponent() { //settiamo la RecyclerView per la lista degli ingredienti nella View_Ricetta
         ricetta_ingredienti.layoutManager = LinearLayoutManager(this)
-        ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti) //pasaggio del context per capie che activity chiama l'adapter
+        ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti) //pasaggio del context per capire che activity chiama l'adapter
         getRicettaExtra() // prende la ricetta dagli extra dell'intent
         updateRicetta()
         setDati() // setta i dati della ricetta sull'layout dell'activity
     }
     private fun getRicettaExtra(){ //ottenere la ricetta dall'intent di creazione
 
+        val byteArray = intent.getByteArrayExtra("Bitmap")
+        if (byteArray != null){
+            ricetta.bit = BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size)
+        }
         ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
         ricetta.diff = intent.getStringExtra("Difficoltà").toString()
@@ -75,7 +80,11 @@ class View_Ricetta_Activity : AppCompatActivity() {
     }
     private fun setDati() {
         title = ricetta.nome // settagio del titolo della Activity
-        Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
+        try {
+            Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
+        } catch (e : IllegalArgumentException){
+            img_ricetta.setImageBitmap(ricetta.bit)
+        }
         ricetta_time.text = ricetta.tempo
         ricetta_difficolta.text = ricetta.diff
         ricetta_persone.text = ricetta.persone.toString()

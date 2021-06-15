@@ -37,13 +37,14 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
 
-        setCompopnent()
+        setComponent()
 
     }
 
     //settaggio dei componenti
-    private fun setCompopnent() {
+    private fun setComponent() {
         initBarMenuLateral() //inizializzazione Barra laterale del menu
+        initRecyclerView() //inizializzazione Lista delle ricette
     }
 
     private fun initBarMenuLateral() {
@@ -163,7 +164,6 @@ class List_Ricette_Activity : AppCompatActivity(){
                     val ricetta: Ricetta? = ds.getValue(Ricetta::class.java)
                     img.add(ricetta!!)
                 }
-                initRecyclerView() //inizializzazione Lista delle ricette
                 mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
             }
 

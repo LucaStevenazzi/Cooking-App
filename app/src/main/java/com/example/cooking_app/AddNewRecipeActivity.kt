@@ -2,6 +2,7 @@ package com.example.cooking_app
 
 
 import android.Manifest.permission.*
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.*
@@ -12,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -20,11 +22,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
-import com.example.cooking_app.Classi.Ingredienti
-import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.Classi.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.*
@@ -50,6 +52,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private var ricetta: Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
+    private val db : DataBaseHelper = DataBaseHelper(this)
     private lateinit var imageUri: Uri
     private var flag_img : Boolean = true
 
@@ -215,7 +218,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.listaIngredienti = lista_ingredienti
         ricetta.note = ETnote.text.toString()
     }
-    private fun uploadFile() {//funzione che aggiunge allo DBStorage l'immagine scelta
+    private fun uploadFile() {//funzione che aggiunge al DBStorage l'immagine scelta
         val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
         nameUp = randomName()
         val fileReference = DBStorage.child(nameUp)
@@ -348,5 +351,44 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
     }
 
+    //funzione che salva in locale la ricetta
+    fun salvataggioRicettaDBLocale(v : View){
+        val valoriRicetta = ContentValues()
+        val array = convertImage(IVimmagine.drawable.toBitmap())
+        Log.v("valore immagine", array.toString())
 
+        //check()                                               funzione che controllerà se i campi sono tutti pieni
+        valoriRicetta.put(COL_IMM, array)
+        valoriRicetta.put(COL_NOME, ETnome.text.toString())
+        valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
+        valoriRicetta.put(COL_TEMPO, ETtempo.text.toString())
+        valoriRicetta.put(COL_TIPO, ETtipologia.text.toString())
+        valoriRicetta.put(COL_PORT, spinner_portata.selectedItem.toString())
+        valoriRicetta.put(COL_PERS, ETpersone.text.toString().toInt())
+        valoriRicetta.put(COL_DESC, ETnote.text.toString())
+
+        db.inserisciDati(TABLENAME1, valoriRicetta)
+
+        lista_ingredienti.forEach {
+            val valoriIngredienti = ContentValues()
+            valoriIngredienti.put(COL_IMM, array)
+            valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+            valoriIngredienti.put(COL_NOME_ING, it.Name)
+            valoriIngredienti.put(COL_QUANT, it.quantit)
+            valoriIngredienti.put(COL_MIS, it.misura)
+
+            db.inserisciDati(TABLENAME2, valoriIngredienti)
+        }
+
+        db.close()
+        finish()
+    }
+
+    //funzione che restituisce l'array di byte relativo all'immagine passata per argomento
+    private fun convertImage(image : Bitmap) : ByteArray{
+        val objByteArrayOutputStream = ByteArrayOutputStream()      //nel DB non si poò salvare una bitmap, va quindi prima convertita in un ByteArrayOutputStream
+        image.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)       //si converte la bitmap in un ByteArrayOutputStream
+        val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()       //si inseriscono i byte in un array
+        return imageInBytes
+    }
 }
