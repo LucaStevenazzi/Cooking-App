@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,9 +25,9 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     private var flag_first_Update: Boolean = true
     private val TAG = "View_Ricetta_Activity"
-
-    private var ricetta : Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
+    private var mAdapter: Lista_Ingredienti_Adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
+    private var ricetta : Ricetta = Ricetta()
     private val ref = FirebaseDatabase.getInstance().reference
 
 
@@ -37,7 +36,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_ricetta_activity)
 
-        Log.v(TAG , "onCreate")
         setComponent()
 
     }
@@ -45,10 +43,10 @@ class View_Ricetta_Activity : AppCompatActivity() {
     //settaggio dei componenti nell'activity
     private fun setComponent() { //settiamo la RecyclerView per la lista degli ingredienti nella View_Ricetta
         ricetta_ingredienti.layoutManager = LinearLayoutManager(this)
-        ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti) //pasaggio del context per capie che activity chiama l'adapter
+        ricetta_ingredienti.adapter = mAdapter //pasaggio del context per capire che activity chiama l'adapter
         getRicettaExtra() // prende la ricetta dagli extra dell'intent
         updateRicetta()
-        setDati() // setta i dati della ricetta sull'layout dell'activity
+        setDati()// setta i dati della ricetta sull'layout dell'activity
     }
     private fun getRicettaExtra(){ //ottenere la ricetta dall'intent di creazione
 
@@ -70,7 +68,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
             val ingquanti = intent.getStringExtra("Ingrediente $i quantità").toString()
             val ingmisura = intent.getStringExtra("Ingrediente $i misura").toString()
             val ing = Ingredienti(ingnome, ingquanti, ingmisura)
-            lista_ingredienti.add(ing)
+            ricetta.listaIngredienti.add(ing)
         }
     }
     private fun setDati() {
@@ -80,7 +78,9 @@ class View_Ricetta_Activity : AppCompatActivity() {
         ricetta_difficolta.text = ricetta.diff
         ricetta_persone.text = ricetta.persone.toString()
         ricetta_portata.text = ricetta.portata
-        ricetta.listaIngredienti = lista_ingredienti
+        lista_ingredienti.clear()
+        lista_ingredienti.addAll(ricetta.listaIngredienti)
+        mAdapter.notifyDataSetChanged()
         //ricetta_note.text = ricetta.note
     }
 

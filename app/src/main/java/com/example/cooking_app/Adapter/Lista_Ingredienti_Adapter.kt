@@ -12,7 +12,7 @@ import com.example.cooking_app.R
 
 class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Adapter<Lista_Ingredienti_Adapter.ViewHolder>() {
 
-    private var array = lista
+    private var array : ArrayList<Ingredienti> = lista
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

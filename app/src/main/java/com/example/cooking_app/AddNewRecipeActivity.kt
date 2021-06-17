@@ -190,7 +190,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     //onClick sul salvataggio della nuova ricetta o l'update della ricetta selezionata
     fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
 
-        if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
+        if (intent.extras != null) { //se l'intent esiste allora faccio UPDATE ricetta al DB
 
             saveRicettaDB()
             DBricette.child(ricetta.nome).setValue(ricetta)
@@ -240,11 +240,10 @@ class AddNewRecipeActivity : AppCompatActivity() {
                     3- ...
                  */
 
-                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
+                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, ricetta.listaIngredienti, note)
 
 
                 //salvataggio degli ingredienti sul DB
-
                 DBricette.child(ricetta.nome).setValue(ricetta)
                 Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
             }
@@ -320,33 +319,4 @@ class AddNewRecipeActivity : AppCompatActivity() {
         val path = MediaStore.Images.Media.insertImage(context.contentResolver,inImage, "Title",null)
         imageUri = Uri.parse(path)
     }
-
-    private fun saveToGallery() {
-        val bitmapDrawable = IVimmagine.drawable as BitmapDrawable
-        val bitmap = bitmapDrawable.bitmap
-        var outputStream: FileOutputStream? = null
-        val file = Environment.getExternalStorageDirectory()
-        val dir = File(file.absolutePath.toString() + "/Cooking-App")
-        dir.mkdirs()
-        val filename = randomName()
-        val outFile = File(dir, filename)
-        try {
-            outputStream = FileOutputStream(outFile)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        try {
-            outputStream!!.flush()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            outputStream!!.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
 }
