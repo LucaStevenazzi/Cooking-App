@@ -96,7 +96,7 @@
                     android:layout_weight="1"
                     android:autofillHints=""
                     android:hint="@string/HINT"
-                    android:inputType="text" />
+                    android:inputType="number" />
 
             </LinearLayout>
 

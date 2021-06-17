@@ -27,6 +27,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     private lateinit var ricette : Ricetta
     private val ct = context
 
+
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
 
         private var cv : CardView = itemView.findViewById(R.id.cv_lista_ricette)
@@ -54,7 +55,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         //setting delle immagini e titoli delle ricette
         Picasso.with(ct).load(array[position].immagine).into(holder.img_ricetta)
         holder.titolo_ricetta.text = array[position].nome
-        val tempo =  "Tempo : ${array[position].tempo}"
+        val tempo =  "Tempo : ${array[position].tempo} minuti"
         holder.tempo_ricetta.text = tempo
         val diff = "Difficoltà : ${array[position].diff}"
         holder.difficolta_ricetta.text = diff
@@ -91,25 +92,97 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
 
     //ricerca
     override fun getFilter(): Filter {//metodo per la il filtraggio della ricerca in base al testo che scrivi
+        filtro = ArrayList() //reset filtro
         return searchFilter
     }
-    private var searchFilter: Filter = object : Filter() { //funzione che restituisce un oggetto Filter per la ricerca
-        override fun performFiltering(constraint: CharSequence): FilterResults {
-            val filteredList: ArrayList<Ricetta> = ArrayList()
-            if (constraint.toString().isEmpty()) {
-                filteredList.addAll(arrayCopy)
-            } else {
+
+    fun filter(String_filter: ArrayList<String>): Filter {
+        filtro = String_filter
+        return searchFilter
+    }
+
+    var filtro: ArrayList<String> = ArrayList()
+
+    private var searchFilter: Filter =
+        object : Filter() { //funzione che restituisce un oggetto Filter per la ricerca
+            override fun performFiltering(constraint: CharSequence): FilterResults {
+                val filteredList: ArrayList<Ricetta> = ArrayList()
                 val filterPattern = constraint.toString().toLowerCase(Locale.ROOT)
                 for (item in arrayCopy) {
                     //tipo di ricerca
-
-                    if (item.nome.toLowerCase(Locale.ROOT).contains(filterPattern)) {//per nome
+                    if (item.nome.toLowerCase(Locale.ROOT).contains(filterPattern)) //per nome
                         filteredList.add(item)
+                    else
+                        continue
+                    if (filtro.isEmpty())
+                        continue
+                    var arrayFiltro: ArrayList<Ricetta> = ArrayList()
+                    if (filtro[0] != "null") {
+                        if (item.diff.toLowerCase(Locale.ROOT)
+                                .contains(filtro[0].toLowerCase(Locale.ROOT))
+                        ) { //per tipologia
+                            if (!filteredList.contains(item))
+                                filteredList.add(item)
+                        } else
+                            if (filteredList.contains(item)) {
+                                filteredList.remove(item)
+                                continue
+                            }
                     }
+                    if (filtro[1] != "null") {
+                        //da sistemare il tempo
+                        if (item.tempo.toInt() <= filtro[1].toInt()) {//per Tempo
+                            if (!filteredList.contains(item))
+                                filteredList.add(item)
+                        } else
+                            if (filteredList.contains(item)) {
+                                filteredList.remove(item)
+                                continue
+                            }
+                    }
+                    if (filtro[2] != "null") {
+                        if (item.tipologia.toLowerCase(Locale.ROOT)
+                                .equals(filtro[2].toLowerCase(Locale.ROOT))
+                        ) { //per Tipologia
+                            if (!filteredList.contains(item))
+                                filteredList.add(item)
+                        } else
+                            if (filteredList.contains(item)) {
+                                filteredList.remove(item)
+                                continue
+                            }
+                    }
+                    if (filtro[3] != "null") {
+                        if (item.portata.toLowerCase(Locale.ROOT)
+                                .contains(filtro[3].toLowerCase(Locale.ROOT))
+                        ) {//per Portata
+                            if (!filteredList.contains(item))
+                                filteredList.add(item)
+                        } else
+                            if (filteredList.contains(item)) {
+                                filteredList.remove(item)
+                                continue
+                            }
+                    }
+                    if (filtro[4] != "null") {
+                        var check = true
+                        for (ingrediente in item.listaIngredienti) {
+                            if (ingrediente.Name.toLowerCase(Locale.ROOT).equals(filtro[4].toLowerCase(Locale.ROOT))) {//per Ingrediente
+                                if (!filteredList.contains(item))
+                                    filteredList.add(item)
+                                check = false
+                                break
+                            }
+                        }
+                        if (check) {
+                            if (filteredList.contains(item))
+                                filteredList.remove(item)
+                        }
+                    }
+
                 }
-            }
-            val results = FilterResults()
-            results.values = filteredList
+                val results = FilterResults()
+                results.values = filteredList
             results.count = filteredList.size
             return results
         }
@@ -120,7 +193,6 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
             notifyDataSetChanged()
         }
     } //variabile filtro per nome nella ricerca
-
 }
 
 

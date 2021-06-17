@@ -76,7 +76,7 @@ class View_Ricetta_Activity : AppCompatActivity() {
     private fun setDati() {
         title = ricetta.nome // settagio del titolo della Activity
         Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
-        ricetta_time.text = ricetta.tempo
+        ricetta_time.text = ricetta.tempo + " minuti"
         ricetta_difficolta.text = ricetta.diff
         ricetta_persone.text = ricetta.persone.toString()
         ricetta_portata.text = ricetta.portata
@@ -166,7 +166,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
         }else{
             setNewExtra()// settaggio dei nuovi dati nell'intent per un'altra probabile modifica
         }
-
     }
     private fun deleteRicettaToList() { //elimino la ricetta che è stata aperta
         val applesQuery: Query = ref.child("ricette").child(ricetta.nome)
