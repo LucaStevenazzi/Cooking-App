@@ -7,11 +7,11 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import android.widget.Toast
 
 val DB_NAME = "CookingApp.db"
-val DB_VERSION = 9
-val TABLENAME1 = "ricette"
+val DB_OLD_VERSION = 15
+val DB_NEW_VERSION = 16
+val TABELLA_RICETTE = "ricette"
 val COL_IMM = "immagine"
 val COL_NOME = "nome"
 val COL_DIFF = "difficoltà"
@@ -20,15 +20,15 @@ val COL_TIPO = "tipologia"
 val COL_PORT = "portata"
 val COL_PERS = "persone"
 val COL_DESC = "descrizione"
-val TABLENAME2 = "ingredienti"
+val TABELLA_ING = "ingredienti"
 val COL_NOME_ING = "nomeIng"
 val COL_QUANT = "quantità"
 val COL_MIS = "misura"
 val TABLENAME3 = "note"
 val COL_NOTE = "note"
 
-val createTable1 =
-        "CREATE TABLE $TABLENAME1 (" +
+val createTableRicette =
+        "CREATE TABLE $TABELLA_RICETTE (" +
         "$COL_IMM BLOB, " +
         "$COL_NOME VARCHAR(256), " +
         "$COL_DIFF VARCHAR(256), " +
@@ -37,30 +37,30 @@ val createTable1 =
         "$COL_PORT VARCHAR(256), " +
         "$COL_PERS INTEGER, " +
         "$COL_DESC VARCHAR(1024), " +
-        " PRIMARY KEY ($COL_IMM, $COL_NOME))"
+        " PRIMARY KEY ($COL_NOME, $COL_DESC))"
 
-val createTable2 =
-        "CREATE TABLE $TABLENAME2 (" +
-        "$COL_IMM BLOB, " +
+val createTableIng =
+        "CREATE TABLE $TABELLA_ING (" +
         "$COL_NOME VARCHAR(256)," +
+        "$COL_DESC VARCHAR(1024), " +
         "$COL_NOME_ING VARCHAR(256), " +
         "$COL_QUANT VARCHAR(256), " +
         "$COL_MIS VARCHAR(256), " +
-        "PRIMARY KEY ($COL_IMM, $COL_NOME_ING), " +
-        "FOREIGN KEY ($COL_IMM, $COL_NOME) REFERENCES $TABLENAME1)"
+        "PRIMARY KEY ($COL_NOME_ING), " +
+        "FOREIGN KEY ($COL_NOME, $COL_DESC) REFERENCES $TABELLA_RICETTE ON DELETE CASCADE)"
 
 //classe che gestisce il DB: creazione, aggiornamento e lettura dati
 
-class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_OLD_VERSION) {
 
     //funzinoe che crea il DB
     override fun onCreate(db: SQLiteDatabase?) {
 
-        onUpgrade(db, DB_VERSION, 10)      //versione 11 da usare in caso di aggiornamento
+        onUpgrade(db, DB_OLD_VERSION, DB_NEW_VERSION)      //versione 17 da usare in caso di aggiornamento
 
-        db?.execSQL(createTable1)
+        db?.execSQL(createTableRicette)
 
-        db?.execSQL(createTable2)
+        db?.execSQL(createTableIng)
 
         /*val createTable3 = "CREATE TABLE" + TABLENAME3 + "(" +
                 COL_IMM + " BLOB REFERENCES $TABLENAME1($COL_IMM), " +
@@ -72,9 +72,11 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
     //funzione che serve per aggiornare il DB
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 20) {
-            db?.execSQL(createTable1)
-            db?.execSQL(createTable2)
-            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show()
+            db?.execSQL("DROP TABLE IF EXISTS $TABELLA_ING")
+            db?.execSQL(createTableIng)
+            db?.execSQL("DROP TABLE IF EXISTS $TABELLA_RICETTE")
+            db?.execSQL(createTableRicette)
+            Log.v("creazione tabella", "riuscita")
         }
 
     }
@@ -89,29 +91,24 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         val listaIng = ArrayList<Ingredienti>()
         val db = this.readableDatabase  //uso readable e non writeable perché in questa funzione devo leggere da db, non mi serve scrivere
         var OFFSET = 0
-        val queryNumTotale = "SELECT COUNT(*) FROM $TABLENAME1"
+
+        val queryNumTotale = "SELECT COUNT(*) FROM $TABELLA_RICETTE"
         val numero = db.rawQuery(queryNumTotale, null)
         numero.moveToFirst()
         val count = numero.getInt(0)
         Log.v("numero elementi", count.toString())
         numero.close()
-        /*val cicli : Int
-        if (count%2 == 0)
-            cicli = count/2
-        else
-            cicli = count/2 + 1
-        */
+
         for (i in 0 until count) {
-            Log.v("valore offset iniziale", OFFSET.toString())
-            val queryRicette = "SELECT * FROM $TABLENAME1 ORDER BY $COL_NOME LIMIT 1 OFFSET $OFFSET"
+            val queryRicette = "SELECT * FROM $TABELLA_RICETTE ORDER BY $COL_NOME LIMIT 1 OFFSET $OFFSET"
             OFFSET += 1
-            Log.v("valore offset finale", OFFSET.toString())
             val cursoreRicetta = db.rawQuery(queryRicette, null)   //crea un cursore che permette di 'navigare' nel risultato della query precedente
             if (cursoreRicetta.moveToFirst()) {
                 do {
                     val ricetta = Ricetta()
 
                     val array = cursoreRicetta.getBlob(cursoreRicetta.getColumnIndex(COL_IMM))
+                    Log.v("nome array", array.toString())
                     val bit: Bitmap = BitmapFactory.decodeByteArray(array, 0, array.size)
                     ricetta.bit = bit
                     ricetta.nome = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOME))
@@ -122,17 +119,20 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
                     ricetta.persone = cursoreRicetta.getInt(cursoreRicetta.getColumnIndex(COL_PERS))
                     ricetta.note = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DESC))
 
-                    val chiaveEsterna = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_IMM))
-
-                    val queryIngredienti = "SELECT * FROM $TABLENAME2 WHERE $COL_IMM = $chiaveEsterna"
+                    val queryIngredienti = "SELECT $COL_NOME, $COL_NOME_ING, $COL_MIS, $COL_QUANT FROM $TABELLA_ING WHERE $COL_NOME = " + "\"" + ricetta.nome + "\"" + " AND $COL_DESC = " + "\"" + ricetta.note + "\""
                     val cursoreIngredienti = db.rawQuery(queryIngredienti, null)
+                    Log.v("elementi trovati?", cursoreIngredienti.moveToFirst().toString())
                     if (cursoreIngredienti.moveToFirst()) {
                         do {
+                            Log.v("sono dentro il do", "vediamo")
                             val ingrediente = Ingredienti()
 
                             ingrediente.Name = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_NOME_ING))
                             ingrediente.misura = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_MIS))
                             ingrediente.quantit = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_QUANT))
+                            val nome = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_NOME))
+                            Log.v("nome ricetta", nome)
+                            Log.v("offset iniziale ing", ingrediente.toString())
                             listaIng.add(ingrediente)
                         } while (cursoreIngredienti.moveToNext())
                     }
@@ -148,32 +148,23 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         return listaRic
     }
 
-    //funzione temporanea per popolare il DB
-    fun insertData(r: Ricetta) {
-        val db = this.readableDatabase
-        val valoriRicetta = ContentValues()
-        valoriRicetta.put(COL_IMM, r.immagine)
-        valoriRicetta.put(COL_NOME, r.nome)
-        valoriRicetta.put(COL_DIFF, r.diff)
-        valoriRicetta.put(COL_TEMPO, r.tempo)
-        valoriRicetta.put(COL_TIPO, r.tipologia)
-        valoriRicetta.put(COL_PORT, r.portata)
-        valoriRicetta.put(COL_PERS, r.persone)
-        valoriRicetta.put(COL_DESC, r.note)
-        db.insert(TABLENAME1, null, valoriRicetta)
-        r.listaIngredienti.forEach {
-            val valoriIngredienti = ContentValues()
-            valoriIngredienti.put(COL_IMM, r.immagine)
-            valoriIngredienti.put(COL_NOME_ING, it.Name)
-            valoriIngredienti.put(COL_QUANT, it.quantit)
-            valoriIngredienti.put(COL_MIS, it.misura)
-            db.insert(TABLENAME2, null, valoriIngredienti)
-        }
-        db.close()
-    }
-
-    fun inserisciDati(name: String, cv: ContentValues) {
+    //funzione che permette di salvare i dati nel DB
+    fun salvaDati(name: String, cv: ContentValues) {
         val db = this.writableDatabase
         db.insert(name, null, cv);
+    }
+
+    //funzione che permette di eliminare i dati nel DB
+    fun eliminaRicetta(des : String, nome: String) {
+        val db = this.writableDatabase
+        val queryEliminazione = "$COL_DESC = " + "\"" + des + "\" AND $COL_NOME = " + "\"" + nome + "\""
+        db.delete(TABELLA_RICETTE, queryEliminazione, null)
+    }
+
+    //funzione che permette di modificare i dati nel DB
+    fun modificaRicetta(des: String, nome: String, contenuto: ContentValues) {
+        val db = this.writableDatabase
+        val queryModifica = "$COL_DESC = " + "\"" + des + "\" AND $COL_NOME = " + "\"" + nome + "\""
+        db.update(TABELLA_RICETTE, contenuto, queryModifica, null)
     }
 }

@@ -38,7 +38,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
             //intent: passaggio dei dati
             cv.setOnClickListener {
                 val intent = Intent(itemView.context, View_Ricetta_Activity::class.java)
-                putRicettaExtra(intent, array[layoutPosition])   //passaggio ddlla ricetta cliccata dall elenco tramite l'intent
+                putRicettaLocaleExtra(intent, array[layoutPosition])   //passaggio ddlla ricetta cliccata dall elenco tramite l'intent
                 it.context.startActivity(intent)
             }
         }
@@ -67,7 +67,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
     }
 
     //passaggio tramite intent della ricetta selezionata
-    private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
+    fun putRicettaLocaleExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
         ricette = ricetta
         //conversione immagine in bytearray
         val objByteArrayOutputStream = ByteArrayOutputStream()
@@ -82,12 +82,12 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
         intent.putExtra("Tipologia", ricette.tipologia)
         intent.putExtra("Portata", ricette.portata)
         intent.putExtra("Persone", ricette.persone)
-        putIngredintiExtra(intent)
+        LocaliputIngredintiExtra(intent)
         intent.putExtra("ListaIngredienti", ricette.listaIngredienti)
         intent.putExtra("Note", ricette.note)
     }
     //passaggio degli ingredienti
-    private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti
+    private fun LocaliputIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti
         val count = ricette.listaIngredienti.size
         if(count == 0) return
         for( i in ricette.listaIngredienti.indices) {

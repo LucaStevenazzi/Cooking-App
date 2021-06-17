@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.*
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
@@ -33,6 +34,7 @@ import com.google.firebase.storage.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
+import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import kotlinx.android.synthetic.main.choice_image.view.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import java.io.*
@@ -141,12 +143,18 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
     }
     private fun setComponentToUpdate(){
-        title = "Update Ricetta"
+        title = "Modifica Ricetta"
         val testo_update = "Aggiorna ricetta"
         ButtonOK.text = testo_update
+        IVimmagine.isEnabled = false
         ETnome.isEnabled = false
+        ETnote.isEnabled = false
     }
     private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
+        val byteToBitmap = intent.getByteArrayExtra("Bitmap")
+        if(byteToBitmap != null){
+            ricetta.bit = BitmapFactory.decodeByteArray(byteToBitmap, 0, byteToBitmap!!.size)
+        }
         ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
         ricetta.diff = intent.getStringExtra("Difficoltà").toString()
@@ -169,7 +177,12 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
     }
     private fun setDatiRicetta() { //settagio dei dati per l'intent
-        Picasso.with(this).load(ricetta.immagine).into(IVimmagine)
+        if(ricetta.bit != null){
+            IVimmagine.setImageBitmap(ricetta.bit)
+        }else{
+            Picasso.with(this).load(ricetta.immagine).into(IVimmagine)
+        }
+
         ETnome.setText(ricetta.nome)
         when (ricetta.diff) {
             "BASSA" -> spinner_diff.setSelection(0)
@@ -198,6 +211,30 @@ class AddNewRecipeActivity : AppCompatActivity() {
             saveRicettaDB()
             DBricette.child(ricetta.nome).setValue(ricetta)
 
+        } else if (ricetta.bit != null){
+            val db = DataBaseHelper(this)
+            val contenuto = ContentValues()
+            contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
+            contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
+            contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
+            contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
+            contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+            db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
+
+            /*lista_ingredienti.forEach {
+                val valoriIngredienti = ContentValues()
+                valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+                valoriIngredienti.put(COL_DESC, ETnote.text.toString())
+                valoriIngredienti.put(COL_NOME_ING, it.Name)
+                valoriIngredienti.put(COL_QUANT, it.quantit)
+                valoriIngredienti.put(COL_MIS, it.misura)
+
+                db.inserisciDati(TABELLA_ING, valoriIngredienti)
+            }*/
+            saveRicettaDB()
+            lista_ricette_locali.adapter?.notifyDataSetChanged()
+
+
         } else { //altrimenti aggiungo ricetta al DB
 
             //salvataggio nuova ricetta
@@ -207,8 +244,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
     }
+
     private fun saveRicettaDB() {
-        //ricetta.immagine = url
         ricetta.nome = ETnome.text.toString()
         ricetta.diff = spinner_diff.selectedItem.toString()
         ricetta.tempo = ETtempo.text.toString()
@@ -218,6 +255,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.listaIngredienti = lista_ingredienti
         ricetta.note = ETnote.text.toString()
     }
+
     private fun uploadFile() {//funzione che aggiunge al DBStorage l'immagine scelta
         val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
         nameUp = randomName()
@@ -270,8 +308,10 @@ class AddNewRecipeActivity : AppCompatActivity() {
         val mime = MimeTypeMap.getSingleton()
         return mime.getExtensionFromMimeType(cr.getType(uri))!!
     }
+
     val REQUEST_IMAGE_CAPTURE = 1001
     val REQUEST_GALLERY_CAPTURE = 1002
+
     fun addImage(v: View) {//funzione che permette di inserire l'immagine della ricetta
         permessi()
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.choice_image, null)//Inflate del DialogView con la CustomView
@@ -359,25 +399,25 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         //check()                                               funzione che controllerà se i campi sono tutti pieni
         valoriRicetta.put(COL_IMM, array)
-        valoriRicetta.put(COL_NOME, ETnome.text.toString())
+        valoriRicetta.put(COL_NOME, ETnome.text.toString().trim())
         valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
-        valoriRicetta.put(COL_TEMPO, ETtempo.text.toString())
-        valoriRicetta.put(COL_TIPO, ETtipologia.text.toString())
+        valoriRicetta.put(COL_TEMPO, ETtempo.text.toString().trim())
+        valoriRicetta.put(COL_TIPO, ETtipologia.text.toString().trim())
         valoriRicetta.put(COL_PORT, spinner_portata.selectedItem.toString())
-        valoriRicetta.put(COL_PERS, ETpersone.text.toString().toInt())
-        valoriRicetta.put(COL_DESC, ETnote.text.toString())
+        valoriRicetta.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+        valoriRicetta.put(COL_DESC, ETnote.text.toString().trim())
 
-        db.inserisciDati(TABLENAME1, valoriRicetta)
+        db.salvaDati(TABELLA_RICETTE, valoriRicetta)
 
         lista_ingredienti.forEach {
             val valoriIngredienti = ContentValues()
-            valoriIngredienti.put(COL_IMM, array)
             valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+            valoriIngredienti.put(COL_DESC, ETnote.text.toString())
             valoriIngredienti.put(COL_NOME_ING, it.Name)
             valoriIngredienti.put(COL_QUANT, it.quantit)
             valoriIngredienti.put(COL_MIS, it.misura)
 
-            db.inserisciDati(TABLENAME2, valoriIngredienti)
+            db.salvaDati(TABELLA_ING, valoriIngredienti)
         }
 
         db.close()
