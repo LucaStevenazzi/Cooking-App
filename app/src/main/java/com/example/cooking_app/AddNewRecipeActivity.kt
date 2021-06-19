@@ -2,16 +2,19 @@ package com.example.cooking_app
 
 
 import android.Manifest.permission.*
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.*
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -20,17 +23,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
-import com.example.cooking_app.Classi.Ingredienti
-import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.Classi.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.view.*
+import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import kotlinx.android.synthetic.main.choice_image.view.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import java.io.*
@@ -50,6 +54,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private var ricetta: Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
+    private val db : DataBaseHelper = DataBaseHelper(this)
     private lateinit var imageUri: Uri
     private var flag_img : Boolean = true
 
@@ -138,12 +143,18 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
     }
     private fun setComponentToUpdate(){
-        title = "Update Ricetta"
+        title = "Modifica Ricetta"
         val testo_update = "Aggiorna ricetta"
         ButtonOK.text = testo_update
+        IVimmagine.isEnabled = false
         ETnome.isEnabled = false
+        ETnote.isEnabled = false
     }
     private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
+        val byteToBitmap = intent.getByteArrayExtra("Bitmap")
+        if(byteToBitmap != null){
+            ricetta.bit = BitmapFactory.decodeByteArray(byteToBitmap, 0, byteToBitmap!!.size)
+        }
         ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
         ricetta.diff = intent.getStringExtra("Difficoltà").toString()
@@ -166,7 +177,12 @@ class AddNewRecipeActivity : AppCompatActivity() {
         }
     }
     private fun setDatiRicetta() { //settagio dei dati per l'intent
-        Picasso.with(this).load(ricetta.immagine).into(IVimmagine)
+        if(ricetta.bit != null){
+            IVimmagine.setImageBitmap(ricetta.bit)
+        }else{
+            Picasso.with(this).load(ricetta.immagine).into(IVimmagine)
+        }
+
         ETnome.setText(ricetta.nome)
         when (ricetta.diff) {
             "BASSA" -> spinner_diff.setSelection(0)
@@ -190,10 +206,34 @@ class AddNewRecipeActivity : AppCompatActivity() {
     //onClick sul salvataggio della nuova ricetta o l'update della ricetta selezionata
     fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
 
-        if (intent.extras != null) { //se l'intent esiste allora faccio UPDATE ricetta al DB
+        if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
 
             saveRicettaDB()
             DBricette.child(ricetta.nome).setValue(ricetta)
+
+        } else if (ricetta.bit != null){
+            val db = DataBaseHelper(this)
+            val contenuto = ContentValues()
+            contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
+            contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
+            contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
+            contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
+            contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+            db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
+
+            /*lista_ingredienti.forEach {
+                val valoriIngredienti = ContentValues()
+                valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+                valoriIngredienti.put(COL_DESC, ETnote.text.toString())
+                valoriIngredienti.put(COL_NOME_ING, it.Name)
+                valoriIngredienti.put(COL_QUANT, it.quantit)
+                valoriIngredienti.put(COL_MIS, it.misura)
+
+                db.inserisciDati(TABELLA_ING, valoriIngredienti)
+            }*/
+            saveRicettaDB()
+            lista_ricette_locali.adapter?.notifyDataSetChanged()
+
 
         } else { //altrimenti aggiungo ricetta al DB
 
@@ -204,8 +244,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
         finish()
     }
+
     private fun saveRicettaDB() {
-        //ricetta.immagine = url
         ricetta.nome = ETnome.text.toString()
         ricetta.diff = spinner_diff.selectedItem.toString()
         ricetta.tempo = ETtempo.text.toString()
@@ -215,7 +255,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.listaIngredienti = lista_ingredienti
         ricetta.note = ETnote.text.toString()
     }
-    private fun uploadFile() {//funzione che aggiunge allo DBStorage l'immagine scelta
+
+    private fun uploadFile() {//funzione che aggiunge al DBStorage l'immagine scelta
         val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
         nameUp = randomName()
         val fileReference = DBStorage.child(nameUp)
@@ -240,10 +281,11 @@ class AddNewRecipeActivity : AppCompatActivity() {
                     3- ...
                  */
 
-                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, ricetta.listaIngredienti, note)
+                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
 
 
                 //salvataggio degli ingredienti sul DB
+
                 DBricette.child(ricetta.nome).setValue(ricetta)
                 Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
             }
@@ -266,8 +308,10 @@ class AddNewRecipeActivity : AppCompatActivity() {
         val mime = MimeTypeMap.getSingleton()
         return mime.getExtensionFromMimeType(cr.getType(uri))!!
     }
+
     val REQUEST_IMAGE_CAPTURE = 1001
     val REQUEST_GALLERY_CAPTURE = 1002
+
     fun addImage(v: View) {//funzione che permette di inserire l'immagine della ricetta
         permessi()
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.choice_image, null)//Inflate del DialogView con la CustomView
@@ -318,5 +362,73 @@ class AddNewRecipeActivity : AppCompatActivity() {
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
         val path = MediaStore.Images.Media.insertImage(context.contentResolver,inImage, "Title",null)
         imageUri = Uri.parse(path)
+    }
+
+    private fun saveToGallery() {
+        val bitmapDrawable = IVimmagine.drawable as BitmapDrawable
+        val bitmap = bitmapDrawable.bitmap
+        var outputStream: FileOutputStream? = null
+        val file = Environment.getExternalStorageDirectory()
+        val dir = File(file.absolutePath.toString() + "/Cooking-App")
+        dir.mkdirs()
+        val filename = randomName()
+        val outFile = File(dir, filename)
+        try {
+            outputStream = FileOutputStream(outFile)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        try {
+            outputStream!!.flush()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            outputStream!!.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    //funzione che salva in locale la ricetta
+    fun salvataggioRicettaDBLocale(v : View){
+        val valoriRicetta = ContentValues()
+        val array = convertImage(IVimmagine.drawable.toBitmap())
+        Log.v("valore immagine", array.toString())
+
+        //check()                                               funzione che controllerà se i campi sono tutti pieni
+        valoriRicetta.put(COL_IMM, array)
+        valoriRicetta.put(COL_NOME, ETnome.text.toString().trim())
+        valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
+        valoriRicetta.put(COL_TEMPO, ETtempo.text.toString().trim())
+        valoriRicetta.put(COL_TIPO, ETtipologia.text.toString().trim())
+        valoriRicetta.put(COL_PORT, spinner_portata.selectedItem.toString())
+        valoriRicetta.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+        valoriRicetta.put(COL_DESC, ETnote.text.toString().trim())
+
+        db.salvaDati(TABELLA_RICETTE, valoriRicetta)
+
+        lista_ingredienti.forEach {
+            val valoriIngredienti = ContentValues()
+            valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+            valoriIngredienti.put(COL_DESC, ETnote.text.toString())
+            valoriIngredienti.put(COL_NOME_ING, it.Name)
+            valoriIngredienti.put(COL_QUANT, it.quantit)
+            valoriIngredienti.put(COL_MIS, it.misura)
+
+            db.salvaDati(TABELLA_ING, valoriIngredienti)
+        }
+
+        db.close()
+        finish()
+    }
+
+    //funzione che restituisce l'array di byte relativo all'immagine passata per argomento
+    private fun convertImage(image : Bitmap) : ByteArray{
+        val objByteArrayOutputStream = ByteArrayOutputStream()      //nel DB non si poò salvare una bitmap, va quindi prima convertita in un ByteArrayOutputStream
+        image.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)       //si converte la bitmap in un ByteArrayOutputStream
+        val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()       //si inseriscono i byte in un array
+        return imageInBytes
     }
 }

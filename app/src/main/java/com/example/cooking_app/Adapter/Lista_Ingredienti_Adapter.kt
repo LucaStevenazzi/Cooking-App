@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cooking_app.Classi.DataBaseHelper
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.R
 
@@ -30,6 +31,7 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
 
             //controllo premuta icona com.example.cooking_app.di delete
             itemDelete.setOnClickListener{ v: View  ->
+
                 array.removeAt(bindingAdapterPosition)
                 notifyItemRemoved(bindingAdapterPosition)
                 notifyDataSetChanged()

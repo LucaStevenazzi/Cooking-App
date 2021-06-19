@@ -1,19 +1,19 @@
 package com.example.cooking_app
 
-import android.content.*
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
-import com.example.cooking_app.Fragment.Filtro_ricerca
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.filtro_ricerca_fragment.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
@@ -50,11 +50,13 @@ class List_Ricette_Activity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
-        setCompopnent()
+
+        setComponent()
+
     }
 
     //settaggio dei componenti
-    private fun setCompopnent() {
+    private fun setComponent() {
         initBarMenuLateral() //inizializzazione Barra laterale del menu
     }
     private fun initBarMenuLateral() {
@@ -71,10 +73,20 @@ class List_Ricette_Activity : AppCompatActivity(){
             true
         }
     }
+    private fun initRecyclerView() {
+        mAdapter = Lista_Ricette_Adapter(img, this)
+        lista_ricette.layoutManager = LinearLayoutManager(this)
+        lista_ricette.adapter = mAdapter
+    }
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
     fun newRecipe(v: View) {
         val it = Intent(this, AddNewRecipeActivity::class.java)
+        startActivity(it)
+    }
+
+    fun apriRicettarioLocale(v : View){
+        val it = Intent(this, Lista_Ricette_Locali_Activity::class.java)
         startActivity(it)
     }
 
