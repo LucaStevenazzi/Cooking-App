@@ -1,159 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutDescription="@xml/activity_main_scene"
-    tools:context=".View_Ricetta_Activity">
+    app:layoutDescription="@xml/activity_main_scene">
 
-
-    <ImageView
-        android:id="@+id/img_ricetta"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view_ricetta"
         android:layout_width="match_parent"
-        android:layout_height="378dp"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_report_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        tools:context=".View_Ricetta_Activity">
 
-    <TextView
-        android:id="@+id/ricetta_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/STRtempo"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="207dp"
-        tools:layout_editor_absoluteY="447dp" />
-
-    <TextView
-        android:id="@+id/ricetta_difficolta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/STRdiff"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="188dp"
-        tools:layout_editor_absoluteY="498dp" />
-
-    <TextView
-        android:id="@+id/ricetta_persone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/STRpersone"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="194dp"
-        tools:layout_editor_absoluteY="554dp" />
-
-    <TextView
-        android:id="@+id/ricetta_portata"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@string/STRportata"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="530dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/ricetta_ingredienti"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:scrollbars="vertical"
-        android:text="@string/STRingredienti"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="85dp"
-        tools:layout_editor_absoluteY="729dp" />
-
-    <TextView
-        android:id="@+id/tempo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="Tempo di preparazione:"
-        android:textColor="#CC000000"
-        android:textSize="17sp"
-        tools:layout_editor_absoluteX="33dp"
-        tools:layout_editor_absoluteY="287dp" />
-
-    <TextView
-        android:id="@+id/difficolta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="Difficolta di preparazione:"
-        android:textColor="#CC000000"
-        android:textSize="17sp"
-        tools:layout_editor_absoluteX="15dp"
-        tools:layout_editor_absoluteY="502dp" />
-
-    <TextView
-        android:id="@+id/persone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="Numero di persone:"
-        android:textColor="#CC000000"
-        android:textSize="17sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="523dp" />
-
-    <TextView
-        android:id="@+id/portata"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="Portata:"
-        android:textColor="#CC000000"
-        android:textSize="17sp"
-        tools:layout_editor_absoluteX="62dp"
-        tools:layout_editor_absoluteY="628dp" />
-
-    <TextView
-        android:id="@+id/ingredienti"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="Ingredienti:"
-        android:textColor="#CC000000"
-        android:textSize="17sp"
-        tools:layout_editor_absoluteX="29dp"
-        tools:layout_editor_absoluteY="667dp" />
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/detailScrollView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteY="330dp">
-
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <FrameLayout
+            android:id="@+id/fl_frag_spesa"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="35dp">
+            android:layout_height="match_parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/all_component_view">
+
+            <ImageView
+                android:id="@+id/img_ricetta"
+                android:layout_width="match_parent"
+                android:layout_height="378dp"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_report_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/ricetta_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/STRtempo"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_ricetta" />
+
+            <TextView
+                android:id="@+id/ricetta_difficolta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/STRdiff"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ricetta_time" />
+
+            <Spinner
+                android:id="@+id/spinner_num_persone"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="40dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ricetta_difficolta" />
+
+            <TextView
+                android:id="@+id/ricetta_portata"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/STRportata"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_num_persone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ricetta_ingredienti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginRight="40dp"
+                android:fontFamily="sans-serif"
+                android:scrollbars="vertical"
+                android:text="@string/STRingredienti"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ricetta_portata" />
+
+            <TextView
+                android:id="@+id/tempo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/tempo_di_preparazione"
+                android:textColor="#CC000000"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_ricetta" />
+
+            <TextView
+                android:id="@+id/difficolta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/difficolta_di_preparazione"
+                android:textColor="#CC000000"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tempo" />
+
+            <TextView
+                android:id="@+id/persone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/numero_di_persone"
+                android:textColor="#CC000000"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/difficolta" />
+
+            <TextView
+                android:id="@+id/portata"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/portata"
+                android:textColor="#CC000000"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/persone" />
+
+            <TextView
+                android:id="@+id/ingredienti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/ingredienti"
+                android:textColor="#CC000000"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/portata" />
 
             <TextView
                 android:id="@+id/ricetta_descrizione"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
+                android:fontFamily="sans-serif"
+                android:scrollbars="vertical"
+                android:text="@string/descrizione"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ricetta_ingredienti" />
+
+            <TextView
+                android:id="@+id/ricetta_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:fontFamily="sans-serif"
-                android:text="@string/close"
-                android:textColor="#CC000000"
-                android:textSize="17sp"
-                tools:layout_editor_absoluteX="155dp"
-                tools:layout_editor_absoluteY="361dp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.core.widget.NestedScrollView>
+                android:text="@string/STRnote"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ricetta_descrizione" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

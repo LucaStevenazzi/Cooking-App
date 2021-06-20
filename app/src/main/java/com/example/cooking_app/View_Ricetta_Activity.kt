@@ -4,8 +4,9 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,17 +20,17 @@ import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
 
-
 /*
 Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
  */
-class View_Ricetta_Activity : AppCompatActivity() {
+class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private var flag_first_Update: Boolean = true
     private val TAG = "View_Ricetta_Activity"
 
     private var ricetta : Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
+    private var lista_ingredienti_copia = ArrayList<Ingredienti>()
     private val ref = FirebaseDatabase.getInstance().reference
 
 
@@ -45,12 +46,49 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     //settaggio dei componenti nell'activity
     private fun setComponent() { //settiamo la RecyclerView per la lista degli ingredienti nella View_Ricetta
+        setSpinner()
         ricetta_ingredienti.layoutManager = LinearLayoutManager(this)
         ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti) //pasaggio del context per capire che activity chiama l'adapter
         getRicettaExtra() // prende la ricetta dagli extra dell'intent
         updateRicetta()
         setDati() // setta i dati della ricetta sull'layout dell'activity
     }
+
+    private fun setSpinner() {
+
+        //contenitore dei valori della DropDown List per il numero di persone
+        ArrayAdapter.createFromResource(this, R.array.array_num_persone, android.R.layout.simple_spinner_item).also {
+            adapter ->
+            // Specifica il layout da usare quando la lista appare
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Applicazione dell'adapter allo spinner
+            spinner_num_persone.adapter = adapter
+
+            spinner_num_persone.onItemSelectedListener = this
+        }
+
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (parent != null) {
+
+            val numeroPersone = parent.getItemAtPosition(position).toString().toInt()
+
+            for (i in lista_ingredienti.indices){
+                val ing = Ingredienti(lista_ingredienti[i].Name, lista_ingredienti[i].quantit, lista_ingredienti[i].misura)
+                lista_ingredienti_copia.add(ing)
+                lista_ingredienti_copia[i].quantit = (lista_ingredienti[i].quantit.toDouble() / ricetta.persone * numeroPersone).toString()
+            }
+
+            ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti_copia)
+        }
+
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+    }
+
     private fun getRicettaExtra(){ //ottenere la ricetta dall'intent di creazione
 
         val byteArray = intent.getByteArrayExtra("Bitmap")
@@ -87,7 +125,18 @@ class View_Ricetta_Activity : AppCompatActivity() {
         }
         ricetta_time.text = ricetta.tempo
         ricetta_difficolta.text = ricetta.diff
-        ricetta_persone.text = ricetta.persone.toString()
+        when (ricetta.persone) {
+            1 -> spinner_num_persone.setSelection(0)
+            2 -> spinner_num_persone.setSelection(1)
+            3 -> spinner_num_persone.setSelection(2)
+            4 -> spinner_num_persone.setSelection(3)
+            5 -> spinner_num_persone.setSelection(4)
+            6 -> spinner_num_persone.setSelection(5)
+            7 -> spinner_num_persone.setSelection(6)
+            8 -> spinner_num_persone.setSelection(7)
+            9 -> spinner_num_persone.setSelection(8)
+            10 -> spinner_num_persone.setSelection(9)
+        }
         ricetta_portata.text = ricetta.portata
         ricetta.listaIngredienti = lista_ingredienti
         //ricetta_note.text = ricetta.note
