@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.Fragment.Filtro_ricerca
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.filtro_ricerca_fragment.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
@@ -119,6 +120,8 @@ class List_Ricette_Activity : AppCompatActivity(){
     private fun start_filtro_ricette() {
         if(isOpen) {
             lista_ricette.visibility = RecyclerView.GONE
+            salvaRicetta.visibility = FloatingActionButton.GONE
+            apriRicettarioLocale.visibility = FloatingActionButton.GONE
             hideKeyboard()
             if(createFragmente){
                 supportFragmentManager.beginTransaction().add(R.id.Frag_filter_search, Frag_search).addToBackStack(null).commit()
@@ -142,6 +145,8 @@ class List_Ricette_Activity : AppCompatActivity(){
     private fun nascondi_filtro_ricetta() {
         isOpen = true
         lista_ricette.visibility = RecyclerView.VISIBLE
+        salvaRicetta.visibility = FloatingActionButton.VISIBLE
+        apriRicettarioLocale.visibility = FloatingActionButton.VISIBLE
         Frag_filter_search.visibility = FrameLayout.GONE
         mAdapter.filter(getTextButtton()).filter("")
     }
@@ -156,6 +161,8 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
             override fun onQueryTextChange(newText: String): Boolean {
                 lista_ricette.visibility = RecyclerView.VISIBLE
+                salvaRicetta.visibility = FloatingActionButton.VISIBLE
+                apriRicettarioLocale.visibility = FloatingActionButton.VISIBLE
                 Frag_filter_search.visibility = FrameLayout.GONE
                 //controlla nell'array di ricette
                 if(createFragmente)
@@ -176,7 +183,12 @@ class List_Ricette_Activity : AppCompatActivity(){
             list_filter.add("null")
         //salvataggio button Tempo
         if(bt_fTempo != null) {
-            val string = bt_fTempo!!.text.toString().split(" ")[0]
+            var string = ""
+            when(bt_fTempo!!.text){
+                "1-15 min" -> string = "15"
+                "15-30 min" -> string = "30"
+                "+30 min" -> string = "60"
+            }
             list_filter.add(string)
         }
         else

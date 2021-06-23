@@ -129,15 +129,38 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
                             }
                     }
                     if (filtro[1] != "null") {
-                        //da sistemare il tempo
-                        if (item.tempo.toInt() <= filtro[1].toInt()) {//per Tempo
-                            if (!filteredList.contains(item))
-                                filteredList.add(item)
-                        } else
-                            if (filteredList.contains(item)) {
-                                filteredList.remove(item)
-                                continue
+                        when(filtro[1]){
+                            "15" -> {
+                                if (item.tempo.toInt() <= 15) {//per Tempo
+                                    if (!filteredList.contains(item))
+                                        filteredList.add(item)
+                                } else
+                                    if (filteredList.contains(item)) {
+                                        filteredList.remove(item)
+                                        continue
+                                    }
                             }
+                            "30" ->{
+                                if (item.tempo.toInt() in 15..30) {//per Tempo
+                                    if (!filteredList.contains(item))
+                                        filteredList.add(item)
+                                } else
+                                    if (filteredList.contains(item)) {
+                                        filteredList.remove(item)
+                                        continue
+                                    }
+                            }
+                            "60" ->{
+                                if (item.tempo.toInt() >= 30) {//per Tempo
+                                    if (!filteredList.contains(item))
+                                        filteredList.add(item)
+                                } else
+                                    if (filteredList.contains(item)) {
+                                        filteredList.remove(item)
+                                        continue
+                                    }
+                            }
+                        }
                     }
                     if (filtro[2] != "null") {
                         if (item.tipologia.toLowerCase(Locale.ROOT)
