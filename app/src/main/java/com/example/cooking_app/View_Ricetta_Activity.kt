@@ -126,11 +126,10 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
     private fun setDati() {
         title = ricetta.nome // settagio del titolo della Activity
-        if (ricetta.bit == null) {
+        if (ricetta.bit == null)
             Picasso.with(this).load(ricetta.immagine).into(img_ricetta)
-        } else {
+        else
             img_ricetta.setImageBitmap(ricetta.bit)
-        }
         ricetta_time.text = ricetta.tempo.plus(" minuti")
         ricetta_difficolta.text = ricetta.diff
         when (ricetta.persone) {

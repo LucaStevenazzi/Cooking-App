@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList

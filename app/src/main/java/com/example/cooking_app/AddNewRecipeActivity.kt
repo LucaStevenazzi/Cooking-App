@@ -318,9 +318,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
     }
     private fun randomName(): String {
         if(flag_img){
-            nameUp = Random.nextInt(1000000000).toString() + "." + getFileExtension(imageUri)
+            nameUp = Random.nextInt(1000000000).toString() + getFileExtension(imageUri)
         }else{
-            nameUp = Random.nextInt(1000000000).toString() + ".jpg"
+            nameUp = Random.nextInt(1000000000).toString() + "jpg"
         }
         return nameUp
     }
@@ -367,7 +367,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {//funzione che recupera l'immagine scelta dall'utente nella galleria o dalla fotocamera e la inserisce nella variabile imageUri
+    //funzione che recupera l'immagine scelta dall'utente nella galleria o dalla fotocamera e la inserisce nella variabile imageUri
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_GALLERY_CAPTURE && resultCode == RESULT_OK) {
             imageUri = data?.data!!
@@ -393,7 +394,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         if (!checkPassati)
             return
 
-        if(intent.extras != null){
+        if(intent.extras != null){//modifica
 
             val db = DataBaseHelper(this)
             val contenuto = ContentValues()
@@ -417,7 +418,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
             saveRicettaDB()
             lista_ricette_locali.adapter?.notifyDataSetChanged()
         }
-        else{
+        else{//creazione nuova ricetta
             if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
                 Toast.makeText(this, "La ricetta è già presente in locale", Toast.LENGTH_LONG).show()
                 return
