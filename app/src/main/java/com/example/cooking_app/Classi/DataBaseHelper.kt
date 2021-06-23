@@ -9,10 +9,11 @@ import android.graphics.BitmapFactory
 import android.util.Log
 
 val DB_NAME = "CookingApp.db"
-val DB_OLD_VERSION = 16
-val DB_NEW_VERSION = 17
+val DB_OLD_VERSION = 17
+val DB_NEW_VERSION = 18
 val TABELLA_RICETTE = "ricette"
 val COL_IMM = "immagine"
+val COL_NOME_IMM = "nomeImmagine"
 val COL_NOME = "nome"
 val COL_DIFF = "difficoltà"
 val COL_TEMPO = "tempo"
@@ -30,13 +31,14 @@ val COL_NOTE = "note"
 val createTableRicette =
         "CREATE TABLE $TABELLA_RICETTE (" +
         "$COL_IMM BLOB, " +
+        "$COL_NOME_IMM VARCHAR(256), " +
         "$COL_NOME VARCHAR(256), " +
         "$COL_DIFF VARCHAR(256), " +
         "$COL_TEMPO VARCHAR(256), " +
         "$COL_TIPO VARCHAR(256), " +
         "$COL_PORT VARCHAR(256), " +
         "$COL_PERS INTEGER, " +
-        "$COL_DESC VARCHAR(1024), " +
+        "$COL_DESC VARCHAR(2048), " +
         " PRIMARY KEY ($COL_NOME, $COL_DESC))"
 
 val createTableIng =
@@ -111,6 +113,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
                     Log.v("nome array", array.toString())
                     val bit: Bitmap = BitmapFactory.decodeByteArray(array, 0, array.size)
                     ricetta.bit = bit
+                    ricetta.immagine = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOME_IMM))
                     ricetta.nome = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOME))
                     ricetta.diff = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DIFF))
                     ricetta.tempo = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_TEMPO))
@@ -150,21 +153,33 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
 
     //funzione che permette di salvare i dati nel DB
     fun salvaDati(name: String, cv: ContentValues) {
-        val db = this.writableDatabase
-        db.insert(name, null, cv);
+        val dbW = this.writableDatabase
+        dbW.insert(name, null, cv);
     }
 
     //funzione che permette di eliminare i dati nel DB
     fun eliminaRicetta(des : String, nome: String) {
-        val db = this.writableDatabase
+        val dbW = this.writableDatabase
         val queryEliminazione = "$COL_DESC = " + "\"" + des + "\" AND $COL_NOME = " + "\"" + nome + "\""
-        db.delete(TABELLA_RICETTE, queryEliminazione, null)
+        dbW.delete(TABELLA_RICETTE, queryEliminazione, null)
     }
 
     //funzione che permette di modificare i dati nel DB
     fun modificaRicetta(des: String, nome: String, contenuto: ContentValues) {
-        val db = this.writableDatabase
+        val dbW = this.writableDatabase
         val queryModifica = "$COL_DESC = " + "\"" + des + "\" AND $COL_NOME = " + "\"" + nome + "\""
-        db.update(TABELLA_RICETTE, contenuto, queryModifica, null)
+        dbW.update(TABELLA_RICETTE, contenuto, queryModifica, null)
+    }
+
+    fun controllaRicetta(des : String, nome: String) : Boolean{
+        val dbR = this.readableDatabase
+        var check = false
+        val cercaRicetta = "SELECT $COL_NOME FROM $TABELLA_RICETTE WHERE $COL_NOME = " + "\"" + nome + "\" AND $COL_DESC = " + "\"" + des + "\""
+        val cursoreRicetta = dbR.rawQuery(cercaRicetta, null)
+        if (cursoreRicetta.moveToFirst() != false) {
+            check = true
+            return check
+        }
+        return check
     }
 }

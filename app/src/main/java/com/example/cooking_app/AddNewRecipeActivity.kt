@@ -24,7 +24,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.*
@@ -227,12 +226,34 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     //onClick sul salvataggio della nuova ricetta o l'update della ricetta selezionata
     fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
+        checkPassati = false
+        checkRicetta()
+        if (!checkPassati)
+            return
         if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
             saveRicettaDB()
             DBricette.child(ricetta.nome).setValue(ricetta)
         } else {
             if (ricetta.bit != null){
+                val db = DataBaseHelper(this)
+                val contenuto = ContentValues()
+                contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
+                contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
+                contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
+                contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
+                contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+                db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
 
+                /*lista_ingredienti.forEach {
+                    val valoriIngredienti = ContentValues()
+                    valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+                    valoriIngredienti.put(COL_DESC, ETnote.text.toString())
+                    valoriIngredienti.put(COL_NOME_ING, it.Name)
+                    valoriIngredienti.put(COL_QUANT, it.quantit)
+                    valoriIngredienti.put(COL_MIS, it.misura)
+
+                    db.inserisciDati(TABELLA_ING, valoriIngredienti)
+                }*/
                 saveRicettaDB()
                 lista_ricette_locali.adapter?.notifyDataSetChanged()
 
@@ -398,6 +419,11 @@ class AddNewRecipeActivity : AppCompatActivity() {
         checkRicetta()
         if (!checkPassati)
             return
+        if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
+            Toast.makeText(this, "La ricetta è già presente in locale", Toast.LENGTH_LONG).show()
+            return
+        }
+
         if(intent.extras != null){
 
             val db = DataBaseHelper(this)
@@ -429,6 +455,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
             checkRicetta()
             valoriRicetta.put(COL_IMM, array)
+            valoriRicetta.put(COL_NOME_IMM, randomName())
             valoriRicetta.put(COL_NOME, ETnome.text.toString().trim())
             valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
             valoriRicetta.put(COL_TEMPO, ETtempo.text.toString().trim())
