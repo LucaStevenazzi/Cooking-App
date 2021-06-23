@@ -24,7 +24,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.*
@@ -303,7 +302,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
                 val note = ETnote.text.toString()
 
 
-                val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
+                val ricetta = Ricetta(null, immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
 
 
                 //salvataggio degli ingredienti sul DB
@@ -420,6 +419,11 @@ class AddNewRecipeActivity : AppCompatActivity() {
         checkRicetta()
         if (!checkPassati)
             return
+        if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
+            Toast.makeText(this, "La ricetta è già presente in locale", Toast.LENGTH_LONG).show()
+            return
+        }
+
         if(intent.extras != null){
 
             val db = DataBaseHelper(this)
@@ -451,6 +455,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
             checkRicetta()
             valoriRicetta.put(COL_IMM, array)
+            valoriRicetta.put(COL_NOME_IMM, randomName())
             valoriRicetta.put(COL_NOME, ETnome.text.toString().trim())
             valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
             valoriRicetta.put(COL_TEMPO, ETtempo.text.toString().trim())
