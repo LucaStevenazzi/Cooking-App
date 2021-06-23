@@ -176,7 +176,12 @@ class List_Ricette_Activity : AppCompatActivity(){
             list_filter.add("null")
         //salvataggio button Tempo
         if(bt_fTempo != null) {
-            val string = bt_fTempo!!.text.toString().split(" ")[0]
+            var string = ""
+            when(bt_fTempo!!.text){
+                "1-15 min" -> string = "15"
+                "15-30 min" -> string = "30"
+                "+30 min" -> string = "60"
+            }
             list_filter.add(string)
         }
         else
