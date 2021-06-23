@@ -227,20 +227,14 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     //onClick sul salvataggio della nuova ricetta o l'update della ricetta selezionata
     fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
-
+        checkPassati = false
+        checkRicetta()
+        if (!checkPassati)
+            return
         if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
-            checkPassati = false
-            checkRicetta()
-            if (!checkPassati)
-                return
             saveRicettaDB()
             DBricette.child(ricetta.nome).setValue(ricetta)
-
         } else {
-            checkPassati = false
-            checkRicetta()
-            if (!checkPassati)
-                return
             if (ricetta.bit != null){
                 val db = DataBaseHelper(this)
                 val contenuto = ContentValues()
@@ -421,35 +415,66 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
     //funzione che salva in locale la ricetta
     fun salvataggioRicettaDBLocale(v : View){
-        val valoriRicetta = ContentValues()
-        val array = convertImage(IVimmagine.drawable.toBitmap())
-        Log.v("valore immagine", array.toString())
-
+        //check
+        checkPassati = false
         checkRicetta()
-        valoriRicetta.put(COL_IMM, array)
-        valoriRicetta.put(COL_NOME, ETnome.text.toString().trim())
-        valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
-        valoriRicetta.put(COL_TEMPO, ETtempo.text.toString().trim())
-        valoriRicetta.put(COL_TIPO, ETtipologia.text.toString().trim())
-        valoriRicetta.put(COL_PORT, spinner_portata.selectedItem.toString())
-        valoriRicetta.put(COL_PERS, ETpersone.text.toString().trim().toInt())
-        valoriRicetta.put(COL_DESC, ETnote.text.toString().trim())
+        if (!checkPassati)
+            return
+        if(intent.extras != null){
 
-        db.salvaDati(TABELLA_RICETTE, valoriRicetta)
+            val db = DataBaseHelper(this)
+            val contenuto = ContentValues()
+            contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
+            contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
+            contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
+            contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
+            contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+            db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
 
-        lista_ingredienti.forEach {
-            val valoriIngredienti = ContentValues()
-            valoriIngredienti.put(COL_NOME, ETnome.text.toString())
-            valoriIngredienti.put(COL_DESC, ETnote.text.toString())
-            valoriIngredienti.put(COL_NOME_ING, it.Name)
-            valoriIngredienti.put(COL_QUANT, it.quantit)
-            valoriIngredienti.put(COL_MIS, it.misura)
+            /*lista_ingredienti.forEach {
+                val valoriIngredienti = ContentValues()
+                valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+                valoriIngredienti.put(COL_DESC, ETnote.text.toString())
+                valoriIngredienti.put(COL_NOME_ING, it.Name)
+                valoriIngredienti.put(COL_QUANT, it.quantit)
+                valoriIngredienti.put(COL_MIS, it.misura)
 
-            db.salvaDati(TABELLA_ING, valoriIngredienti)
+                db.inserisciDati(TABELLA_ING, valoriIngredienti)
+            }*/
+            saveRicettaDB()
+            lista_ricette_locali.adapter?.notifyDataSetChanged()
         }
+        else{
+            val valoriRicetta = ContentValues()
+            val array = convertImage(IVimmagine.drawable.toBitmap())
+            Log.v("valore immagine", array.toString())
 
-        db.close()
-        finish()
+            checkRicetta()
+            valoriRicetta.put(COL_IMM, array)
+            valoriRicetta.put(COL_NOME, ETnome.text.toString().trim())
+            valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
+            valoriRicetta.put(COL_TEMPO, ETtempo.text.toString().trim())
+            valoriRicetta.put(COL_TIPO, ETtipologia.text.toString().trim())
+            valoriRicetta.put(COL_PORT, spinner_portata.selectedItem.toString())
+            valoriRicetta.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+            valoriRicetta.put(COL_DESC, ETnote.text.toString().trim())
+
+            db.salvaDati(TABELLA_RICETTE, valoriRicetta)
+
+            lista_ingredienti.forEach {
+                val valoriIngredienti = ContentValues()
+                valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+                valoriIngredienti.put(COL_DESC, ETnote.text.toString())
+                valoriIngredienti.put(COL_NOME_ING, it.Name)
+                valoriIngredienti.put(COL_QUANT, it.quantit)
+                valoriIngredienti.put(COL_MIS, it.misura)
+
+                db.salvaDati(TABELLA_ING, valoriIngredienti)
+            }
+
+            db.close()
+            finish()
+        }
     }
 
     //funzione che restituisce l'array di byte relativo all'immagine passata per argomento
