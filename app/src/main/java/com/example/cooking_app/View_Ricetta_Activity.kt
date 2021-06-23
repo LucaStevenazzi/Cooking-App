@@ -35,9 +35,9 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private var flag_first_Update: Boolean = true
     private val TAG = "View_Ricetta_Activity"
     private var lista_ingredienti = ArrayList<Ingredienti>()
+    private var lista_ingredienti_copia = ArrayList<Ingredienti>()
     private var mAdapter: Lista_Ingredienti_Adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
     private var ricetta : Ricetta = Ricetta()
-    private var lista_ingredienti_copia = ArrayList<Ingredienti>()
     private val ref = FirebaseDatabase.getInstance().reference
 
 
@@ -89,8 +89,8 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             }
 
             mAdapter.notifyDataSetChanged()
-        }
 
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {

@@ -64,6 +64,11 @@
     <string name="carrello">carrello</string>
     <string name="scegli_il_metodo_di_inserimento">Scegli il metodo di inserimento:</string>
     <string name="annulla">Annulla</string>
+    <string name="tempo_di_preparazione">Tempo di preparazione:</string>
+    <string name="difficolta_di_preparazione">Difficoltà di preparazione:</string>
+    <string name="numero_di_persone">Numero di persone:</string>
+    <string name="portata">Portata:</string>
+    <string name="ingredienti">Ingredienti:</string>
     <string name="difficolt">Difficoltà</string>
     <string name="ingrediente">Ingrediente</string>
     <string name="facile">Facile</string>
@@ -89,10 +94,5 @@
     <string name="grammi">Grammi (g)</string>
     <string name="centilitri">Millilitri (ml)</string>
     <string name="bicchieri">Bicchieri</string>
-    <string name="tempo_di_preparazione">Tempo di preparazione:</string>
-    <string name="difficolta_di_preparazione">Difficoltà di preparazione:</string>
-    <string name="numero_di_persone">Numero di persone:</string>
-    <string name="portata">Portata:</string>
-    <string name="ingredienti">Ingredienti:</string>
 
 </resources>
