@@ -78,17 +78,19 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (parent != null) {
 
+            lista_ingredienti.clear()
+            lista_ingredienti_copia = ricetta.listaIngredienti
             val numeroPersone = parent.getItemAtPosition(position).toString().toInt()
 
-            for (i in lista_ingredienti.indices){
-                val ing = Ingredienti(lista_ingredienti[i].Name, lista_ingredienti[i].quantit, lista_ingredienti[i].misura)
-                lista_ingredienti_copia.add(ing)
-                lista_ingredienti_copia[i].quantit = (lista_ingredienti[i].quantit.toDouble() / ricetta.persone * numeroPersone).toString()
+            for (i in lista_ingredienti_copia.indices){
+                val ing = Ingredienti(lista_ingredienti_copia[i].Name, lista_ingredienti_copia[i].quantit, lista_ingredienti_copia[i].misura)
+                lista_ingredienti.add(ing)
+                lista_ingredienti[i].quantit = (lista_ingredienti_copia[i].quantit.toDouble() / ricetta.persone * numeroPersone).toString()
             }
 
-            ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti_copia)
-        }
+            mAdapter.notifyDataSetChanged()
 
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -99,7 +101,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
         val byteArray = intent.getByteArrayExtra("Bitmap")
         if (byteArray != null){
-            ricetta.bit = BitmapFactory.decodeByteArray(byteArray, 0, byteArray!!.size)
+            ricetta.bit = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
         }
         ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
@@ -129,7 +131,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         } catch (e : IllegalArgumentException){
             img_ricetta.setImageBitmap(ricetta.bit)
         }
-        ricetta_time.text = ricetta.tempo + " minuti"
+        ricetta_time.text = ricetta.tempo.plus(" minuti")
         ricetta_difficolta.text = ricetta.diff
         when (ricetta.persone) {
             1 -> spinner_num_persone.setSelection(0)
