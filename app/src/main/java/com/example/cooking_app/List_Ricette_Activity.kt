@@ -58,27 +58,6 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
 
-        setComponent()
-
-    }
-
-    //settaggio dei componenti
-    private fun setComponent() {
-        initBarMenuLateral() //inizializzazione Barra laterale del menu
-    }
-    private fun initBarMenuLateral() {
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        navView.setNavigationItemSelectedListener{
-            when(it.itemId){
-                R.id.miItem1 -> Toast.makeText(applicationContext, "Clicked Item 1", Toast.LENGTH_SHORT).show()
-                R.id.miItem2 -> Toast.makeText(applicationContext, "Clicked Item 2", Toast.LENGTH_SHORT).show()
-                R.id.miItem3 -> Toast.makeText(applicationContext, "Clicked Item 3", Toast.LENGTH_SHORT).show()
-            }
-            true
-        }
     }
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
