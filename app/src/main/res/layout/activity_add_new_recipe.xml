@@ -165,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:autofillHints=""
-                    android:hint="@string/HINT"
+                    android:hint="@string/HINT_NUM_PERSONE"
                     android:inputType="numberDecimal" />
 
             </LinearLayout>
@@ -207,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:autofillHints=""
                     android:hint="@string/HINTquantità"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:padding="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/ing_misura"

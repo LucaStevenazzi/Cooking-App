@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +16,15 @@ import com.example.cooking_app.Adapter.Lista_Ricette_Locali_Adapter
 import com.example.cooking_app.Classi.*
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
 
 /*
@@ -44,11 +51,23 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     //settaggio dei componenti nell'activity
     private fun setComponent() { //settiamo la RecyclerView per la lista degli ingredienti nella View_Ricetta
+        setSpinner()
         ricetta_ingredienti.layoutManager = LinearLayoutManager(this)
         ricetta_ingredienti.adapter = mAdapter //pasaggio del context per capire che activity chiama l'adapter
         getRicettaExtra() // prende la ricetta dagli extra dell'intent
         updateRicetta()
         setDati() // setta i dati della ricetta sull'layout dell'activity
+    }
+    private fun setSpinner() {
+        //contenitore dei valori della DropDown List per il numero di persone
+        ArrayAdapter.createFromResource(this, R.array.array_num_persone, android.R.layout.simple_spinner_item).also {
+                adapter ->
+            // Specifica il layout da usare quando la lista appare
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Applicazione dell'adapter allo spinner
+            spinner_num_persone.adapter = adapter
+        }
+
     }
     private fun getRicettaExtra(){ //ottenere la ricetta dall'intent di creazione
 
@@ -86,7 +105,18 @@ class View_Ricetta_Activity : AppCompatActivity() {
         }
         ricetta_time.text = ricetta.tempo + " minuti"
         ricetta_difficolta.text = ricetta.diff
-        ricetta_persone.text = ricetta.persone.toString()
+        when (ricetta.persone) {
+            1 -> spinner_num_persone.setSelection(0)
+            2 -> spinner_num_persone.setSelection(1)
+            3 -> spinner_num_persone.setSelection(2)
+            4 -> spinner_num_persone.setSelection(3)
+            5 -> spinner_num_persone.setSelection(4)
+            6 -> spinner_num_persone.setSelection(5)
+            7 -> spinner_num_persone.setSelection(6)
+            8 -> spinner_num_persone.setSelection(7)
+            9 -> spinner_num_persone.setSelection(8)
+            10 -> spinner_num_persone.setSelection(9)
+        }
         ricetta_portata.text = ricetta.portata
         lista_ingredienti.clear()
         lista_ingredienti.addAll(ricetta.listaIngredienti)
@@ -207,4 +237,126 @@ class View_Ricetta_Activity : AppCompatActivity() {
         }
         finish()//chiudo l'activiity
     }
+    //Conversione
+    private val mapGrammi: HashMap<Int,String> = HashMap()
+    private val mapCucchiaini: HashMap<Int,String> = HashMap()
+    private val mapMl: HashMap<Int,String> = HashMap()
+    private val mapBicchieri: HashMap<Int,String> = HashMap()
+    fun setGrammi(view: View) {
+        if(view.isSelected){
+            view.isSelected = false
+            resetGrammi()
+            resetCucchiani()
+        }
+        else{
+            view.isSelected = true
+            cucchiai.isSelected = false
+            resetGrammi()
+            for(i in lista_ingredienti.indices){//operazioni
+                val ing = lista_ingredienti[i]
+                if(ing.misura == "cucchiaini"){
+                    mapCucchiaini[i] = ing.quantit
+                    var quant = ing.quantit.toDouble()
+                    quant*=5
+                    ing.quantit = quant.toString()
+                    ing.misura = "g"
+                }
+            }
+        }
+        mAdapter.notifyDataSetChanged()
+    }
+    fun setCucchiaini(view: View) {
+        if (view.isSelected) {
+            view.isSelected = false
+            resetGrammi()
+            resetCucchiani()
+        }
+        else {
+            view.isSelected = true
+            grammi.isSelected = false
+            resetCucchiani()
+            for (i in lista_ingredienti.indices) {//operazioni
+                val ing = lista_ingredienti[i]
+                if (ing.misura == "g") {
+                    mapGrammi[i] = ing.quantit
+                    var quant = ing.quantit.toDouble()
+                    quant /= 5
+                    ing.quantit = quant.toString()
+                    ing.misura = "cucchiaini"
+                }
+            }
+        }
+        mAdapter.notifyDataSetChanged()
+    }
+    fun setMl(view: View) {
+        if(view.isSelected){
+            view.isSelected = false
+            resetMl()
+            resetBicchieri()
+        }
+        else{
+            view.isSelected = true
+            bicchieri.isSelected = false
+            resetMl()
+            for(i in lista_ingredienti.indices){//operazioni
+                val ing = lista_ingredienti[i]
+                if(ing.misura == "bicchieri"){
+                    mapBicchieri[i] = ing.quantit
+                    var quant:Double = ing.quantit.toDouble()
+                    quant*=200
+                    ing.quantit = quant.toString()
+                    ing.misura = "ml"
+                }
+            }
+        }
+        mAdapter.notifyDataSetChanged()
+    }
+    fun setBicchieri(view: View) {
+        if(view.isSelected){
+            view.isSelected = false
+            resetMl()
+            resetBicchieri()
+        }
+        else{
+            view.isSelected = true
+            ml.isSelected = false
+            resetBicchieri()
+            for(i in lista_ingredienti.indices){//operazioni
+                val ing = lista_ingredienti[i]
+                if(ing.misura == "ml"){
+                    mapMl[i] = ing.quantit
+                    var quant = ing.quantit.toDouble()
+                    quant/=200
+                    ing.quantit = quant.toString()
+                    ing.misura = "bicchieri"
+                }
+            }
+        }
+        mAdapter.notifyDataSetChanged()
+    }
+    private fun resetGrammi() {
+        for (valore in mapGrammi) {//reset ingredienti di tipo grammi
+            lista_ingredienti[valore.key].quantit = valore.value
+            lista_ingredienti[valore.key].misura = "g"
+        }
+    }
+    private fun resetCucchiani() {
+        for(valore in mapCucchiaini){//reset ingredienti di tipo cucchiaini
+            lista_ingredienti[valore.key].quantit = valore.value
+            lista_ingredienti[valore.key].misura = "cucchiaini"
+        }
+    }
+    private fun resetMl() {
+        for(valore in mapMl){//reset ingredienti di tipo cl
+            lista_ingredienti[valore.key].quantit = valore.value
+            lista_ingredienti[valore.key].misura = "ml"
+        }
+    }
+    private fun resetBicchieri() {
+        for(valore in mapBicchieri){//reset ingredienti di tipo Bicchieri
+            lista_ingredienti[valore.key].quantit = valore.value
+            lista_ingredienti[valore.key].misura = "bicchieri"
+        }
+    }
+
 }

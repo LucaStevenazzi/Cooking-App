@@ -9,8 +9,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 
 val DB_NAME = "CookingApp.db"
-val DB_OLD_VERSION = 15
-val DB_NEW_VERSION = 16
+val DB_OLD_VERSION = 16
+val DB_NEW_VERSION = 17
 val TABELLA_RICETTE = "ricette"
 val COL_IMM = "immagine"
 val COL_NOME = "nome"
@@ -58,9 +58,9 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
 
         onUpgrade(db, DB_OLD_VERSION, DB_NEW_VERSION)      //versione 17 da usare in caso di aggiornamento
 
-        db?.execSQL(createTableRicette)
+        //db?.execSQL(createTableRicette)
 
-        db?.execSQL(createTableIng)
+        //db?.execSQL(createTableIng)
 
         /*val createTable3 = "CREATE TABLE" + TABLENAME3 + "(" +
                 COL_IMM + " BLOB REFERENCES $TABLENAME1($COL_IMM), " +

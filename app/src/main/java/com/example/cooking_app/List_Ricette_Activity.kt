@@ -1,5 +1,6 @@
 package com.example.cooking_app
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,19 +8,25 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.Fragment.Filtro_ricerca
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.filtro_ricerca_fragment.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 
 /*
-Spesso capita che le dosi di una ricetta siano per un numero non adatto alle proprie esigenze, obbligando a dover fare le relative proporzioni degli ingredienti. Se poi si vuole riproporre la stessa ricetta per un numero diverso di persone, tale processo deve essere ripetuto. Da qui l’idea di quanto segue.
+Spesso capita che le dosi di una ricetta siano per un numero non adatto alle proprie esigenze, obbligando a dover fare le relative proporzioni degli ingredienti.
+Se poi si vuole riproporre la stessa ricetta per un numero diverso di persone, tale processo deve essere ripetuto. Da qui l’idea di quanto segue.
 
 Lo scopo principale dell’applicazione è quello di, una volta memorizzata una ricetta, calcolare le quantità dei vari ingredienti proporzionalmente al numero di commensali (scelto dall’utente).
 
@@ -72,11 +79,6 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
             true
         }
-    }
-    private fun initRecyclerView() {
-        mAdapter = Lista_Ricette_Adapter(img, this)
-        lista_ricette.layoutManager = LinearLayoutManager(this)
-        lista_ricette.adapter = mAdapter
     }
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
