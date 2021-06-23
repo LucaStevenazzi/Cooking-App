@@ -224,52 +224,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ETnote.setText(ricetta.note)
     }
 
-    //onClick sul salvataggio della nuova ricetta o l'update della ricetta selezionata
-    fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
-        checkPassati = false
-        checkRicetta()
-        if (!checkPassati)
-            return
-        if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
-            saveRicettaDB()
-            DBricette.child(ricetta.nome).setValue(ricetta)
-        } else {
-            if (ricetta.bit != null){
-                val db = DataBaseHelper(this)
-                val contenuto = ContentValues()
-                contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
-                contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
-                contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
-                contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
-                contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
-                db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
-
-                /*lista_ingredienti.forEach {
-                    val valoriIngredienti = ContentValues()
-                    valoriIngredienti.put(COL_NOME, ETnome.text.toString())
-                    valoriIngredienti.put(COL_DESC, ETnote.text.toString())
-                    valoriIngredienti.put(COL_NOME_ING, it.Name)
-                    valoriIngredienti.put(COL_QUANT, it.quantit)
-                    valoriIngredienti.put(COL_MIS, it.misura)
-
-                    db.inserisciDati(TABELLA_ING, valoriIngredienti)
-                }*/
-                saveRicettaDB()
-                lista_ricette_locali.adapter?.notifyDataSetChanged()
-
-
-            } else { //altrimenti aggiungo ricetta al DB
-
-                //salvataggio nuova ricetta
-                saveRicettaDB()
-                uploadFile()
-            }
-        }
-
-        //chiusura activity dell'aggiunta di una ricetta e apertura activity view_ricetta principale
-        finish()
-    }
-
     private fun saveRicettaDB() {
         ricetta.nome = ETnome.text.toString().trim()
         ricetta.diff = spinner_diff.selectedItem.toString()
@@ -281,45 +235,11 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.note = ETnote.text.toString().trim()
     }
 
-    private fun uploadFile() {//funzione che aggiunge al DBStorage l'immagine scelta
-        val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
-        nameUp = randomName()
-        val fileReference = DBStorage.child(nameUp)
-        //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
-        fileReference.putFile(imageUri).addOnSuccessListener {
-                taskSnapshot ->
-            fileReference.downloadUrl.addOnCompleteListener {
-                    taskSnapshot ->
-                val url = taskSnapshot.result.toString()
-                val immagine = url
-                val nome = ETnome.text.toString()
-                val diff = spinner_diff.selectedItem.toString()
-                val tempo = ETtempo.text.toString()
-                val tipologia = ETtipologia.text.toString()
-                val portata = spinner_portata.selectedItem.toString()
-                val numPersone = ETpersone.text.toString().toInt()
-                val note = ETnote.text.toString()
-
-
-                val ricetta = Ricetta(null,immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
-
-
-                //salvataggio degli ingredienti sul DB
-
-                DBricette.child(ricetta.nome).setValue(ricetta)
-                Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
-            }
-        }.addOnFailureListener {
-            //mostra l'errore
-                e ->
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
-        }
-    }
     private fun randomName(): String {
         if(flag_img){
-            nameUp = Random.nextInt(1000000000).toString() + "." + getFileExtension(imageUri)
+            nameUp = Random.nextInt(1000000000).toString() + getFileExtension(imageUri)
         }else{
-            nameUp = Random.nextInt(1000000000).toString() + ".jpg"
+            nameUp = Random.nextInt(1000000000).toString() + "jpg"
         }
         return nameUp
     }
@@ -385,33 +305,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
         imageUri = Uri.parse(path)
     }
 
-    private fun saveToGallery() {
-        val bitmapDrawable = IVimmagine.drawable as BitmapDrawable
-        val bitmap = bitmapDrawable.bitmap
-        var outputStream: FileOutputStream? = null
-        val file = Environment.getExternalStorageDirectory()
-        val dir = File(file.absolutePath.toString() + "/Cooking-App")
-        dir.mkdirs()
-        val filename = randomName()
-        val outFile = File(dir, filename)
-        try {
-            outputStream = FileOutputStream(outFile)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        try {
-            outputStream!!.flush()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            outputStream!!.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     //funzione che salva in locale la ricetta
     fun salvataggioRicettaDBLocale(v : View){
         //check
@@ -419,12 +312,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         checkRicetta()
         if (!checkPassati)
             return
-        if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
-            Toast.makeText(this, "La ricetta è già presente in locale", Toast.LENGTH_LONG).show()
-            return
-        }
 
-        if(intent.extras != null){
+        if(intent.extras != null){//modifica
 
             val db = DataBaseHelper(this)
             val contenuto = ContentValues()
@@ -448,7 +337,11 @@ class AddNewRecipeActivity : AppCompatActivity() {
             saveRicettaDB()
             lista_ricette_locali.adapter?.notifyDataSetChanged()
         }
-        else{
+        else{//creazione nuova ricetta
+            if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
+                Toast.makeText(this, "La ricetta è già presente in locale", Toast.LENGTH_LONG).show()
+                return
+            }
             val valoriRicetta = ContentValues()
             val array = convertImage(IVimmagine.drawable.toBitmap())
             Log.v("valore immagine", array.toString())

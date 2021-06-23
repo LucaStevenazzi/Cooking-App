@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,6 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
 
     private val array : ArrayList<Ricetta> = img
     private lateinit var ricette : Ricetta
-    private lateinit var imageUri: Uri
 
     //classe interna che aggiunge un listener ad ogni ricetta, il quale apre l'activity per la sua visualizzazione
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
@@ -60,25 +60,31 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
                 val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
                 val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
                 val fileReference = DBStorage.child(ricette.immagine)
-                val imageUri = Uri.parse(convertImage(ricette.bit!!).toString())
+                val imageUri = convertBitMapToUri(button_upload!!.context,ricette.bit!!)
                 //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
                 fileReference.putFile(imageUri).addOnSuccessListener {
-                    //salvataggio degli ingredienti sul DB
-                    DBricette.child(ricette.immagine).setValue(ricette)
-                    Toast.makeText(button_upload!!.context, "Aggiunta: ${ricette.nome}", Toast.LENGTH_LONG).show()
+                    taskSnapshot ->
+                    fileReference.downloadUrl.addOnCompleteListener{
+                        taskSnapshot ->
+                        //salvataggio degli ingredienti sul DB
+                        ricette.bit = null
+                        val name = ricette.immagine
+                        ricette.immagine = taskSnapshot.result.toString() //passaggio del link
+                        DBricette.child(ricette.nome + name).setValue(ricette)
+                        Toast.makeText(button_upload!!.context, "Aggiunta Ricetta online: ${ricette.nome}", Toast.LENGTH_LONG).show()
+                    }
                 }.addOnFailureListener {
                     //mostra l'errore
-                    e-> Toast.makeText(button_upload!!.context, e.message, Toast.LENGTH_SHORT).show()
+                    e-> Log.v("Lista_Ricette_locali", e.toString())
                 }
             }
         }
     }
-    //funzione che restituisce l'array di byte relativo all'immagine passata per argomento
-    private fun convertImage(image : Bitmap) : ByteArray{
-        val objByteArrayOutputStream = ByteArrayOutputStream()      //nel DB non si poò salvare una bitmap, va quindi prima convertita in un ByteArrayOutputStream
-        image.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)       //si converte la bitmap in un ByteArrayOutputStream
-        val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()       //si inseriscono i byte in un array
-        return imageInBytes
+    private fun convertBitMapToUri(context: Context, inImage: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(context.contentResolver,inImage, "Title",null)
+        return Uri.parse(path)
     }
 
     //funzione che permette di usare il layout che gestisce i singoli elementi della lista
@@ -88,7 +94,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
 
     //funzione che associa al layout appena preso i valori che deve mostrare
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-
+        //holder.button_upload.visibility = checkExist(array[position])
         holder.titolo_ricetta.text = array[position].nome
         holder.img_ricetta.setImageBitmap(Bitmap.createScaledBitmap(array[position].bit!!, 200, 200, false))
         val tempo =  "Tempo : ${array[position].tempo}"
