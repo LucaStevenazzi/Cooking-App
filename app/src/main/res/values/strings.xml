@@ -3,12 +3,14 @@
     <string name="app_name">Cooking-App</string>
     <string name="name_ricetta">Cooking-App</string>
     <string name="descrizione">La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!ndjovndwojnjvndknvjkosvndskovndskovndsvkodnvksnvkodnvods</string>
-    <string name="descrizione_ricetta">Descrizione Ricetta</string>
+    <string name="tempo_ricetta">Tempo Ricetta</string>
+    <string name="difficolta_ricetta">Difficolta Ricetta</string>
     <string name="ADD">add</string>
     <string name="BI">Background Image</string>
     <string name="STRnome">Nome</string>
     <string name="STRdiff">Difficoltà</string>
-    <string name="STRtempo">Tempo</string>
+    <string name="STRtempo">Tempo (minuti)</string>
+    <string name="tempo">Tempo di preparazione</string>
     <string name="STRtipologia">Tipologia</string>
     <string name="STRportata">Portata</string>
     <string name="STRpersone">Persone</string>
@@ -32,9 +34,9 @@
         <item>10</item>
     </string-array>
     <string-array name="array_diff">
-        <item>BASSA</item>
-        <item>MEDIA</item>
-        <item>ALTA</item>
+        <item>Facile</item>
+        <item>Media</item>
+        <item>Difficile</item>
     </string-array>
     <string-array name="array_portata">
         <item>Antipasto</item>
@@ -46,9 +48,7 @@
     <string-array name="array_misure">
         <item> </item>
         <item>g</item>
-        <item>kg</item>
         <item>ml</item>
-        <item>l</item>
         <item>bicchieri</item>
         <item>cucchiaini</item>
     </string-array>
@@ -69,5 +69,30 @@
     <string name="numero_di_persone">Numero di persone:</string>
     <string name="portata">Portata:</string>
     <string name="ingredienti">Ingredienti:</string>
+    <string name="difficolt">Difficoltà</string>
+    <string name="ingrediente">Ingrediente</string>
+    <string name="facile">Facile</string>
+    <string name="medio">Media</string>
+    <string name="difficile">Difficile</string>
+    <string name="_15_min">15 min</string>
+    <string name="_30_min">30 min</string>
+    <string name="_1_ora">1 ora</string>
+    <string name="antipasto">Antipasto</string>
+    <string name="contorno">Contorno</string>
+    <string name="dolce">Dolce</string>
+    <string name="secondo">Secondo</string>
+    <string name="primo">Primo</string>
+    <string name="_60_min">60 min</string>
+    <string name="scrivi_un_ingrediente">Scrivi un ingrediente</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="x">X</string>
+    <string name="exit">exit</string>
+    <string name="scrivi_una_tipologia">Scrivi una tipologia</string>
+    <string name="descrizione_ricetta">Descrizione Ricetta</string>
+    <string name="conversione">Conversione:</string>
+    <string name="cucchiai">Cucchiaini</string>
+    <string name="grammi">Grammi (g)</string>
+    <string name="centilitri">Millilitri (ml)</string>
+    <string name="bicchieri">Bicchieri</string>
 
 </resources>

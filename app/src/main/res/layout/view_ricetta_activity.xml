@@ -5,114 +5,107 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutDescription="@xml/activity_main_scene">
+   >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_ricetta"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".View_Ricetta_Activity">
 
         <FrameLayout
             android:id="@+id/fl_frag_spesa"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="@+id/all_component_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/all_component_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/all_component_view">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <ImageView
                 android:id="@+id/img_ricetta"
                 android:layout_width="match_parent"
-                android:layout_height="378dp"
+                android:layout_height="400dp"
                 android:scaleType="centerCrop"
                 android:src="@android:drawable/ic_menu_report_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="TODO" />
 
             <TextView
                 android:id="@+id/ricetta_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/STRtempo"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_ricetta" />
+                app:layout_constraintTop_toTopOf="@+id/tempo" />
 
             <TextView
                 android:id="@+id/ricetta_difficolta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/STRdiff"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ricetta_time" />
+                app:layout_constraintTop_toTopOf="@+id/difficolta" />
 
             <Spinner
                 android:id="@+id/spinner_num_persone"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="30dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ricetta_difficolta" />
+                app:layout_constraintTop_toTopOf="@+id/persone" />
 
             <TextView
                 android:id="@+id/ricetta_portata"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/STRportata"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_num_persone" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/ricetta_ingredienti"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
-                android:fontFamily="sans-serif"
-                android:scrollbars="vertical"
-                android:text="@string/STRingredienti"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ricetta_portata" />
+                app:layout_constraintTop_toTopOf="@+id/portata" />
 
             <TextView
                 android:id="@+id/tempo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/tempo_di_preparazione"
                 android:textColor="#CC000000"
                 android:textSize="17sp"
+                app:layout_constraintBottom_toTopOf="@+id/difficolta"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_ricetta" />
 
@@ -120,13 +113,14 @@
                 android:id="@+id/difficolta"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/difficolta_di_preparazione"
                 android:textColor="#CC000000"
                 android:textSize="17sp"
+                app:layout_constraintBottom_toTopOf="@+id/persone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tempo" />
 
@@ -134,8 +128,8 @@
                 android:id="@+id/persone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/numero_di_persone"
@@ -148,47 +142,68 @@
                 android:id="@+id/portata"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/portata"
                 android:textColor="#CC000000"
                 android:textSize="17sp"
+                app:layout_constraintBottom_toTopOf="@+id/ingredienti"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/persone" />
+                app:layout_constraintTop_toBottomOf="@+id/persone"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <TextView
                 android:id="@+id/ingredienti"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp"
                 android:fontFamily="sans-serif"
                 android:text="@string/ingredienti"
                 android:textColor="#CC000000"
                 android:textSize="17sp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_conversione"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/portata" />
+                app:layout_constraintTop_toBottomOf="@id/portata" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ricetta_ingredienti"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/STRingredienti"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/ingredienti"
+                app:layout_constraintTop_toTopOf="@+id/ingredienti" />
 
             <TextView
                 android:id="@+id/ricetta_descrizione"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginRight="25dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
                 android:fontFamily="sans-serif"
                 android:scrollbars="vertical"
                 android:text="@string/descrizione"
                 android:textColor="#000000"
                 android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/ricetta_note"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ricetta_ingredienti" />
+                app:layout_constraintTop_toBottomOf="@id/ll_1" />
 
             <TextView
                 android:id="@+id/ricetta_note"
@@ -196,7 +211,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
                 android:layout_marginLeft="25dp"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
                 android:layout_marginRight="25dp"
                 android:fontFamily="sans-serif"
@@ -206,6 +221,85 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ricetta_descrizione" />
+
+            <TextView
+                android:id="@+id/tv_conversione"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/conversione"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ricetta_ingredienti" />
+
+            <LinearLayout
+                android:id="@+id/ll_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                tools:layout_editor_absoluteY="168dp"
+                app:layout_constraintTop_toTopOf="@+id/tv_conversione"
+                app:layout_constraintStart_toEndOf="@id/tv_conversione"
+                app:layout_constraintEnd_toStartOf="@+id/ll_2">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/grammi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="setGrammi"
+                    android:textAllCaps="false"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/button_selection"
+                    android:text="@string/grammi" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/cucchiai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_selection"
+                    android:onClick="setCucchiaini"
+                    android:text="@string/cucchiai"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_conversione">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/ml"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/button_selection"
+                    android:onClick="setMl"
+                    android:text="@string/centilitri" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bicchieri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_selection"
+                    android:onClick="setBicchieri"
+                    android:text="@string/bicchieri" />
+
+            </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
