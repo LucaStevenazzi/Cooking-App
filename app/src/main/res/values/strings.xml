@@ -16,10 +16,23 @@
     <string name="STRpersone">Persone</string>
     <string name="STRingredienti">Aggiunta Ingredienti</string>
     <string name="HINT">Riempi il campo</string>
+    <string name="HINT_NUM_PERSONE">Comprese tra 1 e 10</string>
     <string name="STRlistaIng">Lista Ingredienti</string>
     <string name="STRnote">Note</string>
     <string name="STRbuttonOK">Aggiungi ricetta</string>
     <string name="IVdescription">Immagine della ricetta</string>
+    <string-array name="array_num_persone">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
     <string-array name="array_diff">
         <item>Facile</item>
         <item>Media</item>
@@ -71,28 +84,15 @@
     <string name="exit">exit</string>
     <string name="scrivi_una_tipologia">Scrivi una tipologia</string>
     <string name="descrizione_ricetta">Descrizione Ricetta</string>
-    <string name="HINT_NUM_PERSONE">Comprese tra 1 e 10</string>
-    <string-array name="array_num_persone">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-    </string-array>
-    <string name="tempo_di_preparazione">Tempo di preparazione:</string>
-    <string name="difficolta_di_preparazione">Difficoltà di preparazione:</string>
-    <string name="numero_di_persone">Numero di persone:</string>
-    <string name="portata">Portata:</string>
-    <string name="ingredienti">Ingredienti:</string>
     <string name="conversione">Conversione:</string>
     <string name="cucchiai">Cucchiaini</string>
     <string name="grammi">Grammi (g)</string>
     <string name="centilitri">Millilitri (ml)</string>
     <string name="bicchieri">Bicchieri</string>
+    <string name="tempo_di_preparazione">Tempo di preparazione:</string>
+    <string name="difficolta_di_preparazione">Difficoltà di preparazione:</string>
+    <string name="numero_di_persone">Numero di persone:</string>
+    <string name="portata">Portata:</string>
+    <string name="ingredienti">Ingredienti:</string>
 
 </resources>

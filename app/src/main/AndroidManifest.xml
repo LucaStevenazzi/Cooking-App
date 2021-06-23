@@ -21,7 +21,7 @@
             android:label="Aggiungi una ricetta" />
         <activity android:name=".View_Ricetta_Activity" />
         <activity android:name=".List_Ricette_Activity"
-            android:label="Ricettario">
+            android:label="Ricettario Online">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

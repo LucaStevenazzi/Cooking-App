@@ -57,6 +57,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private val db : DataBaseHelper = DataBaseHelper(this)
     private lateinit var imageUri: Uri
     private var flag_img : Boolean = true
+    private var checkPassati = false
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,10 +117,12 @@ class AddNewRecipeActivity : AppCompatActivity() {
     }
     private fun add_Ingrediente_to_List() {        //funzione che aggiunge gli ingredienti alla lista sottostante
         add_ing.setOnClickListener(View.OnClickListener { v ->
-            val ingnome = ing_nome.text.toString()
-            val ingquanti = ing_quantità.text.toString()
-            val ingmisura = ing_misura.selectedItem.toString()
-            if (ingnome.isEmpty() || ingquanti.isEmpty() || !ingquanti.isDigitsOnly() || ingnome.isDigitsOnly()) {
+            var check_Ing = false
+            val ingnome = ing_nome.text.toString().trim()
+            val ingquanti = ing_quantità.text.toString().trim()
+            val ingmisura = ing_misura.selectedItem.toString().trim()
+            check_Ing = checkIng()
+            if (!check_Ing) {
                 return@OnClickListener
             }
             val ing = Ingredienti(ingnome, ingquanti, ingmisura)
@@ -132,6 +135,25 @@ class AddNewRecipeActivity : AppCompatActivity() {
             return@OnClickListener
         }
         )
+    }
+
+    private fun checkIng() : Boolean{
+        if (ing_nome.text.toString().trim().isEmpty()){
+            ing_nome.setError("Inserisci un nome")
+            ing_nome.requestFocus()
+            return false
+        }
+        if (ing_quantità.text.toString().trim().isEmpty()){     //ingquanti.isDigitsOnly() || ingnome.isDigitsOnly() || ingquanti[0] == '.'
+            ing_quantità.setError("Inserisci la quantità")
+            ing_quantità.requestFocus()
+            return false
+        }
+        if(ing_quantità.text.toString().trim()[0] == '.'){
+            ing_quantità.setError("Inserisci un numero valido")
+            ing_quantità.requestFocus()
+            return false
+        }
+        return true
     }
 
     // Update della ricetta
@@ -207,53 +229,64 @@ class AddNewRecipeActivity : AppCompatActivity() {
     fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
 
         if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
-
+            checkPassati = false
+            checkRicetta()
+            if (!checkPassati)
+                return
             saveRicettaDB()
             DBricette.child(ricetta.nome).setValue(ricetta)
 
-        } else if (ricetta.bit != null){
-            val db = DataBaseHelper(this)
-            val contenuto = ContentValues()
-            contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
-            contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
-            contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
-            contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
-            contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
-            db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
+        } else {
+            checkPassati = false
+            checkRicetta()
+            if (!checkPassati)
+                return
+            if (ricetta.bit != null){
+                val db = DataBaseHelper(this)
+                val contenuto = ContentValues()
+                contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
+                contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
+                contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
+                contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
+                contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
+                db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
 
-            /*lista_ingredienti.forEach {
-                val valoriIngredienti = ContentValues()
-                valoriIngredienti.put(COL_NOME, ETnome.text.toString())
-                valoriIngredienti.put(COL_DESC, ETnote.text.toString())
-                valoriIngredienti.put(COL_NOME_ING, it.Name)
-                valoriIngredienti.put(COL_QUANT, it.quantit)
-                valoriIngredienti.put(COL_MIS, it.misura)
+                /*lista_ingredienti.forEach {
+                    val valoriIngredienti = ContentValues()
+                    valoriIngredienti.put(COL_NOME, ETnome.text.toString())
+                    valoriIngredienti.put(COL_DESC, ETnote.text.toString())
+                    valoriIngredienti.put(COL_NOME_ING, it.Name)
+                    valoriIngredienti.put(COL_QUANT, it.quantit)
+                    valoriIngredienti.put(COL_MIS, it.misura)
 
-                db.inserisciDati(TABELLA_ING, valoriIngredienti)
-            }*/
-            saveRicettaDB()
-            lista_ricette_locali.adapter?.notifyDataSetChanged()
+                    db.inserisciDati(TABELLA_ING, valoriIngredienti)
+                }*/
+                saveRicettaDB()
+                lista_ricette_locali.adapter?.notifyDataSetChanged()
 
 
-        } else { //altrimenti aggiungo ricetta al DB
+            } else { //altrimenti aggiungo ricetta al DB
 
-            //salvataggio nuova ricetta
-            uploadFile()
-            saveRicettaDB()
+                //salvataggio nuova ricetta
+                saveRicettaDB()
+                uploadFile()
+            }
         }
+
         //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
+        Log.v("Finisco", "finish")
         finish()
     }
 
     private fun saveRicettaDB() {
-        ricetta.nome = ETnome.text.toString()
+        ricetta.nome = ETnome.text.toString().trim()
         ricetta.diff = spinner_diff.selectedItem.toString()
-        ricetta.tempo = ETtempo.text.toString()
-        ricetta.tipologia = ETtipologia.text.toString()
+        ricetta.tempo = ETtempo.text.toString().trim()
+        ricetta.tipologia = ETtipologia.text.toString().trim()
         ricetta.portata = spinner_portata.selectedItem.toString()
-        ricetta.persone = ETpersone.text.toString().toInt()
+        ricetta.persone = ETpersone.text.toString().trim().toInt()
         ricetta.listaIngredienti = lista_ingredienti
-        ricetta.note = ETnote.text.toString()
+        ricetta.note = ETnote.text.toString().trim()
     }
 
     private fun uploadFile() {//funzione che aggiunge al DBStorage l'immagine scelta
@@ -275,11 +308,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
                 val numPersone = ETpersone.text.toString().toInt()
                 val note = ETnote.text.toString()
 
-                /*fare i check prima di salvare la ricetta
-                    1- nessun campo vuoto
-                    2- nome diverso dalle altre ricette nel DB
-                    3- ...
-                 */
 
                 val ricetta = Ricetta(immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
 
@@ -397,7 +425,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
         val array = convertImage(IVimmagine.drawable.toBitmap())
         Log.v("valore immagine", array.toString())
 
-        //check()                                               funzione che controllerà se i campi sono tutti pieni
+        checkRicetta()
         valoriRicetta.put(COL_IMM, array)
         valoriRicetta.put(COL_NOME, ETnome.text.toString().trim())
         valoriRicetta.put(COL_DIFF, spinner_diff.selectedItem.toString())
@@ -430,5 +458,50 @@ class AddNewRecipeActivity : AppCompatActivity() {
         image.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)       //si converte la bitmap in un ByteArrayOutputStream
         val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()       //si inseriscono i byte in un array
         return imageInBytes
+    }
+
+    //funzione che controlla i campi prima di salvare la ricetta
+    fun checkRicetta(){
+        if (IVimmagine.drawable.constantState == resources.getDrawable(android.R.drawable.ic_menu_report_image).constantState){
+            ETnome.setError("Inserisci un'immagine")
+            ETnome.requestFocus()
+            return
+        }
+        if(ETnome.text.toString().trim().isEmpty()){
+            ETnome.setError("Inserisci un nome")
+            ETnome.requestFocus()
+            return
+        }
+        if (ETtempo.text.toString().trim().isEmpty()){
+            ETtempo.setError("Inserisci il tempo")
+            ETtempo.requestFocus()
+            return
+        }
+        if (ETtipologia.text.toString().trim().isEmpty()){
+            ETtipologia.setError("Inserisci una tipologia")
+            ETtipologia.requestFocus()
+            return
+        }
+        if (ETpersone.text.toString().trim().isEmpty()){
+            ETpersone.setError("Inserisci un numero")
+            ETpersone.requestFocus()
+            return
+        }
+        if (ETpersone.text.toString().toInt() > 10){
+            ETpersone.setError("Inserisci un numero minore di 10")
+            ETpersone.requestFocus()
+            return
+        }
+        if (lista_ingredienti.isEmpty()){
+            ing_nome.setError("Inserisci almeno un ingrediente")
+            ing_nome.requestFocus()
+            return
+        }
+        if (ETnote.text.toString().trim().isEmpty()){
+            ETnote.setError("Inserisci il procedimento")
+            ETnote.requestFocus()
+            return
+        }
+        checkPassati = true
     }
 }
