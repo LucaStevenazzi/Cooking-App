@@ -385,33 +385,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
         imageUri = Uri.parse(path)
     }
 
-    private fun saveToGallery() {
-        val bitmapDrawable = IVimmagine.drawable as BitmapDrawable
-        val bitmap = bitmapDrawable.bitmap
-        var outputStream: FileOutputStream? = null
-        val file = Environment.getExternalStorageDirectory()
-        val dir = File(file.absolutePath.toString() + "/Cooking-App")
-        dir.mkdirs()
-        val filename = randomName()
-        val outFile = File(dir, filename)
-        try {
-            outputStream = FileOutputStream(outFile)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        try {
-            outputStream!!.flush()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            outputStream!!.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     //funzione che salva in locale la ricetta
     fun salvataggioRicettaDBLocale(v : View){
         //check
@@ -419,10 +392,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
         checkRicetta()
         if (!checkPassati)
             return
-        if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
-            Toast.makeText(this, "La ricetta è già presente in locale", Toast.LENGTH_LONG).show()
-            return
-        }
 
         if(intent.extras != null){
 
@@ -449,6 +418,10 @@ class AddNewRecipeActivity : AppCompatActivity() {
             lista_ricette_locali.adapter?.notifyDataSetChanged()
         }
         else{
+            if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
+                Toast.makeText(this, "La ricetta è già presente in locale", Toast.LENGTH_LONG).show()
+                return
+            }
             val valoriRicetta = ContentValues()
             val array = convertImage(IVimmagine.drawable.toBitmap())
             Log.v("valore immagine", array.toString())

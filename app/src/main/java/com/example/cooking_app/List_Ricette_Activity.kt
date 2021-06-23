@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -262,7 +261,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     //lettura dei dati da Firebase e  inizializzazione della lista delle ricette
     override fun onStart() {
         super.onStart()
-        mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
+        mRicetteValueListener = getDataFromFireBase()   //visulaizza i dati delle ricette
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
     }
     override fun onStop() {
@@ -270,7 +269,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onStop()
         DBricette!!.removeEventListener(mRicetteValueListener)
     }
-    private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
+    private fun getDataFromFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 img.clear()
