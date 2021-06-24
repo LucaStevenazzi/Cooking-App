@@ -174,7 +174,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
         val byteToBitmap = intent.getByteArrayExtra("Bitmap")
         if(byteToBitmap != null){
-            ricetta.bit = BitmapFactory.decodeByteArray(byteToBitmap, 0, byteToBitmap!!.size)
+            ricetta.bit = BitmapFactory.decodeByteArray(byteToBitmap, 0, byteToBitmap.size)
         }
         ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
@@ -206,9 +206,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         ETnome.setText(ricetta.nome)
         when (ricetta.diff) {
-            "BASSA" -> spinner_diff.setSelection(0)
-            "MEDIA" -> spinner_diff.setSelection(1)
-            "ALTA" -> spinner_diff.setSelection(2)
+            "Facile" -> spinner_diff.setSelection(0)
+            "Media" -> spinner_diff.setSelection(1)
+            "Difficile" -> spinner_diff.setSelection(2)
         }
         ETtempo.setText(ricetta.tempo)
         ETtipologia.setText(ricetta.tipologia)

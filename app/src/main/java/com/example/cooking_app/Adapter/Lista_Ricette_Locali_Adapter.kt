@@ -125,7 +125,6 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
         intent.putExtra("Portata", ricette.portata)
         intent.putExtra("Persone", ricette.persone)
         LocaliputIngredintiExtra(intent)
-        intent.putExtra("ListaIngredienti", ricette.listaIngredienti)
         intent.putExtra("Note", ricette.note)
     }
     //passaggio degli ingredienti

@@ -1,6 +1,7 @@
 package com.example.cooking_app
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
+import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -180,14 +182,15 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             })
         }
     }
-    private fun setNewExtra() {
-        val intent = Intent(Intent(this, AddNewRecipeActivity::class.java))
-        putRicettaExtra(intent)
-        startActivity(intent)
-    }
 
     //passaggio tramite intent della ricetta selezionata
     private fun putRicettaExtra(intent: Intent) {//inserisco nell'intent i valori della ricetta che è stata cliccata
+        //conversione immagine in bytearray
+        val objByteArrayOutputStream = ByteArrayOutputStream()
+        ricetta.bit!!.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)
+        val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()
+
+        intent.putExtra("Bitmap",   imageInBytes)
         intent.putExtra("Immagine", ricetta.immagine)
         intent.putExtra("Nome", ricetta.nome)
         intent.putExtra("Difficoltà", ricetta.diff)
@@ -246,13 +249,8 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             val intent = Intent(this, AddNewRecipeActivity::class.java)
             putRicettaExtra(intent)
             startActivity(intent)
-            //val arrayVuoto =  ArrayList<Ricetta>()
-            //val adp = Lista_Ricette_Locali_Adapter(arrayVuoto)
-            //adp.putRicettaLocaleExtra(intent, ricetta)
         }
 
-        //se ricetta è online allora update
-        //setNewExtra()// settaggio dei nuovi dati nell'intent per un'altra probabile modifica
 
     }
     private fun deleteRicettaFromList() { //elimino la ricetta che è stata aperta
