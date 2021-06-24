@@ -9,8 +9,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 
 val DB_NAME = "CookingApp.db"
-val DB_OLD_VERSION = 17
-val DB_NEW_VERSION = 18
+val DB_OLD_VERSION = 18
+val DB_NEW_VERSION = 19
 val TABELLA_RICETTE = "ricette"
 val COL_IMM = "immagine"
 val COL_NOME_IMM = "nomeImmagine"
@@ -48,7 +48,7 @@ val createTableIng =
         "$COL_NOME_ING VARCHAR(256), " +
         "$COL_QUANT VARCHAR(256), " +
         "$COL_MIS VARCHAR(256), " +
-        "PRIMARY KEY ($COL_NOME_ING), " +
+        "PRIMARY KEY ($COL_NOME_ING, $COL_NOME, $COL_DESC), " +
         "FOREIGN KEY ($COL_NOME, $COL_DESC) REFERENCES $TABELLA_RICETTE ON DELETE CASCADE)"
 
 //classe che gestisce il DB: creazione, aggiornamento e lettura dati
@@ -157,14 +157,19 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         dbW.insert(name, null, cv);
     }
 
-    //funzione che permette di eliminare i dati nel DB
+    //funzione che permette di eliminare i dati di una ricetta nel DB
     fun eliminaRicetta(des : String, nome: String) {
         val dbW = this.writableDatabase
         val queryEliminazione = "$COL_DESC = " + "\"" + des + "\" AND $COL_NOME = " + "\"" + nome + "\""
         dbW.delete(TABELLA_RICETTE, queryEliminazione, null)
     }
-
-    //funzione che permette di modificare i dati nel DB
+    //funzione che permette di eliminare gli ingredienti nel DB
+    fun eliminaIngredienti(desc: String, nome: String) {
+        val dbW = this.writableDatabase
+        val queryEliminazione = "$COL_DESC = " + "\"" + desc + "\" AND $COL_NOME = " + "\"" + nome + "\""
+        dbW.delete(TABELLA_ING,queryEliminazione,null)
+    }
+    //funzione che permette di modificare i dati di una ricetta nel DB
     fun modificaRicetta(des: String, nome: String, contenuto: ContentValues) {
         val dbW = this.writableDatabase
         val queryModifica = "$COL_DESC = " + "\"" + des + "\" AND $COL_NOME = " + "\"" + nome + "\""
@@ -181,5 +186,40 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
             return check
         }
         return check
+    }
+
+
+    fun readData(nome: String, desc: String): Ricetta {
+        val dbR = this.readableDatabase
+        val listaIng = ArrayList<Ingredienti>()
+        val cercaRicetta = "SELECT * FROM $TABELLA_RICETTE WHERE $COL_NOME = " + "\"" + nome + "\" AND $COL_DESC = " + "\"" + desc + "\""
+        val cursoreRicetta = dbR.rawQuery(cercaRicetta, null)
+        cursoreRicetta.moveToFirst()
+        val ricetta = Ricetta()
+        val array = cursoreRicetta.getBlob(cursoreRicetta.getColumnIndex(COL_IMM))
+        val bit: Bitmap = BitmapFactory.decodeByteArray(array, 0, array.size)
+        ricetta.bit = bit
+        ricetta.immagine = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOME_IMM))
+        ricetta.nome = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOME))
+        ricetta.diff = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DIFF))
+        ricetta.tempo = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_TEMPO))
+        ricetta.tipologia = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_TIPO))
+        ricetta.portata = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_PORT))
+        ricetta.persone = cursoreRicetta.getInt(cursoreRicetta.getColumnIndex(COL_PERS))
+        ricetta.note = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DESC))
+
+        val queryIngredienti = "SELECT $COL_NOME, $COL_NOME_ING, $COL_MIS, $COL_QUANT FROM $TABELLA_ING WHERE $COL_NOME = " + "\"" + ricetta.nome + "\"" + " AND $COL_DESC = " + "\"" + ricetta.note + "\""
+        val cursoreIngredienti = dbR.rawQuery(queryIngredienti, null)
+        if (cursoreIngredienti.moveToFirst()) {
+            do {
+                val ingrediente = Ingredienti()
+                ingrediente.Name = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_NOME_ING))
+                ingrediente.misura = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_MIS))
+                ingrediente.quantit = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_QUANT))
+                listaIng.add(ingrediente)
+            } while (cursoreIngredienti.moveToNext())
+        }
+        ricetta.listaIngredienti = listaIng
+        return ricetta
     }
 }

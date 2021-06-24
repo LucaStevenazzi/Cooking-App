@@ -312,10 +312,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         checkRicetta()
         if (!checkPassati)
             return
-
         if(intent.extras != null){//modifica
 
-            val db = DataBaseHelper(this)
             val contenuto = ContentValues()
             contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
             contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
@@ -323,19 +321,17 @@ class AddNewRecipeActivity : AppCompatActivity() {
             contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
             contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
             db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
-
-            /*lista_ingredienti.forEach {
-                val valoriIngredienti = ContentValues()
-                valoriIngredienti.put(COL_NOME, ETnome.text.toString())
-                valoriIngredienti.put(COL_DESC, ETnote.text.toString())
-                valoriIngredienti.put(COL_NOME_ING, it.Name)
-                valoriIngredienti.put(COL_QUANT, it.quantit)
-                valoriIngredienti.put(COL_MIS, it.misura)
-
-                db.inserisciDati(TABELLA_ING, valoriIngredienti)
-            }*/
+            db.eliminaIngredienti(ricetta.note,ricetta.nome)
+            lista_ingredienti.forEach {
+                contenuto.clear()
+                contenuto.put(COL_NOME, ETnome.text.toString())
+                contenuto.put(COL_DESC, ETnote.text.toString())
+                contenuto.put(COL_NOME_ING, it.Name)
+                contenuto.put(COL_QUANT, it.quantit)
+                contenuto.put(COL_MIS, it.misura)
+                db.salvaDati(TABELLA_ING, contenuto)
+            }
             saveRicettaDB()
-            lista_ricette_locali.adapter?.notifyDataSetChanged()
         }
         else{//creazione nuova ricetta
             if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
@@ -344,7 +340,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
             }
             val valoriRicetta = ContentValues()
             val array = convertImage(IVimmagine.drawable.toBitmap())
-            Log.v("valore immagine", array.toString())
 
             checkRicetta()
             valoriRicetta.put(COL_IMM, array)
@@ -369,10 +364,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
                 db.salvaDati(TABELLA_ING, valoriIngredienti)
             }
-
-            db.close()
-            finish()
         }
+        db.close()
+        finish()
     }
 
     //funzione che restituisce l'array di byte relativo all'immagine passata per argomento
