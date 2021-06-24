@@ -108,9 +108,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
             if (cursoreRicetta.moveToFirst()) {
                 do {
                     val ricetta = Ricetta()
-
                     val array = cursoreRicetta.getBlob(cursoreRicetta.getColumnIndex(COL_IMM))
-                    Log.v("nome array", array.toString())
                     val bit: Bitmap = BitmapFactory.decodeByteArray(array, 0, array.size)
                     ricetta.bit = bit
                     ricetta.immagine = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOME_IMM))
@@ -124,23 +122,18 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
 
                     val queryIngredienti = "SELECT $COL_NOME, $COL_NOME_ING, $COL_MIS, $COL_QUANT FROM $TABELLA_ING WHERE $COL_NOME = " + "\"" + ricetta.nome + "\"" + " AND $COL_DESC = " + "\"" + ricetta.note + "\""
                     val cursoreIngredienti = db.rawQuery(queryIngredienti, null)
-                    Log.v("elementi trovati?", cursoreIngredienti.moveToFirst().toString())
                     if (cursoreIngredienti.moveToFirst()) {
                         do {
-                            Log.v("sono dentro il do", "vediamo")
                             val ingrediente = Ingredienti()
-
                             ingrediente.Name = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_NOME_ING))
                             ingrediente.misura = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_MIS))
                             ingrediente.quantit = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_QUANT))
-                            val nome = cursoreIngredienti.getString(cursoreIngredienti.getColumnIndex(COL_NOME))
-                            Log.v("nome ricetta", nome)
-                            Log.v("offset iniziale ing", ingrediente.toString())
                             listaIng.add(ingrediente)
                         } while (cursoreIngredienti.moveToNext())
                     }
 
-                    ricetta.listaIngredienti = listaIng
+                    ricetta.listaIngredienti.addAll(listaIng)
+                    listaIng.clear()
                     listaRic.add(ricetta)
 
                 } while (cursoreRicetta.moveToNext())
