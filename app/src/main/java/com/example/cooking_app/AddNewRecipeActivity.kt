@@ -8,11 +8,9 @@ import android.content.Intent
 import android.content.pm.PackageManager.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,8 +25,8 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.*
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.FirebaseError
+import com.google.firebase.database.*
 import com.google.firebase.storage.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
@@ -39,6 +37,7 @@ import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import java.io.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.random.Random
 
 
@@ -46,10 +45,10 @@ import kotlin.random.Random
 
 class AddNewRecipeActivity : AppCompatActivity() {
 
+    //dati
     private val TAG = "AddNewRecipeActivity"
     private lateinit var nameUp : String
-
-    //dati
+    private var existDBonline: HashMap<String,Boolean> = HashMap()
     private var ricetta: Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
@@ -73,7 +72,19 @@ class AddNewRecipeActivity : AppCompatActivity() {
         setSpinner() //settaggio degli spinner per la visualizzazione delle PORTATE / DIFFICOLTà / MISURE
         setRecyclerView()//Codice per la lista degli ingredianti
         add_Ingrediente_to_List()
+        setListenerDBonline()
     }
+
+    private fun setListenerDBonline() {
+        DBricette.orderByKey().equalTo(ricetta.nome + ricetta.immagine).addValueEventListener(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    existDBonline[ricetta.nome+ricetta.immagine] = dataSnapshot.exists()
+                }
+                override fun onCancelled(databaseError: DatabaseError) {}
+            })
+    }
+
     private fun setSpinner() {
 
         ArrayAdapter.createFromResource(        //contenitore dei valori della DropDown List per la difficoltà
@@ -174,7 +185,7 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private fun getRicettaExtra() { //ottenere la ricetta dall'intent di creazione
         val byteToBitmap = intent.getByteArrayExtra("Bitmap")
         if(byteToBitmap != null){
-            ricetta.bit = BitmapFactory.decodeByteArray(byteToBitmap, 0, byteToBitmap!!.size)
+            ricetta.bit = BitmapFactory.decodeByteArray(byteToBitmap, 0, byteToBitmap.size)
         }
         ricetta.immagine = intent.getStringExtra("Immagine").toString()
         ricetta.nome = intent.getStringExtra("Nome").toString()
@@ -206,9 +217,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
         ETnome.setText(ricetta.nome)
         when (ricetta.diff) {
-            "BASSA" -> spinner_diff.setSelection(0)
-            "MEDIA" -> spinner_diff.setSelection(1)
-            "ALTA" -> spinner_diff.setSelection(2)
+            "Facile" -> spinner_diff.setSelection(0)
+            "Media" -> spinner_diff.setSelection(1)
+            "Difficile" -> spinner_diff.setSelection(2)
         }
         ETtempo.setText(ricetta.tempo)
         ETtipologia.setText(ricetta.tipologia)
@@ -224,53 +235,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ETnote.setText(ricetta.note)
     }
 
-    //onClick sul salvataggio della nuova ricetta o l'update della ricetta selezionata
-    fun saveRecipe(v: View) {//onClick del button che salva i dati della ricetta nel DB
-        checkPassati = false
-        checkRicetta()
-        if (!checkPassati)
-            return
-        if (intent.extras != null) { //se l'intent esiste allora UPDATE ricetta al DB
-            saveRicettaDB()
-            DBricette.child(ricetta.nome).setValue(ricetta)
-        } else {
-            if (ricetta.bit != null){
-                val db = DataBaseHelper(this)
-                val contenuto = ContentValues()
-                contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
-                contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
-                contenuto.put(COL_TIPO, ETtipologia.text.toString().trim())
-                contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
-                contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
-                db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
-
-                /*lista_ingredienti.forEach {
-                    val valoriIngredienti = ContentValues()
-                    valoriIngredienti.put(COL_NOME, ETnome.text.toString())
-                    valoriIngredienti.put(COL_DESC, ETnote.text.toString())
-                    valoriIngredienti.put(COL_NOME_ING, it.Name)
-                    valoriIngredienti.put(COL_QUANT, it.quantit)
-                    valoriIngredienti.put(COL_MIS, it.misura)
-
-                    db.inserisciDati(TABELLA_ING, valoriIngredienti)
-                }*/
-                saveRicettaDB()
-                lista_ricette_locali.adapter?.notifyDataSetChanged()
-
-
-            } else { //altrimenti aggiungo ricetta al DB
-
-                //salvataggio nuova ricetta
-                saveRicettaDB()
-                uploadFile()
-            }
-        }
-
-        //chiusura activity dell'aggiunta di una ricetta e apertura activity principale
-        Log.v("Finisco", "finish")
-        finish()
-    }
-
     private fun saveRicettaDB() {
         ricetta.nome = ETnome.text.toString().trim()
         ricetta.diff = spinner_diff.selectedItem.toString()
@@ -282,40 +246,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
         ricetta.note = ETnote.text.toString().trim()
     }
 
-    private fun uploadFile() {//funzione che aggiunge al DBStorage l'immagine scelta
-        val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
-        nameUp = randomName()
-        val fileReference = DBStorage.child(nameUp)
-        //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
-        fileReference.putFile(imageUri).addOnSuccessListener {
-                taskSnapshot ->
-            fileReference.downloadUrl.addOnCompleteListener {
-                    taskSnapshot ->
-                val url = taskSnapshot.result.toString()
-                val immagine = url
-                val nome = ETnome.text.toString()
-                val diff = spinner_diff.selectedItem.toString()
-                val tempo = ETtempo.text.toString()
-                val tipologia = ETtipologia.text.toString()
-                val portata = spinner_portata.selectedItem.toString()
-                val numPersone = ETpersone.text.toString().toInt()
-                val note = ETnote.text.toString()
-
-
-                val ricetta = Ricetta(null, immagine, nome, diff, tempo, tipologia, portata, numPersone, lista_ingredienti, note)
-
-
-                //salvataggio degli ingredienti sul DB
-
-                DBricette.child(ricetta.nome).setValue(ricetta)
-                Toast.makeText(this, "Aggiunta: $nome", Toast.LENGTH_LONG).show()
-            }
-        }.addOnFailureListener {
-            //mostra l'errore
-                e ->
-            Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
-        }
-    }
     private fun randomName(): String {
         if(flag_img){
             nameUp = Random.nextInt(1000000000).toString() + getFileExtension(imageUri)
@@ -393,10 +323,8 @@ class AddNewRecipeActivity : AppCompatActivity() {
         checkRicetta()
         if (!checkPassati)
             return
-
         if(intent.extras != null){//modifica
 
-            val db = DataBaseHelper(this)
             val contenuto = ContentValues()
             contenuto.put(COL_DIFF, spinner_diff.selectedItem.toString())
             contenuto.put(COL_TEMPO, ETtempo.text.toString().trim())
@@ -404,10 +332,9 @@ class AddNewRecipeActivity : AppCompatActivity() {
             contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
             contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
             db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
-            contenuto.clear()
             db.eliminaIngredienti(ricetta.note,ricetta.nome)
-
             lista_ingredienti.forEach {
+                contenuto.clear()
                 contenuto.put(COL_NOME, ETnome.text.toString())
                 contenuto.put(COL_DESC, ETnote.text.toString())
                 contenuto.put(COL_NOME_ING, it.Name)
@@ -415,9 +342,10 @@ class AddNewRecipeActivity : AppCompatActivity() {
                 contenuto.put(COL_MIS, it.misura)
                 db.salvaDati(TABELLA_ING, contenuto)
             }
-
-            saveRicettaDB()
-            lista_ricette_locali.adapter?.notifyDataSetChanged()
+            //se è presente online allora modifica anche online
+            val ric = db.readData(ricetta.nome,ricetta.note)
+            updateRicettaDBonline(ric)
+                //saveRicettaDB()//modifica ricetta online
         }
         else{//creazione nuova ricetta
             if (db.controllaRicetta(ETnote.text.toString().trim(), ETnome.text.toString().trim())) {        //funzione che controlla che nel DB locale non sia già presente la ricetta che sta per essere inserita
@@ -426,7 +354,6 @@ class AddNewRecipeActivity : AppCompatActivity() {
             }
             val valoriRicetta = ContentValues()
             val array = convertImage(IVimmagine.drawable.toBitmap())
-            Log.v("valore immagine", array.toString())
 
             checkRicetta()
             valoriRicetta.put(COL_IMM, array)
@@ -451,9 +378,34 @@ class AddNewRecipeActivity : AppCompatActivity() {
 
                 db.salvaDati(TABELLA_ING, valoriIngredienti)
             }
+        }
+        db.close()
+        finish()
+    }
 
-            db.close()
-            finish()
+    private fun updateRicettaDBonline(ricetta: Ricetta){
+        val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
+        val fileReference = DBStorage.child(ricetta.immagine)
+        convertBitMapToUri(constraintLayoutAdd.context,ricetta.bit!!)
+        //funzioni che permettono di svolgere azioni quando l'upload è avvenuto con successo, quando fallisce e quando sta caricando
+        fileReference.putFile(imageUri).addOnSuccessListener {
+                taskSnapshot ->
+            fileReference.downloadUrl.addOnCompleteListener{
+                    taskSnapshot ->
+                //salvataggio degli riccetta sul DB onlìne
+                val temp = ricetta.bit
+                val name = ricetta.immagine
+                ricetta.bit = null
+                ricetta.immagine = taskSnapshot.result.toString() //passaggio del link
+                DBricette.child(ricetta.nome + name).setValue(ricetta)
+                Toast.makeText(constraintLayoutAdd.context, "Aggiunta Ricetta online: ${ricetta.nome}", Toast.LENGTH_SHORT).show()
+                ricetta.bit = temp
+                ricetta.immagine = name
+                existDBonline[ricetta.nome+ricetta.immagine] = true
+            }
+        }.addOnFailureListener {
+            //mostra l'errore
+                e-> Log.v("Lista_Ricette_locali", e.toString())
         }
     }
 
@@ -461,49 +413,48 @@ class AddNewRecipeActivity : AppCompatActivity() {
     private fun convertImage(image : Bitmap) : ByteArray{
         val objByteArrayOutputStream = ByteArrayOutputStream()      //nel DB non si poò salvare una bitmap, va quindi prima convertita in un ByteArrayOutputStream
         image.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)       //si converte la bitmap in un ByteArrayOutputStream
-        val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()       //si inseriscono i byte in un array
-        return imageInBytes
+        return objByteArrayOutputStream.toByteArray()       //si inseriscono i byte in un array
     }
 
     //funzione che controlla i campi prima di salvare la ricetta
     fun checkRicetta(){
         if (IVimmagine.drawable.constantState == resources.getDrawable(android.R.drawable.ic_menu_report_image).constantState){
-            ETnome.setError("Inserisci un'immagine")
+            ETnome.error = "Inserisci un'immagine"
             ETnome.requestFocus()
             return
         }
         if(ETnome.text.toString().trim().isEmpty()){
-            ETnome.setError("Inserisci un nome")
+            ETnome.error = "Inserisci un nome"
             ETnome.requestFocus()
             return
         }
         if (ETtempo.text.toString().trim().isEmpty()){
-            ETtempo.setError("Inserisci il tempo")
+            ETtempo.error = "Inserisci il tempo"
             ETtempo.requestFocus()
             return
         }
         if (ETtipologia.text.toString().trim().isEmpty()){
-            ETtipologia.setError("Inserisci una tipologia")
+            ETtipologia.error = "Inserisci una tipologia"
             ETtipologia.requestFocus()
             return
         }
         if (ETpersone.text.toString().trim().isEmpty()){
-            ETpersone.setError("Inserisci un numero")
+            ETpersone.error = "Inserisci un numero"
             ETpersone.requestFocus()
             return
         }
         if (ETpersone.text.toString().toInt() > 10){
-            ETpersone.setError("Inserisci un numero minore di 10")
+            ETpersone.error = "Inserisci un numero minore di 10"
             ETpersone.requestFocus()
             return
         }
         if (lista_ingredienti.isEmpty()){
-            ing_nome.setError("Inserisci almeno un ingrediente")
+            ing_nome.error = "Inserisci almeno un ingrediente"
             ing_nome.requestFocus()
             return
         }
         if (ETnote.text.toString().trim().isEmpty()){
-            ETnote.setError("Inserisci il procedimento")
+            ETnote.error = "Inserisci il procedimento"
             ETnote.requestFocus()
             return
         }

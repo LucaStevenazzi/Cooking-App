@@ -280,7 +280,6 @@ class List_Ricette_Activity : AppCompatActivity(){
                 initRecyclerView() //inizializzazione Lista delle ricette
                 mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Ricetta failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())

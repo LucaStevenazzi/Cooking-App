@@ -69,6 +69,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     //passaggio tramite intent della ricetta selezionata
     private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
         ricette = ricetta
+        intent.putExtra("Activity Name", TAG)
         intent.putExtra("Immagine", ricette.immagine)
         intent.putExtra("Nome", ricette.nome)
         intent.putExtra("Difficoltà", ricette.diff)

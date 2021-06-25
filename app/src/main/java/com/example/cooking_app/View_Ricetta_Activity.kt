@@ -1,6 +1,7 @@
 package com.example.cooking_app
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
+import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -39,6 +41,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private var mAdapter: Lista_Ingredienti_Adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
     private var ricetta : Ricetta = Ricetta()
     private val ref = FirebaseDatabase.getInstance().reference
+    private val db : DataBaseHelper = DataBaseHelper(this)
 
 
     //inizializzazione Activity
@@ -159,30 +162,35 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         setDati()
     }
     private fun updateRicetta() {
-        val applesQuery = ref.child("ricette")
-
-        applesQuery.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (ds in dataSnapshot.children) {
-                    if (ds.key == ricetta.nome){
-                        ricetta = ds.getValue(Ricetta::class.java)!!
-                        Toast.makeText(this@View_Ricetta_Activity , "Update ${ricetta.nome} succes ", Toast.LENGTH_SHORT).show()
+        if(intent.getStringExtra("Activity Name") != "Lista_Ricette_Adapter")
+            ricetta = db.readData(ricetta.nome,ricetta.note) //restituisce la ricetta locale modificata
+        else{
+            //update database online
+            val applesQuery = ref.child("ricette")
+            applesQuery.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (ds in dataSnapshot.children) {
+                        if (ds.key == ricetta.nome){
+                            ricetta = ds.getValue(Ricetta::class.java)!!
+                            Toast.makeText(this@View_Ricetta_Activity , "Update ${ricetta.nome} succes ", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
-            }
-            override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
-                Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
-            }
-        })
-    }
-    private fun setNewExtra() {
-        val intent = Intent(Intent(this, AddNewRecipeActivity::class.java))
-        putRicettaExtra(intent)
-        startActivity(intent)
+                override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
+                    Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
+                }
+            })
+        }
     }
 
     //passaggio tramite intent della ricetta selezionata
     private fun putRicettaExtra(intent: Intent) {//inserisco nell'intent i valori della ricetta che è stata cliccata
+        //conversione immagine in bytearray
+        val objByteArrayOutputStream = ByteArrayOutputStream()
+        ricetta.bit!!.compress(Bitmap.CompressFormat.JPEG, 100, objByteArrayOutputStream)
+        val imageInBytes : ByteArray = objByteArrayOutputStream.toByteArray()
+
+        intent.putExtra("Bitmap",   imageInBytes)
         intent.putExtra("Immagine", ricetta.immagine)
         intent.putExtra("Nome", ricetta.nome)
         intent.putExtra("Difficoltà", ricetta.diff)
@@ -209,6 +217,13 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     //creazione dell'option menu Edit and Delete delle ricette
     override fun onCreateOptionsMenu(menu: Menu?): Boolean { //inizializzaizione OptionsMenu
         menuInflater.inflate(R.menu.edit_or_delete, menu)
+        if(intent.getStringExtra("Activity Name") == "Lista_Ricette_Adapter"){
+            val delete = menu?.findItem(R.id.image_delete)
+            val edit = menu?.findItem(R.id.image_edit)
+            if(!db.controllaRicetta(ricetta.note,ricetta.nome))
+                delete?.isVisible = false //settato a true solo se è presente nel DB locale
+            edit?.isVisible = false
+        }
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean { //Premuta pulsanti opzioni per la modifica o la cancellazione della ricetta
@@ -230,38 +245,34 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             intent.putExtras(this.intent) // prendo l'intent gia precedentemente utilizzato per quest'activity
             flag_first_Update = false
             startActivity(intent)
-        }else if(ricetta.bit != null){
+        }else {//locale
             val intent = Intent(this, AddNewRecipeActivity::class.java)
-            val arrayVuoto =  ArrayList<Ricetta>()
-            val adp = Lista_Ricette_Locali_Adapter(arrayVuoto)
-            adp.putRicettaLocaleExtra(intent, ricetta)
-            //lista_ricette_locali.adapter?.notifyDataSetChanged()
-        } else{
-            setNewExtra()// settaggio dei nuovi dati nell'intent per un'altra probabile modifica
+            putRicettaExtra(intent)
+            startActivity(intent)
         }
     }
     private fun deleteRicettaFromList() { //elimino la ricetta che è stata aperta
 
-        if (ricetta.bit != null){
-            val db = DataBaseHelper(this)
+        val ricetta_da_eliminare =  db.readData(ricetta.nome,ricetta.note)//salvo la ricetta per il campo imagine
+        if (ricetta.bit != null){//locale
             db.eliminaRicetta(ricetta.note, ricetta.nome)
-            lista_ricette_locali.adapter?.notifyDataSetChanged()
-
-        } else {
-            val applesQuery: Query = ref.child("ricette").child(ricetta.nome)
-
-            applesQuery.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (appleSnapshot in dataSnapshot.children) {
-                        appleSnapshot.ref.removeValue()
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
-                    Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
-                }
-            })
+            //bisogna eliminarla anche online
         }
+        //online
+        val applesQuery: Query = ref.child("ricette").child(ricetta.nome + ricetta_da_eliminare.immagine )
+
+        applesQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (appleSnapshot in dataSnapshot.children) {
+                    appleSnapshot.ref.removeValue()
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) { // in caso di errore
+                Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
+            }
+        })
+
         finish()//chiudo l'activiity
     }
     //Conversione
