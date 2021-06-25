@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
@@ -30,16 +30,16 @@ class View_Ricetta_Activity : AppCompatActivity() {
     private var ricetta : Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private val ref = FirebaseDatabase.getInstance().reference
+    private val addSpesa = AddSpesa()
+
 
 
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_ricetta_activity)
-
         Log.v(TAG , "onCreate")
         setComponent()
-
     }
 
     //settaggio dei componenti nell'activity
@@ -95,7 +95,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
     }
     private fun updateRicetta() {
         val applesQuery = ref.child("ricette")
-
         applesQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (ds in dataSnapshot.children) {
@@ -129,8 +128,8 @@ class View_Ricetta_Activity : AppCompatActivity() {
         intent.putExtra("ListaIngredienti", ricetta.listaIngredienti)
         intent.putExtra("Descrizione", ricetta.descrizione)
         intent.putExtra("Note", ricetta.note)
-
     }
+
     private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti
         val count = ricetta.listaIngredienti.size
         if(count == 0) return
@@ -156,6 +155,16 @@ class View_Ricetta_Activity : AppCompatActivity() {
             R.id.image_delete -> {
                 Toast.makeText(this, "Delete ${ricetta.nome}", Toast.LENGTH_SHORT).show()
                 deleteRicettaToList()
+            }
+            R.id.image_shopping_cart ->{
+                val bundle = Bundle()
+                bundle.putSerializable("lista ingredienti", lista_ingredienti)
+                addSpesa.arguments= bundle
+                all_component_view.visibility = ConstraintLayout.GONE
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.view_ricetta, addSpesa)
+                    commit()
+                }
             }
         }
         return super.onOptionsItemSelected(item)

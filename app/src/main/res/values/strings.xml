@@ -58,5 +58,14 @@
     <string name="numero_di_persone">Numero di persone:</string>
     <string name="portata">Portata:</string>
     <string name="ingredienti">Ingredienti:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ingredienti_spesa">ingredienti_spesa</string>
+    <string name="ingFragment">Ingredienti</string>
+    <string name="quantFragment">Quantità</string>
+    <string name="aggiungi_alla_lista">Aggiungi alla lista</string>
+    <string name="ingfragmenttot">ingFragmentTOT</string>
+    <string name="ingredienti_totali">Ingredienti totali</string>
+    <string name="quantit_totali">Quantità totali</string>
 
 </resources>

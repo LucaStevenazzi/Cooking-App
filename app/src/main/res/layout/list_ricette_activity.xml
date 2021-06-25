@@ -10,7 +10,7 @@
     tools:context=".List_Ricette_Activity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
+        android:id="@+id/list_ricetta"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/darker_gray">
@@ -57,7 +57,11 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_drawer_menu" />
-</androidx.drawerlayout.widget.DrawerLayout>
+        app:menu="@menu/nav_drawer_menu" >
 
+    </com.google.android.material.navigation.NavigationView>
+
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
 

@@ -14,8 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.*
+import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
+import com.example.cooking_app.Classi.Ingredienti
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
+import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
 /*
 Main Activity con lista di ricette
@@ -28,6 +33,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     private lateinit var mRicetteValueListener: ValueEventListener
     private var img: ArrayList<Ricetta> = ArrayList()
     private lateinit var mAdapter: Lista_Ricette_Adapter
+    private var lista_ingredienti = ArrayList<Ingredienti>()
 
     private lateinit var toggle: ActionBarDrawerToggle
 
@@ -35,14 +41,14 @@ class List_Ricette_Activity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
-
         setCompopnent()
-
     }
 
     //settaggio dei componenti
     private fun setCompopnent() {
         initBarMenuLateral() //inizializzazione Barra laterale del menu
+       // ricetta_ingredienti.layoutManager = LinearLayoutManager(this)
+       // ricetta_ingredienti.adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
     }
     private fun initBarMenuLateral() {
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
@@ -107,16 +113,20 @@ class List_Ricette_Activity : AppCompatActivity(){
                 true
             }
             R.id.carrello -> {
-                //start fragment carrello
-
+             //   val bundle = Bundle()
+               // bundle.putSerializable("lista ingredienti totali", lista_ingredienti)
+                //Fragment_Spesa_totale().arguments= bundle
+                all_component_view.visibility = ConstraintLayout.GONE
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.list_ricetta, Fragment_Spesa_totale())
+                    commit()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-    private fun applicaFiltro() {
-
-    }
+    private fun applicaFiltro(){}
 
     //ricerca
     private fun search(item: MenuItem) {
@@ -168,4 +178,3 @@ class List_Ricette_Activity : AppCompatActivity(){
     }
 
 }
-
