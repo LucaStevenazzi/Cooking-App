@@ -250,8 +250,6 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             putRicettaExtra(intent)
             startActivity(intent)
         }
-
-
     }
     private fun deleteRicettaFromList() { //elimino la ricetta che è stata aperta
 
@@ -263,7 +261,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         //online
         val applesQuery: Query = ref.child("ricette").child(ricetta.nome + ricetta_da_eliminare.immagine )
 
-        applesQuery.addValueEventListener(object : ValueEventListener {
+        applesQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (appleSnapshot in dataSnapshot.children) {
                     appleSnapshot.ref.removeValue()

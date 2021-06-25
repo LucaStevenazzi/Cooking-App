@@ -18,22 +18,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_add_new_recipe.*
-import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import java.io.ByteArrayOutputStream
-import kotlin.random.Random
 
 
 //Adapter per gestire la recycler view delle ricette in locale
 
 class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapter<Lista_Ricette_Locali_Adapter.CustomViewHolder>(){
 
+    private var exist: HashMap<String,Boolean> = HashMap()
     private val array : ArrayList<Ricetta> = img
     private lateinit var ricette : Ricetta
+    private val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
 
     //classe interna che aggiunge un listener ad ogni ricetta, il quale apre l'activity per la sua visualizzazione
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
@@ -55,9 +53,13 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
                 it.context.startActivity(intent)
             }
             button_upload?.setOnClickListener {
-
                 ricette = array[layoutPosition]
-                val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
+                checkExist(array[layoutPosition])
+                if (exist[ricette.nome+ricette.immagine] == true){
+                    Toast.makeText(button_upload!!.context, "Ricetta gia caricata", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
                 val fileReference = DBStorage.child(ricette.immagine)
                 val imageUri = convertBitMapToUri(button_upload!!.context,ricette.bit!!)
@@ -66,12 +68,16 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
                     taskSnapshot ->
                     fileReference.downloadUrl.addOnCompleteListener{
                         taskSnapshot ->
-                        //salvataggio degli ingredienti sul DB
-                        ricette.bit = null
+                        //salvataggio degli riccetta sul DB onlìne
+                        val temp =  ricette.bit
                         val name = ricette.immagine
+                        ricette.bit = null
                         ricette.immagine = taskSnapshot.result.toString() //passaggio del link
                         DBricette.child(ricette.nome + name).setValue(ricette)
-                        Toast.makeText(button_upload!!.context, "Aggiunta Ricetta online: ${ricette.nome}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(button_upload!!.context, "Aggiunta Ricetta online: ${ricette.nome}", Toast.LENGTH_SHORT).show()
+                        ricette.bit = temp
+                        ricette.immagine = name
+                        exist[ricette.nome+ricette.immagine] = true
                     }
                 }.addOnFailureListener {
                     //mostra l'errore
@@ -94,7 +100,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
 
     //funzione che associa al layout appena preso i valori che deve mostrare
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        //holder.button_upload.visibility = checkExist(array[position])
+        checkExist(array[position])
         holder.titolo_ricetta.text = array[position].nome
         holder.img_ricetta.setImageBitmap(Bitmap.createScaledBitmap(array[position].bit!!, 200, 200, false))
         val tempo =  "Tempo : ${array[position].tempo}"
@@ -102,6 +108,17 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
         val diff = "Difficoltà : ${array[position].diff}"
         holder.difficolta_ricetta.text = diff
     }
+
+    private fun checkExist(ricetta: Ricetta){
+        DBricette.orderByKey().equalTo(ricetta.nome + ricetta.immagine).addValueEventListener(
+            object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                exist[ricetta.nome+ricetta.immagine] = dataSnapshot.exists()
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+
 
     //funzinoe che restituisce il numero di elementi dell'array di ricette passato al costruttore
     override fun getItemCount(): Int {
