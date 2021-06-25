@@ -9,8 +9,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 
 val DB_NAME = "CookingApp.db"
-val DB_OLD_VERSION = 17
-val DB_NEW_VERSION = 18
+val DB_OLD_VERSION = 18
+val DB_NEW_VERSION = 19
 val TABELLA_RICETTE = "ricette"
 val COL_IMM = "immagine"
 val COL_NOME_IMM = "nomeImmagine"
@@ -44,11 +44,11 @@ val createTableRicette =
 val createTableIng =
         "CREATE TABLE $TABELLA_ING (" +
         "$COL_NOME VARCHAR(256)," +
-        "$COL_DESC VARCHAR(1024), " +
+        "$COL_DESC VARCHAR(2048), " +
         "$COL_NOME_ING VARCHAR(256), " +
         "$COL_QUANT VARCHAR(256), " +
         "$COL_MIS VARCHAR(256), " +
-        "PRIMARY KEY ($COL_NOME_ING), " +
+        "PRIMARY KEY ($COL_NOME_ING, $COL_NOME, $COL_DESC), " +
         "FOREIGN KEY ($COL_NOME, $COL_DESC) REFERENCES $TABELLA_RICETTE ON DELETE CASCADE)"
 
 //classe che gestisce il DB: creazione, aggiornamento e lettura dati
@@ -73,7 +73,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
 
     //funzione che serve per aggiornare il DB
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 20) {
+        if (oldVersion < 30) {
             db?.execSQL("DROP TABLE IF EXISTS $TABELLA_ING")
             db?.execSQL(createTableIng)
             db?.execSQL("DROP TABLE IF EXISTS $TABELLA_RICETTE")
@@ -162,6 +162,12 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         val dbW = this.writableDatabase
         val queryEliminazione = "$COL_DESC = " + "\"" + des + "\" AND $COL_NOME = " + "\"" + nome + "\""
         dbW.delete(TABELLA_RICETTE, queryEliminazione, null)
+    }
+
+    fun eliminaIngredienti(desc: String, nome: String) {
+        val dbW = this.writableDatabase
+        val queryEliminazione = "$COL_DESC = " + "\"" + desc + "\" AND $COL_NOME = " + "\"" + nome + "\""
+        dbW.delete(TABELLA_ING,queryEliminazione,null)
     }
 
     //funzione che permette di modificare i dati nel DB

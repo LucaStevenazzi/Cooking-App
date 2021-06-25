@@ -404,17 +404,18 @@ class AddNewRecipeActivity : AppCompatActivity() {
             contenuto.put(COL_PORT, spinner_portata.selectedItem.toString())
             contenuto.put(COL_PERS, ETpersone.text.toString().trim().toInt())
             db.modificaRicetta(ricetta.note, ricetta.nome, contenuto)
+            contenuto.clear()
+            db.eliminaIngredienti(ricetta.note,ricetta.nome)
 
-            /*lista_ingredienti.forEach {
-                val valoriIngredienti = ContentValues()
-                valoriIngredienti.put(COL_NOME, ETnome.text.toString())
-                valoriIngredienti.put(COL_DESC, ETnote.text.toString())
-                valoriIngredienti.put(COL_NOME_ING, it.Name)
-                valoriIngredienti.put(COL_QUANT, it.quantit)
-                valoriIngredienti.put(COL_MIS, it.misura)
+            lista_ingredienti.forEach {
+                contenuto.put(COL_NOME, ETnome.text.toString())
+                contenuto.put(COL_DESC, ETnote.text.toString())
+                contenuto.put(COL_NOME_ING, it.Name)
+                contenuto.put(COL_QUANT, it.quantit)
+                contenuto.put(COL_MIS, it.misura)
+                db.salvaDati(TABELLA_ING, contenuto)
+            }
 
-                db.inserisciDati(TABELLA_ING, valoriIngredienti)
-            }*/
             saveRicettaDB()
             lista_ricette_locali.adapter?.notifyDataSetChanged()
         }
