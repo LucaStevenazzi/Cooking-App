@@ -18,6 +18,8 @@ import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Adapter.Lista_Ricette_Locali_Adapter
 import com.example.cooking_app.Classi.*
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
@@ -41,6 +43,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private var mAdapter: Lista_Ingredienti_Adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
     private var ricetta : Ricetta = Ricetta()
     private val ref = FirebaseDatabase.getInstance().reference
+    private val DBStorage: StorageReference = FirebaseStorage.getInstance().getReference("Immagini")
     private val db : DataBaseHelper = DataBaseHelper(this)
 
 
@@ -259,6 +262,14 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             //bisogna eliminarla anche online
         }
         //online
+        //eliminazione della foto dallo storage e poi eliminazione dell'immagine dal realtime
+        val fileReference = DBStorage.child(ricetta_da_eliminare.immagine)
+        fileReference.delete().addOnSuccessListener {
+            Toast.makeText(this, "Immagine eliminata", Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener {
+            Toast.makeText(this, "Eliminazione immagine fallita", Toast.LENGTH_SHORT).show()
+        }
+
         val applesQuery: Query = ref.child("ricette").child(ricetta.nome + ricetta_da_eliminare.immagine )
 
         applesQuery.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -272,6 +283,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 Log.e("View_Ricetta_Activity", "onCancelled", databaseError.toException())
             }
         })
+
 
         finish()//chiudo l'activiity
     }
