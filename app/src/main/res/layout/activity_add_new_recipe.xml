@@ -302,11 +302,35 @@
                 android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/TVnote"
+                    android:id="@+id/TVdesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="@string/STRnote" />
+
+                <EditText
+                    android:id="@+id/ETdesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:hint="@string/HINT"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/TVnote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/STRdesc" />
 
                 <EditText
                     android:id="@+id/ETnote"
@@ -314,7 +338,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:autofillHints=""
-                    android:hint="@string/HINT"
+                    android:hint="@string/HINTDESC"
                     android:inputType="text" />
 
             </LinearLayout>

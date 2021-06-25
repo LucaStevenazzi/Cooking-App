@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Cooking-App</string>
     <string name="name_ricetta">Cooking-App</string>
-    <string name="descrizione">La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!La #torta fredda con #mascarpone e #cioccolato è un #dolce senza #cottura facile e goloso! La #ricetta è ideale per l’estate, quando di accendere il #forno proprio non si ha voglia!ndjovndwojnjvndknvjkosvndskovndskovndsvkodnvksnvkodnvods</string>
     <string name="tempo_ricetta">Tempo Ricetta</string>
     <string name="difficolta_ricetta">Difficolta Ricetta</string>
     <string name="ADD">add</string>
@@ -16,9 +15,11 @@
     <string name="STRpersone">Persone</string>
     <string name="STRingredienti">Aggiunta Ingredienti</string>
     <string name="HINT">Riempi il campo</string>
+    <string name="HINTDESC">Nota facoltativa</string>
     <string name="HINT_NUM_PERSONE">Comprese tra 1 e 10</string>
     <string name="STRlistaIng">Lista Ingredienti</string>
     <string name="STRnote">Note</string>
+    <string name="STRdesc">Descrizione</string>
     <string name="STRbuttonOK">Aggiungi ricetta</string>
     <string name="IVdescription">Immagine della ricetta</string>
     <string-array name="array_num_persone">

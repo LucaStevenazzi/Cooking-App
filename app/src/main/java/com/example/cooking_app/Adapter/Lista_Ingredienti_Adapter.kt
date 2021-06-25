@@ -12,6 +12,7 @@ import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 
+//Classe adapter che gestisce la lista degli ingredienti
 class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Adapter<Lista_Ingredienti_Adapter.ViewHolder>() {
 
     private var array : ArrayList<Ingredienti> = lista
@@ -20,7 +21,7 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
 
         var cv : CardView? = null
         var itemNomeIngrediente: TextView
-        var itemQuantitàIngrediente: TextView
+        var itemQuantitIngrediente: TextView
         var itemDelete: ImageView? = null
 
 
@@ -29,9 +30,9 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
                 cv = itemView.findViewById(R.id.cv_lista_ingredienti)
                 itemDelete = itemView.findViewById(R.id.img_delete)
                 itemNomeIngrediente = itemView.findViewById(R.id.list_ing_name)
-                itemQuantitàIngrediente = itemView.findViewById(R.id.list_view_ing_quantità)
+                itemQuantitIngrediente = itemView.findViewById(R.id.list_view_ing_quantità)
 
-                //controllo premuta icona com.example.cooking_app.di delete
+                //controllo premuta icona per l'eliminazione degli ingredienti
                 itemDelete?.setOnClickListener{ v: View  ->
                     array.removeAt(bindingAdapterPosition)
                     notifyItemRemoved(bindingAdapterPosition)
@@ -39,7 +40,7 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
                 }
             }else{
                 itemNomeIngrediente = itemView.findViewById(R.id.list_view_ing_name)
-                itemQuantitàIngrediente = itemView.findViewById(R.id.list_view_ing_quantità)
+                itemQuantitIngrediente = itemView.findViewById(R.id.list_view_ing_quantità)
             }
 
         }
@@ -49,13 +50,14 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var v = LayoutInflater.from(parent.context).inflate(R.layout.card_ingrediente, parent, false)
         if(parent.context is View_Ricetta_Activity)
-            v = LayoutInflater.from(parent.context).inflate(R.layout.card_view_ingrediente, parent, false)
+        v = LayoutInflater.from(parent.context).inflate(R.layout.card_view_ingrediente, parent, false)
         return ViewHolder(v)
     }
 
+    //gestione della visualizzazione dei dati dell'ingrediente nella lista
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemNomeIngrediente.text = array[position].Name
-        holder.itemQuantitàIngrediente.text = array[position].quantit +" " + array[position].misura
+        holder.itemQuantitIngrediente.text = array[position].quantit.plus(" ").plus(array[position].misura)
     }
 
     override fun getItemCount(): Int {

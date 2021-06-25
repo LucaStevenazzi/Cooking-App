@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream
 
 
 //Adapter per gestire la recycler view delle ricette in locale
-
 class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapter<Lista_Ricette_Locali_Adapter.CustomViewHolder>(){
 
     private var exist: HashMap<String,Boolean> = HashMap()
@@ -86,6 +85,8 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
             }
         }
     }
+
+    //funzione che converte una bitmap in uri prima di salvarla online
     private fun convertBitMapToUri(context: Context, inImage: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
@@ -109,6 +110,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
         holder.difficolta_ricetta.text = diff
     }
 
+    //funzione che controlla che non esista una ricetta uguale quando si carica online
     private fun checkExist(ricetta: Ricetta){
         DBricette.orderByKey().equalTo(ricetta.nome + ricetta.immagine).addValueEventListener(
             object : ValueEventListener {
@@ -126,7 +128,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
     }
 
     //passaggio tramite intent della ricetta selezionata
-    fun putRicettaLocaleExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
+    fun putRicettaLocaleExtra(intent: Intent, ricetta: Ricetta) {
         ricette = ricetta
         //conversione immagine in bytearray
         val objByteArrayOutputStream = ByteArrayOutputStream()
@@ -142,6 +144,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
         intent.putExtra("Portata", ricette.portata)
         intent.putExtra("Persone", ricette.persone)
         LocaliputIngredintiExtra(intent)
+        intent.putExtra("Descrizione", ricette.descrizione)
         intent.putExtra("Note", ricette.note)
     }
     //passaggio degli ingredienti

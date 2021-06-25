@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.*
 import android.widget.AdapterView
@@ -11,11 +12,11 @@ import android.widget.ArrayAdapter
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
-import com.example.cooking_app.Adapter.Lista_Ricette_Locali_Adapter
 import com.example.cooking_app.Classi.*
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -26,14 +27,13 @@ import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
+import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-/*
-Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
- */
+//Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
 class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private var flag_first_Update: Boolean = true
@@ -66,6 +66,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         setDati() // setta i dati della ricetta sull'layout dell'activity
     }
 
+    //settaggio spinner per modificare il numero di persone
     private fun setSpinner() {
 
         //contenitore dei valori della DropDown List per il numero di persone
@@ -81,6 +82,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     }
 
+    //funzione che cambia le quantità degli ingredienti quando modifichi il numero di persone
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (parent != null) {
 
@@ -93,17 +95,14 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 lista_ingredienti.add(ing)
                 lista_ingredienti[i].quantit = (lista_ingredienti_copia[i].quantit.toDouble() / ricetta.persone * numeroPersone).toString()
             }
-
             mAdapter.notifyDataSetChanged()
-
         }
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    }
-
-    private fun getRicettaExtra(){ //ottenere la ricetta dall'intent di creazione
+    //ottenere la ricetta dall'intent di creazione
+    private fun getRicettaExtra(){
 
         val byteArray = intent.getByteArrayExtra("Bitmap")
         if (byteArray != null){
@@ -117,6 +116,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         ricetta.portata = intent.getStringExtra("Portata").toString()
         ricetta.persone = intent.getIntExtra("Persone", 0)
         getIngredientiExtra()
+        ricetta.descrizione = intent.getStringExtra("Descrizione").toString()
         ricetta.note = intent.getStringExtra("Note").toString()
     }
     private fun getIngredientiExtra() {
@@ -130,6 +130,8 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             ricetta.listaIngredienti.add(ing)
         }
     }
+
+    //settaggio dei dati quando si apre una ricetta della lista
     private fun setDati() {
         title = ricetta.nome // settagio del titolo della Activity
         if (ricetta.bit == null)
@@ -154,7 +156,8 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         lista_ingredienti.clear()
         lista_ingredienti.addAll(ricetta.listaIngredienti)
         mAdapter.notifyDataSetChanged()
-        //ricetta_note.text = ricetta.note
+        ricetta_descrizione.text = ricetta.descrizione
+        ricetta_note.text = ricetta.note
     }
 
     //fare l'update della ricetta modificata
@@ -164,9 +167,11 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         updateRicetta()
         setDati()
     }
+
+    //funzione per la modifica dellle ricette
     private fun updateRicetta() {
         if(intent.getStringExtra("Activity Name") != "Lista_Ricette_Adapter")
-            ricetta = db.readData(ricetta.nome,ricetta.note) //restituisce la ricetta locale modificata
+            ricetta = db.readData(ricetta.nome,ricetta.descrizione) //restituisce la ricetta locale modificata
         else{
             //update database online
             val applesQuery = ref.child("ricette")
@@ -203,8 +208,8 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         intent.putExtra("Persone", ricetta.persone)
         putIngredintiExtra(intent)
         intent.putExtra("ListaIngredienti", ricetta.listaIngredienti)
+        intent.putExtra("Descrizione", ricetta.descrizione)
         intent.putExtra("Note", ricetta.note)
-
     }
     private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti
         val count = ricetta.listaIngredienti.size
@@ -223,13 +228,15 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if(intent.getStringExtra("Activity Name") == "Lista_Ricette_Adapter"){
             val delete = menu?.findItem(R.id.image_delete)
             val edit = menu?.findItem(R.id.image_edit)
-            if(!db.controllaRicetta(ricetta.note,ricetta.nome))
+            if(!db.controllaRicetta(ricetta.descrizione,ricetta.nome))
                 delete?.isVisible = false //settato a true solo se è presente nel DB locale
             edit?.isVisible = false
         }
         return true
     }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean { //Premuta pulsanti opzioni per la modifica o la cancellazione della ricetta
+
+    //Premuta pulsanti opzioni per la modifica o la cancellazione della ricetta
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.image_edit -> {
                 Toast.makeText(this, "Edit ${ricetta.nome}", Toast.LENGTH_SHORT).show()
@@ -242,7 +249,9 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun editRicetta() { //far partire una l'activity per l'edit di una ricetta
+
+    //far partire una l'activity per la modifica di una ricetta
+    private fun editRicetta() {
         if(flag_first_Update){
             val intent = Intent(this, AddNewRecipeActivity::class.java)
             intent.putExtras(this.intent) // prendo l'intent gia precedentemente utilizzato per quest'activity
@@ -254,11 +263,13 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             startActivity(intent)
         }
     }
-    private fun deleteRicettaFromList() { //elimino la ricetta che è stata aperta
 
-        val ricetta_da_eliminare =  db.readData(ricetta.nome,ricetta.note)//salvo la ricetta per il campo imagine
+    //elimino la ricetta che è stata aperta, solo in remoto oppure sia in locale che in remoto (compresa l'eliminazione dell'immagine dallo storage)
+    private fun deleteRicettaFromList() {
+
+        val ricetta_da_eliminare =  db.readData(ricetta.nome,ricetta.descrizione)//salvo la ricetta per il campo imagine
         if (ricetta.bit != null){//locale
-            db.eliminaRicetta(ricetta.note, ricetta.nome)
+            db.eliminaRicetta(ricetta.descrizione, ricetta.nome)
             //bisogna eliminarla anche online
         }
         //online
@@ -287,6 +298,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
         finish()//chiudo l'activiity
     }
+
     //Conversione
     private val mapGrammi: HashMap<Int,String> = HashMap()
     private val mapCucchiaini: HashMap<Int,String> = HashMap()

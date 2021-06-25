@@ -9,8 +9,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 
 val DB_NAME = "CookingApp.db"
-val DB_OLD_VERSION = 18
-val DB_NEW_VERSION = 19
+val DB_OLD_VERSION = 19
+val DB_NEW_VERSION = 20
 val TABELLA_RICETTE = "ricette"
 val COL_IMM = "immagine"
 val COL_NOME_IMM = "nomeImmagine"
@@ -21,12 +21,11 @@ val COL_TIPO = "tipologia"
 val COL_PORT = "portata"
 val COL_PERS = "persone"
 val COL_DESC = "descrizione"
+val COL_NOTE = "note"
 val TABELLA_ING = "ingredienti"
 val COL_NOME_ING = "nomeIng"
 val COL_QUANT = "quantità"
 val COL_MIS = "misura"
-val TABLENAME3 = "note"
-val COL_NOTE = "note"
 
 val createTableRicette =
         "CREATE TABLE $TABELLA_RICETTE (" +
@@ -39,6 +38,7 @@ val createTableRicette =
         "$COL_PORT VARCHAR(256), " +
         "$COL_PERS INTEGER, " +
         "$COL_DESC VARCHAR(2048), " +
+        "$COL_NOTE VARCHAR(1024), " +
         " PRIMARY KEY ($COL_NOME, $COL_DESC))"
 
 val createTableIng =
@@ -51,8 +51,7 @@ val createTableIng =
         "PRIMARY KEY ($COL_NOME_ING, $COL_NOME, $COL_DESC), " +
         "FOREIGN KEY ($COL_NOME, $COL_DESC) REFERENCES $TABELLA_RICETTE ON DELETE CASCADE)"
 
-//classe che gestisce il DB: creazione, aggiornamento e lettura dati
-
+//Classe che gestisce il DB: creazione, aggiornamento e manipolazione dati
 class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_OLD_VERSION) {
 
     //funzinoe che crea il DB
@@ -63,12 +62,6 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         //db?.execSQL(createTableRicette)
 
         //db?.execSQL(createTableIng)
-
-        /*val createTable3 = "CREATE TABLE" + TABLENAME3 + "(" +
-                COL_IMM + " BLOB REFERENCES $TABLENAME1($COL_IMM), " +
-                COL_NOTE + "VARCHAR(256) PRIMARY KEY)"
-
-        db?.execSQL(createTable3)*/
     }
 
     //funzione che serve per aggiornare il DB
@@ -94,6 +87,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         val db = this.readableDatabase  //uso readable e non writeable perché in questa funzione devo leggere da db, non mi serve scrivere
         var OFFSET = 0
 
+        //query che restituisce il numero totale di ricette nel DB locale per poter effettuare il ciclo for
         val queryNumTotale = "SELECT COUNT(*) FROM $TABELLA_RICETTE"
         val numero = db.rawQuery(queryNumTotale, null)
         numero.moveToFirst()
@@ -118,9 +112,10 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
                     ricetta.tipologia = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_TIPO))
                     ricetta.portata = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_PORT))
                     ricetta.persone = cursoreRicetta.getInt(cursoreRicetta.getColumnIndex(COL_PERS))
-                    ricetta.note = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DESC))
+                    ricetta.descrizione = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DESC))
+                    ricetta.note = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOTE))
 
-                    val queryIngredienti = "SELECT $COL_NOME, $COL_NOME_ING, $COL_MIS, $COL_QUANT FROM $TABELLA_ING WHERE $COL_NOME = " + "\"" + ricetta.nome + "\"" + " AND $COL_DESC = " + "\"" + ricetta.note + "\""
+                    val queryIngredienti = "SELECT $COL_NOME, $COL_NOME_ING, $COL_MIS, $COL_QUANT FROM $TABELLA_ING WHERE $COL_NOME = " + "\"" + ricetta.nome + "\"" + " AND $COL_DESC = " + "\"" + ricetta.descrizione + "\""
                     val cursoreIngredienti = db.rawQuery(queryIngredienti, null)
                     if (cursoreIngredienti.moveToFirst()) {
                         do {
@@ -181,7 +176,7 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         return check
     }
 
-
+    //funzione che cerca sul DB solo la ricetta richiesta, la cui chiave primaria viene passata tramite argomenti
     fun readData(nome: String, desc: String): Ricetta {
         val dbR = this.readableDatabase
         val listaIng = ArrayList<Ingredienti>()
@@ -199,9 +194,10 @@ class DataBaseHelper(var context: Context) : SQLiteOpenHelper(context, DB_NAME, 
         ricetta.tipologia = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_TIPO))
         ricetta.portata = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_PORT))
         ricetta.persone = cursoreRicetta.getInt(cursoreRicetta.getColumnIndex(COL_PERS))
-        ricetta.note = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DESC))
+        ricetta.descrizione = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_DESC))
+        ricetta.note = cursoreRicetta.getString(cursoreRicetta.getColumnIndex(COL_NOTE))
 
-        val queryIngredienti = "SELECT $COL_NOME, $COL_NOME_ING, $COL_MIS, $COL_QUANT FROM $TABELLA_ING WHERE $COL_NOME = " + "\"" + ricetta.nome + "\"" + " AND $COL_DESC = " + "\"" + ricetta.note + "\""
+        val queryIngredienti = "SELECT $COL_NOME, $COL_NOME_ING, $COL_MIS, $COL_QUANT FROM $TABELLA_ING WHERE $COL_NOME = " + "\"" + ricetta.nome + "\"" + " AND $COL_DESC = " + "\"" + ricetta.descrizione + "\""
         val cursoreIngredienti = dbR.rawQuery(queryIngredienti, null)
         if (cursoreIngredienti.moveToFirst()) {
             do {

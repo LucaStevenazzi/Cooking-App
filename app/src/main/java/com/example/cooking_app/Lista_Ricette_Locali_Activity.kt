@@ -8,7 +8,6 @@ import com.example.cooking_app.Classi.*
 import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 
 //Activity per la visualizzazione delle proprie ricette in locale
-
 class Lista_Ricette_Locali_Activity : AppCompatActivity() {
 
     private lateinit var mAdapter : Lista_Ricette_Locali_Adapter
@@ -18,8 +17,6 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_ricette_locali)
-
-
 
         lista = db.readData() //lettura del DB locale
 
@@ -37,6 +34,7 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
 
     }
 
+    //funzione che aggiorna la lista dopo eventuali modifiche alle ricette
     private fun checkModifiche() {
         lista.clear()
         lista.addAll(db.readData())
