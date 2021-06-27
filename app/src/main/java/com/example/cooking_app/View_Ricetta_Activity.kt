@@ -33,7 +33,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
     private val addSpesa = AddSpesa()
 
 
-
     //inizializzazione Activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,9 +156,17 @@ class View_Ricetta_Activity : AppCompatActivity() {
                 deleteRicettaToList()
             }
             R.id.image_shopping_cart ->{
+                /* BUNDLE*/
                 val bundle = Bundle()
                 bundle.putSerializable("lista ingredienti", lista_ingredienti)
-                addSpesa.arguments= bundle
+                addSpesa.arguments = bundle
+
+
+                /*INTENT
+                val intent = Intent(this,AddSpesa::class.java)
+                intent.putExtra("lista ingredienti",lista_ingredienti)
+                */
+
                 all_component_view.visibility = ConstraintLayout.GONE
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.view_ricetta, addSpesa)

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
     tools:context=".Fragment_Spesa_totale"
-    tools:listitem="@layout/fragment__spesa_totale" >
+    tools:listitem="@layout/fragment_spesa_totale" >
 
     <LinearLayout
         android:id="@+id/LLTOT"

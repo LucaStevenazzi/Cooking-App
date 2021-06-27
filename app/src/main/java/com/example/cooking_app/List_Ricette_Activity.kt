@@ -15,12 +15,9 @@ import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ricetta
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.*
-import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
-import kotlinx.android.synthetic.main.view_ricetta_activity.*
 
 /*
 Main Activity con lista di ricette
@@ -33,7 +30,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     private lateinit var mRicetteValueListener: ValueEventListener
     private var img: ArrayList<Ricetta> = ArrayList()
     private lateinit var mAdapter: Lista_Ricette_Adapter
-    private var lista_ingredienti = ArrayList<Ingredienti>()
+    private var lista_ingredienti_da_aggiungere = ArrayList<Ingredienti>()
 
     private lateinit var toggle: ActionBarDrawerToggle
 
@@ -42,7 +39,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
         setCompopnent()
-    }
+        }
 
     //settaggio dei componenti
     private fun setCompopnent() {
@@ -113,19 +110,21 @@ class List_Ricette_Activity : AppCompatActivity(){
                 true
             }
             R.id.carrello -> {
-             //   val bundle = Bundle()
-               // bundle.putSerializable("lista ingredienti totali", lista_ingredienti)
-                //Fragment_Spesa_totale().arguments= bundle
-                all_component_view.visibility = ConstraintLayout.GONE
+                /*val bundle = Bundle()
+                bundle.putSerializable("ingredienti da aggiungere", lista_ingredienti_da_aggiungere)
+                Fragment_Spesa_totale().arguments = bundle*/
+                list_ricetta.visibility = ConstraintLayout.GONE
                 supportFragmentManager.beginTransaction().apply {
                     replace(R.id.list_ricetta, Fragment_Spesa_totale())
                     commit()
                 }
+                lista_ingredienti_da_aggiungere.clear()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     private fun applicaFiltro(){}
 
     //ricerca

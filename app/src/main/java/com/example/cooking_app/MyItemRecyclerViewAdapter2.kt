@@ -41,7 +41,7 @@ class MyItemRecyclerViewAdapter2(
     inner class ViewHolder(binding: FragmentSpesaTotaleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val nomeIng: TextView = binding.TVNomeIngrTot
-        val quantitIng: TextView = binding.TVNomeIngrTot
+        val quantitIng: TextView = binding.TVQuantTot
 
         override fun toString(): String {
             return super.toString() + " '" + quantitIng.text + "'"

@@ -8,38 +8,39 @@
     tools:context=".AddSpesa"
     tools:listitem="@layout/fragment_item">
 
+
     <LinearLayout
         android:id="@+id/LL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/LL2">
 
-        <TextView
-            android:id="@+id/TV_ing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:layout_weight="0.8"
-            android:text="@string/ingFragment"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="20sp" />
+    <TextView
+        android:id="@+id/TV_ing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:layout_weight="0.8"
+        android:text="@string/ingFragment"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="-39dp"
+        tools:layout_editor_absoluteY="0dp" />
 
-        <TextView
-            android:id="@+id/TV_quant"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/quantFragment"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="20sp" />
-
+    <TextView
+        android:id="@+id/TV_quant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:text="@string/quantFragment"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,14 +57,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottoneLista"
-        android:text="@string/aggiungi_alla_lista"
-        />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottoneLista"
+            android:text="@string/aggiungi_alla_lista" />
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
