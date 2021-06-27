@@ -36,7 +36,6 @@ class AddSpesa : Fragment(){
         view.list.adapter = MyItemRecyclerViewAdapter(lista_ingredienti)
         view.list.layoutManager = LinearLayoutManager(view.context)
         view.bottoneLista.setOnClickListener() {
-            Toast.makeText(context, "Ingredienti aggiunti alla lista della spesa", Toast.LENGTH_SHORT).show()
             /*INTENT
             val intent = Intent(context,List_Ricette_Activity::class.java)
             putIngredintiExtra(intent)

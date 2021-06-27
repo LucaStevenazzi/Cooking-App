@@ -30,7 +30,6 @@ class View_Ricetta_Activity : AppCompatActivity() {
     private var ricetta : Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private val ref = FirebaseDatabase.getInstance().reference
-    private val addSpesa = AddSpesa()
 
 
     //inizializzazione Activity
@@ -157,21 +156,17 @@ class View_Ricetta_Activity : AppCompatActivity() {
             }
             R.id.image_shopping_cart ->{
                 /* BUNDLE*/
+                Toast.makeText(this, "Ingredienti aggiunti alla lista della spesa", Toast.LENGTH_SHORT).show()
                 val bundle = Bundle()
                 bundle.putSerializable("lista ingredienti", lista_ingredienti)
-                addSpesa.arguments = bundle
+                Fragment_Spesa_totale().arguments = bundle
 
-
-                /*INTENT
-                val intent = Intent(this,AddSpesa::class.java)
-                intent.putExtra("lista ingredienti",lista_ingredienti)
-                */
-
+                /*
                 all_component_view.visibility = ConstraintLayout.GONE
                 supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.view_ricetta, addSpesa)
+                    replace(R.id.view_ricetta, Fragment_Spesa_totale())
                     commit()
-                }
+                }*/
             }
         }
         return super.onOptionsItemSelected(item)

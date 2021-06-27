@@ -25,12 +25,12 @@ class Fragment_Spesa_totale : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*CON INTENT
+        /*
         val intent = Intent(context,AddSpesa::class.java)
         lista_ingredienti.addAll(activity?.intent?.getSerializableExtra("ingredienti da aggiungere") as ArrayList<Ingredienti>)
-         */
-            lista_ingredienti =
-                arguments?.getSerializable("lista parziale") as ArrayList<Ingredienti>
+        */
+       // if(arguments?.getSerializable("lista ingredienti") != null)
+        lista_ingredienti = arguments?.getSerializable("lista ingredienti") as ArrayList<Ingredienti>
 
     }
 

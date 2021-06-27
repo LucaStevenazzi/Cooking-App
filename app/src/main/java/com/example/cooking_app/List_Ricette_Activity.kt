@@ -118,7 +118,6 @@ class List_Ricette_Activity : AppCompatActivity(){
                     replace(R.id.list_ricetta, Fragment_Spesa_totale())
                     commit()
                 }
-                lista_ingredienti_da_aggiungere.clear()
                 true
             }
             else -> super.onOptionsItemSelected(item)
