@@ -23,7 +23,6 @@ class Lista_Ingredienti_Adapter(lista: ArrayList<Ingredienti>) : RecyclerView.Ad
         var itemQuantitàIngrediente: TextView
         var itemDelete: ImageView? = null
 
-
         init{
             if(itemView.context is AddNewRecipeActivity){
                 cv = itemView.findViewById(R.id.cv_lista_ingredienti)

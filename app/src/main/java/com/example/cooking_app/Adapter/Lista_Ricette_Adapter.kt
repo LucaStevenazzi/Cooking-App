@@ -1,5 +1,6 @@
 package com.example.cooking_app.Adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.List_Ricette_Activity
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 import com.google.firebase.storage.FirebaseStorage
@@ -47,7 +49,6 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
                 it.context.startActivity(intent)
             }
         }
-
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ricetta_list,parent,false))

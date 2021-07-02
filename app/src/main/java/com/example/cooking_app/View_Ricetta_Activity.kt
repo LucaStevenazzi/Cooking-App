@@ -36,12 +36,14 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     private var flag_first_Update: Boolean = true
     private val TAG = "View_Ricetta_Activity"
+    private var ricetta : Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private var lista_ingredienti_copia = ArrayList<Ingredienti>()
     private var mAdapter: Lista_Ingredienti_Adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
     private var ricetta : Ricetta = Ricetta()
     private val ref = FirebaseDatabase.getInstance().reference
     private val db : DataBaseHelper = DataBaseHelper(this)
+    private val lista_spesa = Lista_Spesa::class.java
 
 
     //inizializzazione Activity
@@ -203,6 +205,7 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         intent.putExtra("Note", ricetta.note)
 
     }
+
     private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti
         val count = ricetta.listaIngredienti.size
         if(count == 0) return
@@ -236,9 +239,20 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 Toast.makeText(this, "Delete ${ricetta.nome}", Toast.LENGTH_SHORT).show()
                 deleteRicettaFromList()
             }
+            R.id.image_shopping_cart -> {
+                Toast.makeText(
+                    this,
+                    "Ingredienti aggiunti alla lista della spesa",
+                    Toast.LENGTH_SHORT
+                ).show()
+                val intent = Intent(this, lista_spesa)
+                putIngredintiExtra(intent)
+                startActivity(intent)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
+
     private fun editRicetta() { //far partire una l'activity per l'edit di una ricetta
         if(flag_first_Update){
             val intent = Intent(this, AddNewRecipeActivity::class.java)

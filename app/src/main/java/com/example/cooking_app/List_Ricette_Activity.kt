@@ -1,6 +1,5 @@
 package com.example.cooking_app
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -51,8 +50,10 @@ class List_Ricette_Activity : AppCompatActivity(){
     private lateinit var mRicetteValueListener: ValueEventListener
     private var img: ArrayList<Ricetta> = ArrayList()
     private lateinit var mAdapter: Lista_Ricette_Adapter
+    private var lista_ingredienti_da_aggiungere = ArrayList<Ingredienti>()
     private lateinit var toggle: ActionBarDrawerToggle
     private var Frag_search = Filtro_ricerca()
+    private var lista_spesa = Lista_Spesa::class.java
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +111,8 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
             R.id.carrello -> {
                 //start fragment carrello
+                val intent = Intent(this, lista_spesa)
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -281,6 +284,7 @@ class List_Ricette_Activity : AppCompatActivity(){
                 initRecyclerView() //inizializzazione Lista delle ricette
                 mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
             }
+
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Ricetta failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
