@@ -1,5 +1,6 @@
 package com.example.cooking_app
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -34,13 +35,13 @@ Activity di visualizzazione scelta della ricetta dall'elenco (Lista)
  */
 class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
+    private var add_spesa: Boolean = false
     private var flag_first_Update: Boolean = true
     private val TAG = "View_Ricetta_Activity"
     private var ricetta : Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private var lista_ingredienti_copia = ArrayList<Ingredienti>()
     private var mAdapter: Lista_Ingredienti_Adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
-    private var ricetta : Ricetta = Ricetta()
     private val ref = FirebaseDatabase.getInstance().reference
     private val db : DataBaseHelper = DataBaseHelper(this)
     private val lista_spesa = Lista_Spesa::class.java
@@ -245,9 +246,10 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                     "Ingredienti aggiunti alla lista della spesa",
                     Toast.LENGTH_SHORT
                 ).show()
-                val intent = Intent(this, lista_spesa)
-                putIngredintiExtra(intent)
-                startActivity(intent)
+                //salvo la lista degli ingredienti
+                intent.putExtra("lista spesa",lista_ingredienti)
+                setResult(Activity.RESULT_OK,intent)
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

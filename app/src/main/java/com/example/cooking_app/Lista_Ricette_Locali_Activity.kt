@@ -1,7 +1,10 @@
 package com.example.cooking_app
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Locali_Adapter
 import com.example.cooking_app.Classi.*
@@ -14,6 +17,7 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
     private lateinit var mAdapter : Lista_Ricette_Locali_Adapter
     private val db = DataBaseHelper(this)
     private lateinit var lista: ArrayList<Ricetta>
+    private var lista_spesa = ArrayList<Ingredienti>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +29,7 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
 
         //inizializzazione della lista della ricette attraverso l'adapter
 
-        mAdapter = Lista_Ricette_Locali_Adapter(lista)
+        mAdapter = Lista_Ricette_Locali_Adapter(lista, this)
         lista_ricette_locali.layoutManager = LinearLayoutManager(this)
         lista_ricette_locali.adapter = mAdapter
 
@@ -41,5 +45,23 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
         lista.clear()
         lista.addAll(db.readData())
         mAdapter.notifyDataSetChanged()
+    }
+
+    private val ADD_SPESA = 100
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == ADD_SPESA && resultCode == Activity.RESULT_OK){
+            Toast.makeText(this, "Ricevuto indietro la lista degli ingredienti", Toast.LENGTH_SHORT).show()
+            lista_spesa.addAll(data?.getSerializableExtra("lista spesa") as ArrayList<Ingredienti>)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(lista_spesa.isNotEmpty()){
+            intent.putExtra("lista spesa",lista_spesa)
+            setResult(Activity.RESULT_OK,intent)
+            finish()
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.cooking_app
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +19,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
+import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.Fragment.Filtro_ricerca
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -50,10 +53,9 @@ class List_Ricette_Activity : AppCompatActivity(){
     private lateinit var mRicetteValueListener: ValueEventListener
     private var img: ArrayList<Ricetta> = ArrayList()
     private lateinit var mAdapter: Lista_Ricette_Adapter
-    private var lista_ingredienti_da_aggiungere = ArrayList<Ingredienti>()
+    private var lista_spesa = ArrayList<Ingredienti>()
     private lateinit var toggle: ActionBarDrawerToggle
     private var Frag_search = Filtro_ricerca()
-    private var lista_spesa = Lista_Spesa::class.java
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +72,7 @@ class List_Ricette_Activity : AppCompatActivity(){
 
     fun apriRicettarioLocale(v : View){
         val it = Intent(this, Lista_Ricette_Locali_Activity::class.java)
-        startActivity(it)
+        startActivityForResult(it,ADD_SPESA)
     }
 
     //Settaggio ToolBar
@@ -111,7 +113,8 @@ class List_Ricette_Activity : AppCompatActivity(){
             }
             R.id.carrello -> {
                 //start fragment carrello
-                val intent = Intent(this, lista_spesa)
+                val intent = Intent(this, Lista_Spesa::class.java)
+                intent.putExtra("lista spesa", lista_spesa)
                 startActivity(intent)
                 true
             }
@@ -297,6 +300,15 @@ class List_Ricette_Activity : AppCompatActivity(){
         mAdapter = Lista_Ricette_Adapter(img, this)
         lista_ricette.layoutManager = LinearLayoutManager(this)
         lista_ricette.adapter = mAdapter
+    }
+
+    private val ADD_SPESA = 100
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == ADD_SPESA && resultCode == Activity.RESULT_OK){
+            Toast.makeText(this, "Ricevuto indietro la lista degli ingredienti", Toast.LENGTH_SHORT).show()
+            lista_spesa.addAll(data?.getSerializableExtra("lista spesa") as ArrayList<Ingredienti>)
+        }
     }
 }
 

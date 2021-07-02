@@ -94,8 +94,11 @@
     <string name="grammi">Grammi (g)</string>
     <string name="centilitri">Millilitri (ml)</string>
     <string name="bicchieri">Bicchieri</string>
-
+    <string name="aggiungi_metodo_di_preparazione">Aggiungi metodo di preparazione</string>
     <string name="ingredienti_totali">Ingredienti totali</string>
     <string name="quantit_totali">Quantità totali</string>
+    <string name="ingredientiSpesa">Ingredienti</string>
+    <string name="quantitSpesa">Quantità</string>
+    <string name="share">share</string>
 
 </resources>

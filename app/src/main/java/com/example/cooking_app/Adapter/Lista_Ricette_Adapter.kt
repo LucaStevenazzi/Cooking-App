@@ -13,8 +13,6 @@ import com.example.cooking_app.Classi.Ricetta
 import com.example.cooking_app.List_Ricette_Activity
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList
@@ -29,7 +27,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     private val arrayCopy : ArrayList<Ricetta> = ArrayList(array)
     private lateinit var ricette : Ricetta
     private val ct = context
-
+    private val ADD_SPESA = 100
 
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
 
@@ -40,13 +38,12 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         var tempo_ricetta : TextView = itemView.findViewById(R.id.tv_tempo_ricetta)
 
         init{
-
             //onClickListener: apertura nuova activity per la visualizzazione della ricetta cliccata come CardView
             //intent: passaggio dei dati
             cv.setOnClickListener {
-                val intent = Intent(itemView.context, View_Ricetta_Activity::class.java)
+                val intent = Intent(ct, View_Ricetta_Activity::class.java)
                 putRicettaExtra(intent, array[layoutPosition])   //passaggio ddlla ricetta cliccata dall elenco tramite l'intent
-                it.context.startActivity(intent)
+                (ct as Activity).startActivityForResult(intent, ADD_SPESA)
             }
         }
     }

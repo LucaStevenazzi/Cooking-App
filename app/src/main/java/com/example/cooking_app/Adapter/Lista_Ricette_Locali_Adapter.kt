@@ -1,5 +1,6 @@
 package com.example.cooking_app.Adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -26,12 +27,14 @@ import java.io.ByteArrayOutputStream
 
 //Adapter per gestire la recycler view delle ricette in locale
 
-class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapter<Lista_Ricette_Locali_Adapter.CustomViewHolder>(){
+class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>, context: Context) : RecyclerView.Adapter<Lista_Ricette_Locali_Adapter.CustomViewHolder>(){
 
     private var exist: HashMap<String,Boolean> = HashMap()
     private val array : ArrayList<Ricetta> = img
     private lateinit var ricette : Ricetta
     private val DBricette: DatabaseReference = FirebaseDatabase.getInstance().getReference("ricette")
+    private val ct = context
+    private val ADD_SPESA = 100
 
     //classe interna che aggiunge un listener ad ogni ricetta, il quale apre l'activity per la sua visualizzazione
     inner class CustomViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){//classe che gestisce le View della RecycleView
@@ -50,7 +53,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>) : RecyclerView.Adapt
             cv.setOnClickListener {
                 val intent = Intent(itemView.context, View_Ricetta_Activity::class.java)
                 putRicettaLocaleExtra(intent, array[layoutPosition])   //passaggio ddlla ricetta cliccata dall elenco tramite l'intent
-                it.context.startActivity(intent)
+                (ct as Activity).startActivityForResult(intent, ADD_SPESA)
             }
             button_upload?.setOnClickListener {
                 ricette = array[layoutPosition]
