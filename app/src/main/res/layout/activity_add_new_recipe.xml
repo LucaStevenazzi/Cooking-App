@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddNewRecipeActivity">
+    tools:context=".AddNewRecipeActivity"
+    android:id="@+id/constraintLayoutAdd">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +26,7 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center"
-                android:layout_margin="16dp"
+                android:scaleType="centerCrop"
                 android:contentDescription="@string/IVdescription"
                 android:onClick="addImage"
                 app:srcCompat="@android:drawable/ic_menu_report_image" />
@@ -96,7 +97,7 @@
                     android:layout_weight="1"
                     android:autofillHints=""
                     android:hint="@string/HINT"
-                    android:inputType="text" />
+                    android:inputType="number" />
 
             </LinearLayout>
 
@@ -165,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:autofillHints=""
-                    android:hint="@string/HINT"
+                    android:hint="@string/HINT_NUM_PERSONE"
                     android:inputType="numberDecimal" />
 
             </LinearLayout>
@@ -207,7 +208,7 @@
                     android:layout_height="wrap_content"
                     android:autofillHints=""
                     android:hint="@string/HINTquantità"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:padding="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/ing_misura"
@@ -304,7 +305,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/Descrizione" />
+                    android:text="@string/descrizione" />
 
                 <EditText
                     android:id="@+id/ETdescrizione"
@@ -346,12 +347,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-
-                android:onClick="saveRecipe"
+                android:onClick="salvataggioRicettaDBLocale"
                 android:text="@string/STRbuttonOK" />
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

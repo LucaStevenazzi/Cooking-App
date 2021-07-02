@@ -42,7 +42,6 @@
         android:layout_marginRight="30dp"
         android:fontFamily="sans-serif"
         android:scrollbars="vertical"
-        android:text="@string/listadellaspesa"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

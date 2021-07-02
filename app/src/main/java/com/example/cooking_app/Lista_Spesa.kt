@@ -16,7 +16,6 @@ class Lista_Spesa : AppCompatActivity(){
 
     private var spesa = ArrayList<Ingredienti>()
     private var stringa = StringBuilder()
-    private var ingrediente = Ingredienti()
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,21 +54,13 @@ class Lista_Spesa : AppCompatActivity(){
      }
 
     private fun setComponent() {
+        getIngredientiExtra()
         listaSpesa.layoutManager = LinearLayoutManager(this)
         listaSpesa.adapter = Lista_Ingredienti_Adapter(spesa)
-        getIngredientiExtra()
     }
 
     private fun getIngredientiExtra() {
-        val count = intent.getIntExtra("Count" , 0)
-        if(count == 0) return
-        for(i in 0 until count){
-            val ingnome = intent.getStringExtra("Ingrediente $i nome").toString()
-            val ingquanti = intent.getStringExtra("Ingrediente $i quantità").toString()
-            val ingmisura = intent.getStringExtra("Ingrediente $i misura").toString()
-            val ing = Ingredienti(ingnome, ingquanti, ingmisura)
-            spesa.add(ing)
-        }
+        spesa = intent.getSerializableExtra("lista spesa") as ArrayList<Ingredienti>
     }
 
     override fun onStop() {

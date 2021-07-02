@@ -14,11 +14,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CookingApp">
+        <activity android:name=".Lista_Ricette_Locali_Activity"
+            android:label="Le mie ricette" />
         <activity android:name=".AddNewRecipeActivity"
-            android:label="Aggiungi una ricetta"/>
-        <activity android:name=".View_Ricetta_Activity"/>
+            android:label="Aggiungi una ricetta" />
         <activity android:name=".Lista_Spesa"/>
-        <activity android:name=".List_Ricette_Activity">
+        <activity android:name=".View_Ricetta_Activity" />
+        <activity android:name=".List_Ricette_Activity"
+            android:label="Ricettario Online">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

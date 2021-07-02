@@ -37,11 +37,11 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
+                android:text="@string/nome_ricetta"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tv_tempo_ricetta"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:text="@string/nome_ricetta"
+                app:layout_constraintEnd_toStartOf="@+id/uploadtoFireBase"
                 app:layout_constraintStart_toEndOf="@+id/img_ricetta"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,10 +66,22 @@
                 android:layout_marginBottom="16dp"
                 android:text="@string/difficolta_ricetta"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/uploadtoFireBase"
                 app:layout_constraintStart_toEndOf="@+id/tv_tempo_ricetta"
                 app:layout_constraintTop_toBottomOf="@+id/titolo_ricetta" />
+
+            <ImageButton
+                android:id="@+id/uploadtoFireBase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_difficoltà_ricetta"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/ic_menu_upload" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
