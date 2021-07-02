@@ -71,4 +71,17 @@ class Lista_Spesa : AppCompatActivity(){
             spesa.add(ing)
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        val intent = Intent(this, List_Ricette_Activity::class.java)
+        intent.putExtra("spesa",spesa)
+        startActivity(intent)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        if(intent.getSerializableExtra("spesa non modificata") != null)
+            spesa = intent.getSerializableExtra("spesa non modificata") as ArrayList<Ingredienti>
+    }
 }
