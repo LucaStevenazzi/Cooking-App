@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ingredienti_Adapter
 import com.example.cooking_app.Classi.Ingredienti
@@ -17,6 +18,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_add_new_recipe.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.*
 import kotlinx.android.synthetic.main.view_ricetta_activity.view.*
+import java.lang.reflect.Array
 
 
 /*
@@ -26,10 +28,10 @@ class View_Ricetta_Activity : AppCompatActivity() {
 
     private var flag_first_Update: Boolean = true
     private val TAG = "View_Ricetta_Activity"
-
     private var ricetta : Ricetta = Ricetta()
     private var lista_ingredienti = ArrayList<Ingredienti>()
     private val ref = FirebaseDatabase.getInstance().reference
+    private val lista_spesa = Lista_Spesa::class.java
 
 
     //inizializzazione Activity
@@ -154,23 +156,20 @@ class View_Ricetta_Activity : AppCompatActivity() {
                 Toast.makeText(this, "Delete ${ricetta.nome}", Toast.LENGTH_SHORT).show()
                 deleteRicettaToList()
             }
-            R.id.image_shopping_cart ->{
-                /* BUNDLE*/
-                Toast.makeText(this, "Ingredienti aggiunti alla lista della spesa", Toast.LENGTH_SHORT).show()
-                val bundle = Bundle()
-                bundle.putSerializable("lista ingredienti", lista_ingredienti)
-                Fragment_Spesa_totale().arguments = bundle
-
-                /*
-                all_component_view.visibility = ConstraintLayout.GONE
-                supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.view_ricetta, Fragment_Spesa_totale())
-                    commit()
-                }*/
+            R.id.image_shopping_cart -> {
+                Toast.makeText(
+                    this,
+                    "Ingredienti aggiunti alla lista della spesa",
+                    Toast.LENGTH_SHORT
+                ).show()
+                val intent = Intent(this, lista_spesa)
+                putIngredintiExtra(intent)
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
     private fun editRicetta() { //far partire una l'activity per l'edit di una ricetta
         if(flag_first_Update){
             val intent = Intent(this, AddNewRecipeActivity::class.java)

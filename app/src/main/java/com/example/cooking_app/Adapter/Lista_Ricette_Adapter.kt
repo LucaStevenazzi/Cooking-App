@@ -1,5 +1,6 @@
 package com.example.cooking_app.Adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -10,11 +11,13 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cooking_app.Classi.Ingredienti
 import com.example.cooking_app.Classi.Ricetta
+import com.example.cooking_app.List_Ricette_Activity
 import com.example.cooking_app.R
 import com.example.cooking_app.View_Ricetta_Activity
 import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 /*
 classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
@@ -45,7 +48,6 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
                 it.context.startActivity(intent)
             }
         }
-
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ricetta_list,parent,false))
@@ -94,6 +96,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     override fun getFilter(): Filter {//metodo per la il filtraggio della ricerca in base al testo che scrivi
         return searchFilter
     }
+
     private var searchFilter: Filter = object : Filter() { //funzione che restituisce un oggetto Filter per la ricerca
         override fun performFiltering(constraint: CharSequence): FilterResults {
             val filteredList: ArrayList<Ricetta> = ArrayList()

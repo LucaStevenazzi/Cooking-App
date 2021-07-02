@@ -1,23 +1,29 @@
 package com.example.cooking_app
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
-import com.example.cooking_app.Classi.Ricetta
 import androidx.appcompat.widget.SearchView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.cooking_app.Adapter.Lista_Ricette_Adapter
 import com.example.cooking_app.Classi.Ingredienti
+import com.example.cooking_app.Classi.Ricetta
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
+
 
 /*
 Main Activity con lista di ricette
@@ -31,8 +37,8 @@ class List_Ricette_Activity : AppCompatActivity(){
     private var img: ArrayList<Ricetta> = ArrayList()
     private lateinit var mAdapter: Lista_Ricette_Adapter
     private var lista_ingredienti_da_aggiungere = ArrayList<Ingredienti>()
-
     private lateinit var toggle: ActionBarDrawerToggle
+    private var lista_spesa = Lista_Spesa::class.java
 
     //creazione activity
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +46,7 @@ class List_Ricette_Activity : AppCompatActivity(){
         setContentView(R.layout.list_ricette_activity)
         setCompopnent()
         }
+
 
     //settaggio dei componenti
     private fun setCompopnent() {
@@ -110,14 +117,8 @@ class List_Ricette_Activity : AppCompatActivity(){
                 true
             }
             R.id.carrello -> {
-                /*val bundle = Bundle()
-                bundle.putSerializable("ingredienti da aggiungere", lista_ingredienti_da_aggiungere)
-                Fragment_Spesa_totale().arguments = bundle*/
-                list_ricetta.visibility = ConstraintLayout.GONE
-                supportFragmentManager.beginTransaction().apply {
-                    replace(R.id.list_ricetta, Fragment_Spesa_totale())
-                    commit()
-                }
+                val intent = Intent(this, lista_spesa)
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -147,7 +148,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     override fun onStart() {
         super.onStart()
         mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
-        DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
+        DBricette!!.addValueEventListener(mRicetteValueListener) //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
     }
     override fun onStop() {
         Log.e(TAG,"onStop")
