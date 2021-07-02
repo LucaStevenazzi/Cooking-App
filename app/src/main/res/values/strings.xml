@@ -95,4 +95,7 @@
     <string name="centilitri">Millilitri (ml)</string>
     <string name="bicchieri">Bicchieri</string>
 
+    <string name="ingredienti_totali">Ingredienti totali</string>
+    <string name="quantit_totali">Quantità totali</string>
+
 </resources>
