@@ -44,7 +44,6 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private var mAdapter: Lista_Ingredienti_Adapter = Lista_Ingredienti_Adapter(lista_ingredienti)
     private val ref = FirebaseDatabase.getInstance().reference
     private val db : DataBaseHelper = DataBaseHelper(this)
-    private val lista_spesa = Lista_Spesa::class.java
 
 
     //inizializzazione Activity
@@ -67,7 +66,6 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     private fun setSpinner() {
-
         //contenitore dei valori della DropDown List per il numero di persone
         ArrayAdapter.createFromResource(this, R.array.array_num_persone, android.R.layout.simple_spinner_item).also {
             adapter ->
@@ -78,7 +76,6 @@ class View_Ricetta_Activity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
             spinner_num_persone.onItemSelectedListener = this
         }
-
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

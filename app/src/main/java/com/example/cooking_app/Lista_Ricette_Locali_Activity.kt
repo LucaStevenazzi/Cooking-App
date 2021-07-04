@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cooking_app.Adapter.Lista_Ricette_Locali_Adapter
@@ -12,19 +14,16 @@ import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 
 //Activity per la visualizzazione delle proprie ricette in locale
 
-class Lista_Ricette_Locali_Activity : AppCompatActivity() {
+class Lista_Ricette_Locali_Activity : AppCompatActivity(){
 
     private lateinit var mAdapter : Lista_Ricette_Locali_Adapter
     private val db = DataBaseHelper(this)
     private lateinit var lista: ArrayList<Ricetta>
-    private var lista_spesa = ArrayList<Ingredienti>()
+    private var lista_ingredienti = ArrayList<Ingredienti>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_ricette_locali)
-
-
-
         lista = db.readData() //lettura del DB locale
 
         //inizializzazione della lista della ricette attraverso l'adapter
@@ -32,13 +31,11 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
         mAdapter = Lista_Ricette_Locali_Adapter(lista, this)
         lista_ricette_locali.layoutManager = LinearLayoutManager(this)
         lista_ricette_locali.adapter = mAdapter
-
     }
 
     override fun onRestart() {
         super.onRestart()
         checkModifiche()//controllo cambiamenti
-
     }
 
     private fun checkModifiche() {
@@ -52,14 +49,17 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == ADD_SPESA && resultCode == Activity.RESULT_OK){
             Toast.makeText(this, "Ricevuto indietro la lista degli ingredienti", Toast.LENGTH_SHORT).show()
-            lista_spesa.addAll(data?.getSerializableExtra("lista spesa") as ArrayList<Ingredienti>)
+            lista_ingredienti.addAll(data?.getSerializableExtra("lista spesa") as ArrayList<Ingredienti>)
         }
+        intent.putExtra("lista spesa",lista_ingredienti)
+        setResult(Activity.RESULT_OK,intent)
+        finish()
     }
 
-    override fun onDestroy() {
+    override fun onDestroy(){
         super.onDestroy()
-        if(lista_spesa.isNotEmpty()){
-            intent.putExtra("lista spesa",lista_spesa)
+        if(lista_ingredienti.isNotEmpty()){
+            intent.putExtra("lista spesa",lista_ingredienti)
             setResult(Activity.RESULT_OK,intent)
             finish()
         }

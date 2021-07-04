@@ -51,9 +51,9 @@ class Lista_Spesa : AppCompatActivity(){
         shareIntent.putExtra(Intent.EXTRA_TEXT, stringa.toString())
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "lista spesa")
         startActivity(Intent.createChooser(shareIntent, "condividi via"))
-     }
+    }
 
-    private fun setComponent() {
+    private fun setComponent(){
         getIngredientiExtra()
         listaSpesa.layoutManager = LinearLayoutManager(this)
         listaSpesa.adapter = Lista_Ingredienti_Adapter(spesa)

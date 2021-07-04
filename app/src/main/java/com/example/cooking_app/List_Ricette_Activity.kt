@@ -112,7 +112,6 @@ class List_Ricette_Activity : AppCompatActivity(){
                 true
             }
             R.id.carrello -> {
-                //start fragment carrello
                 val intent = Intent(this, Lista_Spesa::class.java)
                 intent.putExtra("lista spesa", lista_spesa)
                 startActivity(intent)

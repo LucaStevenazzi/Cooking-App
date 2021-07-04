@@ -89,6 +89,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>, context: Context) : 
             }
         }
     }
+
     private fun convertBitMapToUri(context: Context, inImage: Bitmap): Uri {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
