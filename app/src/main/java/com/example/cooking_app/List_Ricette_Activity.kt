@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -27,25 +26,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.filtro_ricerca_fragment.*
 import kotlinx.android.synthetic.main.list_ricette_activity.*
 
-/*
-Spesso capita che le dosi di una ricetta siano per un numero non adatto alle proprie esigenze, obbligando a dover fare le relative proporzioni degli ingredienti.
-Se poi si vuole riproporre la stessa ricetta per un numero diverso di persone, tale processo deve essere ripetuto. Da qui l’idea di quanto segue.
-
-Lo scopo principale dell’applicazione è quello di, una volta memorizzata una ricetta, calcolare le quantità dei vari ingredienti proporzionalmente al numero di commensali (scelto dall’utente).
-
-Altre funzionalità offerte dell’applicazione sono:
-
-Generare una lista della spesa per poter essere inviata a un contatto tramite diversi canali (email, whatsapp, …)
-Gestione del proprio ricettario (permanenza ricette)
-Possibilità di modificare ricette, aggiungendo, rimuovendo o cambiando le dosi di ingredienti indipendentemente dalle proporzioni
-Possibilità di aggiungere delle note alle ricette (trucchi, collegamenti a tutorial, osservazioni, …)
-Possibilità di ricercare di una ricetta: sia attraverso filtri tipo portata, tipologia, tempo, difficoltà, … sia per ingredienti (cucina con ciò che hai)
-Conversione tra diversi grassi animali e vegetali (burro-olio, burro-ricotta, …)
-Conversione cucchiaio - grammi e bicchiere - cl
-
-App Rivolta sia a professionisti del settore che a cuochi per passione.
- */
-
+//Activity principale in cui è presente la lista delle ricette online
 class List_Ricette_Activity : AppCompatActivity(){
 
     private val TAG = "List_Ricette_Activity"
@@ -70,12 +51,13 @@ class List_Ricette_Activity : AppCompatActivity(){
         startActivity(it)
     }
 
+    //funzione che apre il ricettario locale
     fun apriRicettarioLocale(v : View){
         val it = Intent(this, Lista_Ricette_Locali_Activity::class.java)
         startActivityForResult(it,ADD_SPESA)
     }
 
-    //Settaggio ToolBar
+    //Settaggio ToolBar, icone ricerca, filtro ricerca e carrello (lista della spesa)
     override fun onCreateOptionsMenu(menu: Menu):Boolean {
         menuInflater.inflate(R.menu.search, menu)
         val search = menu.findItem(R.id.search_icon)
@@ -101,6 +83,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     private var isOpen = true
     private var createFragmente = true
 
+    //funzione che gestisce il click delle icone della toolbar
     override fun onOptionsItemSelected(item: MenuItem): Boolean {//selezione del funzione dell'OptionMenu
         return when(item.itemId){
             R.id.search_filter -> {
@@ -147,6 +130,8 @@ class List_Ricette_Activity : AppCompatActivity(){
             imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
+
+    //funzione che nasconde il filtro una volta settati i parametri per la ricerca
     private fun nascondi_filtro_ricetta() {
         isOpen = true
         lista_ricette.visibility = RecyclerView.VISIBLE
@@ -267,7 +252,7 @@ class List_Ricette_Activity : AppCompatActivity(){
     //lettura dei dati da Firebase e  inizializzazione della lista delle ricette
     override fun onStart() {
         super.onStart()
-        mRicetteValueListener = getDataToFireBase()   //visulaizza i dati delle ricette
+        mRicetteValueListener = getDataFromFireBase()   //visulaizza i dati delle ricette
         DBricette!!.addValueEventListener(mRicetteValueListener)         //aggiungiamo il listener degli eventi  per la lettura dei dati sul riferimento al DB
     }
     override fun onStop() {
@@ -275,7 +260,9 @@ class List_Ricette_Activity : AppCompatActivity(){
         super.onStop()
         DBricette!!.removeEventListener(mRicetteValueListener)
     }
-    private fun getDataToFireBase(): ValueEventListener{ //prima lettura dei dati dal Database o anche modifica dei Dati
+
+    //prima lettura dei dati dal Database
+    private fun getDataFromFireBase(): ValueEventListener{
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 img.clear()
@@ -284,7 +271,7 @@ class List_Ricette_Activity : AppCompatActivity(){
                     img.add(ricetta!!)
                 }
                 initRecyclerView() //inizializzazione Lista delle ricette
-                mAdapter.notifyDataSetChanged() //serve per l'upgrada della lista delle ricette
+                mAdapter.notifyDataSetChanged() //serve per notificare la lista delle ricette
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

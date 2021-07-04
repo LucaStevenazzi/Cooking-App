@@ -17,9 +17,7 @@ import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.collections.ArrayList
 
-/*
-classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
- */
+//Classe adattatatrice che permette di gestire la Lista (RecyclerView) delle ricette
 class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, context : Context): RecyclerView.Adapter<Lista_Ricette_Adapter.CustomViewHolder>() , Filterable {
 
     private val TAG = "Lista_Ricette_Adapter"
@@ -50,6 +48,8 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         return CustomViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.ricetta_list,parent,false))
     }
+
+    //gestione della visualizzazione dei dati della ricetta nella lista
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {//assegna i dati alle righe della RecycleView
         //setting delle immagini e titoli delle ricette
         Picasso.with(ct).load(array[position].immagine).into(holder.img_ricetta)
@@ -65,7 +65,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
     }
 
     //passaggio tramite intent della ricetta selezionata
-    private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {//inserisco nell'intent i valori della ricetta che è stata cliccata
+    private fun putRicettaExtra(intent: Intent, ricetta: Ricetta) {
         ricette = ricetta
         intent.putExtra("Activity Name", TAG)
         intent.putExtra("Immagine", ricette.immagine)
@@ -77,6 +77,7 @@ class Lista_Ricette_Adapter internal constructor(img: ArrayList<Ricetta>, contex
         intent.putExtra("Persone", ricette.persone)
         putIngredintiExtra(intent)
         intent.putExtra("ListaIngredienti", ricette.listaIngredienti)
+        intent.putExtra("Descrizione", ricette.descrizione)
         intent.putExtra("Note", ricette.note)
     }
     private fun putIngredintiExtra(intent: Intent) {//salvataggio nell'intent dei dati degli ingredienti

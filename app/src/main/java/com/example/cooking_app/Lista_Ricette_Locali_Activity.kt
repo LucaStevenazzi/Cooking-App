@@ -1,7 +1,5 @@
 package com.example.cooking_app
 
-import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -14,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_lista_ricette_locali.*
 
 //Activity per la visualizzazione delle proprie ricette in locale
 
-class Lista_Ricette_Locali_Activity : AppCompatActivity(){
+class Lista_Ricette_Locali_Activity : AppCompatActivity() {
 
     private lateinit var mAdapter : Lista_Ricette_Locali_Adapter
     private val db = DataBaseHelper(this)
@@ -31,13 +29,16 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity(){
         mAdapter = Lista_Ricette_Locali_Adapter(lista, this)
         lista_ricette_locali.layoutManager = LinearLayoutManager(this)
         lista_ricette_locali.adapter = mAdapter
+
     }
 
     override fun onRestart() {
         super.onRestart()
         checkModifiche()//controllo cambiamenti
+
     }
 
+    //funzione che aggiorna la lista dopo eventuali modifiche alle ricette
     private fun checkModifiche() {
         lista.clear()
         lista.addAll(db.readData())

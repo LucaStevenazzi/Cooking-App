@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.example.cooking_app.R
 import kotlinx.android.synthetic.main.filtro_ricerca_fragment.*
 
-
+//Classe per il filtro della ricerca
 class Filtro_ricerca : Fragment(){
 
     private val TAG = "Filtro_ricerca"
