@@ -15,7 +15,7 @@
     <string name="STRpersone">Persone</string>
     <string name="STRingredienti">Aggiunta Ingredienti</string>
     <string name="HINT">Riempi il campo</string>
-    <string name="HINTDESC">Nota facoltativa</string>
+    <string name="HINTnote">Nota facoltativa</string>
     <string name="HINT_NUM_PERSONE">Comprese tra 1 e 10</string>
     <string name="STRlistaIng">Lista Ingredienti</string>
     <string name="STRnote">Note</string>
@@ -101,5 +101,6 @@
     <string name="ingredientiSpesa">Ingredienti</string>
     <string name="quantitSpesa">Quantità</string>
     <string name="share">share</string>
+    <string name="HINTdesc">Inserire procedimento</string>
 
 </resources>

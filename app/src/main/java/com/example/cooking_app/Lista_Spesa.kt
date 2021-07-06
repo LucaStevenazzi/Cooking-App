@@ -11,7 +11,7 @@ import com.example.cooking_app.Classi.Ingredienti
 import kotlinx.android.synthetic.main.lista_spesa.*
 import java.lang.StringBuilder
 
-
+//Activity che apre la lista della spesa
 class Lista_Spesa : AppCompatActivity(){
 
     private var spesa = ArrayList<Ingredienti>()
@@ -41,6 +41,7 @@ class Lista_Spesa : AppCompatActivity(){
 
     private fun share(spesa : ArrayList<Ingredienti>, count : Int){
         stringa.clear()
+        stringa.append("Lista spesa:\n")
         for(i in 0 until count){
             stringa.append(spesa[i])
             stringa.append("\n")
@@ -61,13 +62,6 @@ class Lista_Spesa : AppCompatActivity(){
 
     private fun getIngredientiExtra() {
         spesa = intent.getSerializableExtra("lista spesa") as ArrayList<Ingredienti>
-    }
-
-    override fun onStop() {
-        super.onStop()
-        val intent = Intent(this, List_Ricette_Activity::class.java)
-        intent.putExtra("spesa",spesa)
-        startActivity(intent)
     }
 
     override fun onRestart() {

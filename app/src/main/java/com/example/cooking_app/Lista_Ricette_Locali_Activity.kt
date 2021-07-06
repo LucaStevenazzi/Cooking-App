@@ -53,15 +53,6 @@ class Lista_Ricette_Locali_Activity : AppCompatActivity() {
         if(requestCode == ADD_SPESA && resultCode == Activity.RESULT_OK){
             Toast.makeText(this, "Ricevuto indietro la lista degli ingredienti", Toast.LENGTH_SHORT).show()
             lista_ingredienti.addAll(data?.getSerializableExtra("lista spesa") as ArrayList<Ingredienti>)
-        }
-        intent.putExtra("lista spesa",lista_ingredienti)
-        setResult(Activity.RESULT_OK,intent)
-        finish()
-    }
-
-    override fun onDestroy(){
-        super.onDestroy()
-        if(lista_ingredienti.isNotEmpty()){
             intent.putExtra("lista spesa",lista_ingredienti)
             setResult(Activity.RESULT_OK,intent)
             finish()

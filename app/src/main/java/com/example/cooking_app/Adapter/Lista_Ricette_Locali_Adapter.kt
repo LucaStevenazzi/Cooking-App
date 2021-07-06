@@ -59,7 +59,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>, context: Context) : 
                 ricette = array[layoutPosition]
                 checkExist(array[layoutPosition])
                 if (exist[ricette.nome+ricette.immagine] == true){
-                    Toast.makeText(button_upload!!.context, "Ricetta gia caricata", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ct, "Ricetta gia caricata", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
@@ -86,6 +86,7 @@ class Lista_Ricette_Locali_Adapter(img: ArrayList<Ricetta>, context: Context) : 
                     //mostra l'errore
                     e-> Log.v("Lista_Ricette_locali", e.toString())
                 }
+                Toast.makeText(ct, "Ricetta caricata", Toast.LENGTH_SHORT).show()
             }
         }
     }

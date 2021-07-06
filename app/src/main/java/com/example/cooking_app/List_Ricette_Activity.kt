@@ -43,7 +43,6 @@ class List_Ricette_Activity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.list_ricette_activity)
-
     }
 
     //OnClick: apertura nuova activity per l'aggiunta di una ricetta
@@ -298,4 +297,3 @@ class List_Ricette_Activity : AppCompatActivity(){
         }
     }
 }
-
